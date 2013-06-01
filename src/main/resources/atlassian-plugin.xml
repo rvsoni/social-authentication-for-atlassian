@@ -9,10 +9,24 @@
 
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
-    
+
+    <web-resource key="openid-soy-templates">
+        <transformation extension="soy">
+            <transformer key="soyTransformer"/>
+        </transformation>
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+
+        <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
+
+        <resource type="download" name="open-id.js" location="templates/open-id.soy"/>
+    </web-resource>
+
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources" name="jira-openid-authentication-plugin Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <context>atl.general</context>
         
         <resource type="download" name="jira-openid-authentication-plugin.css" location="/css/jira-openid-authentication-plugin.css"/>
         <resource type="download" name="jira-openid-authentication-plugin.js" location="/js/jira-openid-authentication-plugin.js"/>
@@ -28,5 +42,12 @@
     
     <!-- import from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
-    
+    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer" />
+
+    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="open-id-servlet" class="com.pawelniewiadomski.jira.openid.authentication.OpenIdServlet">
+        <description key="open-id.description">The Open Id Servlet Plugin</description>
+        <url-pattern>/open-id-authentication</url-pattern>
+    </servlet>
+
+
 </atlassian-plugin>
