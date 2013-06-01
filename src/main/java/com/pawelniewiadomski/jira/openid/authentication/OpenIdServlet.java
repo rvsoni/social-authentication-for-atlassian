@@ -22,7 +22,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
-import com.opensymphony.module.propertyset.PropertySet;
 import org.apache.commons.lang.StringUtils;
 import org.expressme.openid.*;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
@@ -35,10 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -95,16 +94,20 @@ public class OpenIdServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String op = request.getParameter("op");
         if (op == null) {
-            // check nonce:
-            checkNonce(request.getParameter("openid.response_nonce"));
-            // get authentication:
-            byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
-            String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
-            Authentication authentication = manager.getAuthentication(request, mac_key, alias);
-            String identity = authentication.getIdentity();
-            String email = authentication.getEmail();
-            // TODO: create user if not exist in database:
-            showAuthentication(request, response, identity, email);
+            try {
+                // check nonce:
+                checkNonce(request.getParameter("openid.response_nonce"));
+                // get authentication:
+                byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
+                String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
+                Authentication authentication = manager.getAuthentication(request, mac_key, alias);
+                String identity = authentication.getIdentity();
+                String email = authentication.getEmail();
+                // TODO: create user if not exist in database:
+                showAuthentication(request, response, identity, email);
+            } catch (OpenIdException e) {
+                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+            }
         } else if ("Google".equals(op)) {
             // redirect to Google sign on page:
             Endpoint endpoint = manager.lookupEndpoint("Google");
@@ -121,11 +124,15 @@ public class OpenIdServlet extends HttpServlet {
             String url = manager.getAuthenticationUrl(endpoint, association);
             response.sendRedirect(url);
         } else {
-            try {
-                soyTemplateRenderer.render(SOY_TEMPLATES, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-            } catch (SoyException e) {
-                throw new ServletException(e);
-            }
+            renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+        }
+    }
+
+    void renderTemplate(final HttpServletResponse response, String template, Map<String, Object> map) throws ServletException, IOException {
+        try {
+            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, map);
+        } catch (SoyException e) {
+            throw new ServletException(e);
         }
     }
 

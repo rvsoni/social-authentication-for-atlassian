@@ -32,7 +32,7 @@
         <resource type="download" name="jira-openid-authentication-plugin.js" location="/js/jira-openid-authentication-plugin.js"/>
         <resource type="download" name="images/" location="/images"/>
 
-        <context>jira-openid-authentication-plugin</context>
+        <!--context>jira-openid-authentication-plugin</context-->
     </web-resource>
     
     <!-- publish our component -->

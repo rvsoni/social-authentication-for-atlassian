@@ -3,12 +3,12 @@ AJS.$(function() {
         var openIds = [];
 
         openIds.push(
-            AJS.$('<a id="open-id-google" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/open-id-authentication?op=Google">Log In with Google</a>'));
+            '<a id="open-id-google" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/open-id-authentication?op=Google">Using Google</a>');
 
         openIds.push(
-            AJS.$('<a id="open-id-yahoo" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/open-id-authentication?op=Yahoo">Log In with Yahoo</a>'));
+            '<a id="open-id-yahoo" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/open-id-authentication?op=Yahoo">Or Yahoo</a>');
 
-        AJS.$(openIds).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
+        AJS.$(openIds.join("")).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
         AJS.$(".aui-button.open-id").click(function() {
             AJS.$(this).removeDirtyWarning();
         });
