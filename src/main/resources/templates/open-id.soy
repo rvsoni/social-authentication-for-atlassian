@@ -1,14 +1,42 @@
 {namespace OpenId.Templates}
 
 /**
- *
+ * @param baseUrl base URL
  */
 {template .error}
-<html>
-<head>
-    <title>OpenID Failed</title>
-</head>
-<body>
-    <h1>Es</h1>
-</body>
+{call aui.page.document}
+    {param windowTitle: 'OpenID Failed'/}
+    {param headContent}
+        <meta name="decorator" content="general"/>
+    {/param}
+    {param pageType: 'focused'/}
+    {param content}
+    <section id="content" role="main">
+        {call aui.page.pagePanel}
+            {param content}
+                {call aui.page.pagePanelContent}
+                    {param content}
+                        <h2>OpenID Failed</h2>
+                        <div>
+                            There was a problem during authentication. Please try again using different method.
+                        </div>
+                        {call aui.buttons.buttons}
+                            {param content}
+                                {call aui.buttons.button}
+                                    {param text: 'Log In'/}
+                                    {param type: 'link'/}
+                                    {param tagName: 'a'/}
+                                    {param extraAttributes}
+                                    href="{$baseUrl}/login.jsp"
+                                    {/param}
+                                {/call}
+                            {/param}
+                        {/call}
+                    {/param}
+                {/call}
+            {/param}
+        {/call}
+    </section>
+    {/param}
+{/call}
 {/template}

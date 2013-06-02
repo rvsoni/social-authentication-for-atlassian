@@ -8,13 +8,14 @@ import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
 import com.atlassian.jira.config.properties.APKeys;
+import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.JiraUtils;
-import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.jira.util.http.JiraHttpUtils;
 import com.atlassian.sal.api.UrlMode;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
@@ -22,6 +23,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.expressme.openid.*;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
@@ -83,11 +85,17 @@ public class OpenIdServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+
         manager = new OpenIdManager();
-        final String realm = UriBuilder.fromUri(applicationProperties.getBaseUrl(UrlMode.ABSOLUTE)).replacePath("/").build().toString();
+
+        final String baseUrl = getBaseUrl();
+        final String realm = UriBuilder.fromUri(baseUrl).replacePath("/").build().toString();
         manager.setRealm(realm); // change to your domain
-        manager.setReturnTo(applicationProperties.getBaseUrl(UrlMode.ABSOLUTE)
-                + "/plugins/servlet/open-id-authentication"); // change to your servlet url
+        manager.setReturnTo(baseUrl + "/plugins/servlet/open-id-authentication"); // change to your servlet url
+    }
+
+    private String getBaseUrl() {
+        return applicationProperties.getString(APKeys.JIRA_BASEURL);
     }
 
     @Override
@@ -129,10 +137,27 @@ public class OpenIdServlet extends HttpServlet {
     }
 
     void renderTemplate(final HttpServletResponse response, String template, Map<String, Object> map) throws ServletException, IOException {
+        final Map<String, Object> params = Maps.newHashMap(map);
+        params.put("baseUrl", getBaseUrl());
+
+        JiraHttpUtils.setNoCacheHeaders(response);
+        response.setContentType(getContentType());
         try {
-            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, map);
+            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, params);
         } catch (SoyException e) {
             throw new ServletException(e);
+        }
+    }
+
+    String getContentType()
+    {
+        try
+        {
+            return applicationProperties.getContentType();
+        }
+        catch (Exception e)
+        {
+            return "text/html; charset=UTF-8";
         }
     }
 
@@ -145,7 +170,7 @@ public class OpenIdServlet extends HttpServlet {
                 User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && Boolean.valueOf(applicationProperties.getPropertyValue(APKeys.JIRA_OPTION_USER_EXTERNALMGT))
+        if (user == null && applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT)
                 && JiraUtils.isPublicMode()) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
@@ -164,7 +189,7 @@ public class OpenIdServlet extends HttpServlet {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
 
-            response.sendRedirect(applicationProperties.getBaseUrl() + "/secure/Dashboard.jspa");
+            response.sendRedirect(getBaseUrl() + "/secure/Dashboard.jspa");
         }
     }
 
