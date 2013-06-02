@@ -2,8 +2,9 @@
 
 /**
  * @param baseUrl base URL
+ * @param content content
  */
-{template .error}
+{template .errorWrapper}
 {call aui.page.document}
     {param windowTitle: 'OpenID Failed'/}
     {param headContent}
@@ -18,7 +19,7 @@
                     {param content}
                         <h2>OpenID Failed</h2>
                         <div>
-                            There was a problem during authentication. Please try again using different method.
+                            {$content|noAutoescape}
                         </div>
                         {call aui.buttons.buttons}
                             {param content}
@@ -38,5 +39,41 @@
         {/call}
     </section>
     {/param}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ */
+{template .error}
+{call .errorWrapper}
+    {param content}
+    There was a problem during authentication. Please try again using different method.
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ */
+{template .emptyEmail}
+{call .errorWrapper}
+    {param content}
+    OpenID provider did not return a valid email address for the identity. Cannot proceed. Plase try again using different method.
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ */
+{template .noUserMatched}
+{call .errorWrapper}
+    {param content}
+    No existing user was matched. Cannot proceed. Please try again using different method.
+    {/param}
+    {param baseUrl: $baseUrl/}
 {/call}
 {/template}

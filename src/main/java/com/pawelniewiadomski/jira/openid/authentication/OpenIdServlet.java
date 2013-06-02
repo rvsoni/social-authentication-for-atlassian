@@ -161,8 +161,9 @@ public class OpenIdServlet extends HttpServlet {
         }
     }
 
-    void showAuthentication(final HttpServletRequest request, HttpServletResponse response, String identity, String email) throws IOException {
+    void showAuthentication(final HttpServletRequest request, HttpServletResponse response, String identity, String email) throws IOException, ServletException {
         if (StringUtils.isBlank(email)) {
+            renderTemplate(response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
             return;
         }
 
@@ -176,9 +177,11 @@ public class OpenIdServlet extends HttpServlet {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);
             } catch (PermissionException e) {
-                throw new RuntimeException(e);
+                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                return;
             } catch (CreateException e) {
-                throw new RuntimeException(e);
+                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                return;
             }
         }
 
@@ -190,6 +193,8 @@ public class OpenIdServlet extends HttpServlet {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
 
             response.sendRedirect(getBaseUrl() + "/secure/Dashboard.jspa");
+        } else {
+            renderTemplate(response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
         }
     }
 
