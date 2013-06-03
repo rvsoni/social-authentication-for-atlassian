@@ -6,11 +6,21 @@
     <artifactId>jira-openid-authentication-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>Pawel Niewiadomski</name>
+        <url>http://pawelniewiadomski.com/</url>
     </organization>
-    <name>jira-openid-authentication-plugin</name>
-    <description>This is the com.pawelniewiadomski.jira:jira-openid-authentication-plugin plugin for Atlassian JIRA.</description>
+    <scm>
+        <connection>scm:git:https://bitbucket.org/pawelniewiadomski/jira-openid.git</connection>
+        <developerConnection>scm:git:https://bitbucket.org/pawelniewiadomski/jira-openid.git</developerConnection>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>dropbox</id>
+            <url>file:///Users/pawel/Dropbox/Public/repo</url>
+        </repository>
+    </distributionManagement>
+    <name>JIRA OpenID Authentication</name>
+    <description>This plugins lets you setup OpenID authentication for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
     <dependencies>
         <dependency>
