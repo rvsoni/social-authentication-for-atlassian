@@ -77,3 +77,15 @@
     {param baseUrl: $baseUrl/}
 {/call}
 {/template}
+
+/**
+ * @param baseUrl base URL
+ */
+{template .invalidLicense}
+{call .errorWrapper}
+    {param content}
+    No valid license found. Please ask your administrator to configure the plugin.
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}

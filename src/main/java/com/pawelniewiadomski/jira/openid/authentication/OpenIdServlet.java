@@ -16,7 +16,7 @@ import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.jira.util.http.JiraHttpUtils;
-import com.atlassian.sal.api.UrlMode;
+import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.cache.Cache;
@@ -27,7 +27,6 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
-import com.atlassian.seraph.auth.DefaultAuthenticator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -62,6 +61,7 @@ public class OpenIdServlet extends HttpServlet {
     final CrowdService crowdService;
     final UserUtil userUtil;
     final SoyTemplateRenderer soyTemplateRenderer;
+    private final LicenseProvider licenseProvider;
 
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
@@ -77,11 +77,13 @@ public class OpenIdServlet extends HttpServlet {
     OpenIdManager manager;
 
     public OpenIdServlet(final ApplicationProperties applicationProperties, final CrowdService crowdService,
-                         final UserUtil userUtil, final SoyTemplateRenderer soyTemplateRenderer) {
+                         final UserUtil userUtil, final SoyTemplateRenderer soyTemplateRenderer,
+                         final LicenseProvider licenseProvider) {
         this.applicationProperties = applicationProperties;
         this.crowdService = crowdService;
         this.userUtil = userUtil;
         this.soyTemplateRenderer = soyTemplateRenderer;
+        this.licenseProvider = licenseProvider;
     }
 
     @Override
@@ -103,6 +105,11 @@ public class OpenIdServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String op = request.getParameter("op");
+
+        if (!licenseProvider.isValidLicense()) {
+            renderTemplate(response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            return;
+        }
         if (op == null) {
             try {
                 // check nonce:

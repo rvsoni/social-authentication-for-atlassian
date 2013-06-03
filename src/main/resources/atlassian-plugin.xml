@@ -1,15 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="atlassian-licensing-enabled">true</param>
+        <!--param name="configure.url">/plugins/servlet/openid-authentication-license</param-->
     </plugin-info>
-
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
-
     <web-resource key="openid-soy-templates">
         <transformation extension="soy">
             <transformer key="soyTransformer"/>
@@ -17,37 +19,55 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
-
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
-
         <resource type="download" name="open-id.js" location="templates/open-id.soy"/>
     </web-resource>
-
     <!-- add our web resources -->
-    <web-resource key="jira-openid-authentication-plugin-resources" name="jira-openid-authentication-plugin Web Resources">
+    <web-resource key="jira-openid-authentication-plugin-resources"
+                  name="jira-openid-authentication-plugin Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <context>atl.general</context>
-        
-        <resource type="download" name="jira-openid-authentication-plugin.css" location="/css/jira-openid-authentication-plugin.css"/>
-        <resource type="download" name="jira-openid-authentication-plugin.js" location="/js/jira-openid-authentication-plugin.js"/>
+        <resource type="download" name="jira-openid-authentication-plugin.css"
+                  location="/css/jira-openid-authentication-plugin.css"/>
+        <resource type="download" name="jira-openid-authentication-plugin.js"
+                  location="/js/jira-openid-authentication-plugin.js"/>
         <resource type="download" name="images/" location="/images"/>
-
         <!--context>jira-openid-authentication-plugin</context-->
     </web-resource>
-    
     <!-- publish our component -->
-    <component key="myPluginComponent" class="com.pawelniewiadomski.jira.openid.authentication.MyPluginComponentImpl" public="true">
+    <component key="myPluginComponent" class="com.pawelniewiadomski.jira.openid.authentication.MyPluginComponentImpl"
+               public="true">
         <interface>com.pawelniewiadomski.jira.openid.authentication.MyPluginComponent</interface>
     </component>
-    
     <!-- import from the product container -->
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
-    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer" />
-
-    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="open-id-servlet" class="com.pawelniewiadomski.jira.openid.authentication.OpenIdServlet">
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
+    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="open-id-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.OpenIdServlet">
         <description key="open-id.description">The Open Id Servlet Plugin</description>
         <url-pattern>/open-id-authentication</url-pattern>
     </servlet>
+    <component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
+    <component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
+    <component-import key="txTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate"/>
+    <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
+    <component-import key="pluginSettingsFactory"
+                      interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
+    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
+    <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
+    <component key="thirdPartyPluginLicenseStorageManager"
+               class="com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManagerImpl"/>
+    <component key="pluginLicenseStoragePluginInstaller"
+               class="com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginInstaller"/>
+    <component key="atlassianMarketplaceUriFactory"
+               class="com.atlassian.upm.license.storage.lib.AtlassianMarketplaceUriFactoryImpl"/>
+    <servlet name="License Servlet" i18n-name-key="license-servlet.name" key="license-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.LicenseServlet">
+        <description key="license-servlet.description">The License Servlet Plugin</description>
+        <url-pattern>/openid-authentication-license</url-pattern>
+    </servlet>
 
-
+    <component key="licenseProvider" class="com.pawelniewiadomski.jira.openid.authentication.LicenseProvider"/>
+    <component key="springContext" class="com.pawelniewiadomski.jira.openid.authentication.SpringContext"/>
 </atlassian-plugin>
