@@ -25,6 +25,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.expressme.openid.*;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 
@@ -49,6 +50,7 @@ import java.util.concurrent.TimeUnit;
  * @since v5.2
  */
 public class OpenIdServlet extends HttpServlet {
+    final Logger log = Logger.getLogger(this.getClass());
 
     static final long ONE_HOUR = 3600000L;
     static final long TWO_HOUR = ONE_HOUR * 2L;
@@ -109,11 +111,12 @@ public class OpenIdServlet extends HttpServlet {
                 byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
                 String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
                 Authentication authentication = manager.getAuthentication(request, mac_key, alias);
-                String identity = authentication.getIdentity();
+                String fullName = authentication.getFullname();
                 String email = authentication.getEmail();
                 // TODO: create user if not exist in database:
-                showAuthentication(request, response, identity, email);
+                showAuthentication(request, response, fullName, email);
             } catch (OpenIdException e) {
+                log.error("OpenID verification failed", e);
                 renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
             }
         } else if ("Google".equals(op)) {
@@ -171,15 +174,17 @@ public class OpenIdServlet extends HttpServlet {
                 User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT)
+        if (user == null && !applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT)
                 && JiraUtils.isPublicMode()) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);
             } catch (PermissionException e) {
+                log.error(String.format("Cannot create an account for %s %s", identity, email), e);
                 renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             } catch (CreateException e) {
+                log.error(String.format("Cannot create an account for %s %s", identity, email), e);
                 renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             }
