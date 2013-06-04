@@ -19,7 +19,7 @@
             <url>file:///Users/pawel/Dropbox/Public/repo</url>
         </repository>
     </distributionManagement>
-    <name>JIRA OpenID Authentication</name>
+    <name>OpenID Authentication for JIRA</name>
     <description>This plugins lets you setup OpenID authentication for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
     <dependencies>
