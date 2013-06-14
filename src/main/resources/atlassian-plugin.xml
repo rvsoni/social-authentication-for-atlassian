@@ -43,10 +43,15 @@
     <!-- import from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
     <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
-    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="open-id-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.OpenIdServlet">
-        <description key="open-id.description">The Open Id Servlet Plugin</description>
-        <url-pattern>/open-id-authentication</url-pattern>
+    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="openid-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
+        <description key="open-id.description">The OpenId Servlet Plugin</description>
+        <url-pattern>/openid-authentication</url-pattern>
+    </servlet>
+    <servlet name="OpenId Configuration Servlet" i18n-name-key="open-id.name" key="openid-configuration-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
+        <description key="open-id.description">The OpenId Configuration Servlet Plugin</description>
+        <url-pattern>/openid-configuration</url-pattern>
     </servlet>
     <component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
     <component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
@@ -71,4 +76,18 @@
 
     <component key="licenseProvider" class="com.pawelniewiadomski.jira.openid.authentication.LicenseProvider"/>
     <component key="springContext" class="com.pawelniewiadomski.jira.openid.authentication.SpringContext"/>
+
+    <ao key="openid-active-objects">
+        <entity>com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider</entity>
+    </ao>
+
+    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
+
+    <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
+              i18n-name-key="openid.admin.link" weight="70">
+        <label key="openid.menu.automat"/>
+        <link linkId="openid">/plugins/servlet/openid-configuration</link>
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition"/>
+        <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
+    </web-item>
 </atlassian-plugin>

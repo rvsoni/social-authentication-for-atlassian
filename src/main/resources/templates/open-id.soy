@@ -1,6 +1,21 @@
 {namespace OpenId.Templates}
 
 /**
+ * @param providers list of providers
+ */
+{template .providers}
+{call aui.page.document}
+    {param windowTitle: 'OpenID Providers'/}
+    {param headContent}
+        <meta name="decorator" content="general"/>
+    {/param}
+    {param content}
+        {$providers}
+    {/param}
+{/call}
+{/template}
+
+/**
  * @param baseUrl base URL
  * @param content content
  */

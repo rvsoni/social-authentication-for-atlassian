@@ -36,7 +36,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LicenseServlet extends HttpServlet
 {
-    private static final String TEMPLATE = "templates/license-admin.vm";
+    public static final String TEMPLATE = "templates/license-admin.vm";
 
     private final ThirdPartyPluginLicenseStorageManager licenseManager;
     private final AtlassianMarketplaceUriFactory uriFactory;

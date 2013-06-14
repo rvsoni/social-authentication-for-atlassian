@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 
 import com.atlassian.crowd.embedded.api.CrowdService;
@@ -24,6 +24,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
@@ -48,19 +49,16 @@ import java.util.concurrent.TimeUnit;
  *
  * @since v5.2
  */
-public class OpenIdServlet extends HttpServlet {
+public class OpenIdServlet extends AbstractOpenIdServlet {
     final Logger log = Logger.getLogger(this.getClass());
 
     static final long ONE_HOUR = 3600000L;
     static final long TWO_HOUR = ONE_HOUR * 2L;
     static final String ATTR_MAC = "openid_mac";
     static final String ATTR_ALIAS = "openid_alias";
-    public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
 
-    final ApplicationProperties applicationProperties;
     final CrowdService crowdService;
     final UserUtil userUtil;
-    final SoyTemplateRenderer soyTemplateRenderer;
     private final LicenseProvider licenseProvider;
 
 
@@ -95,11 +93,7 @@ public class OpenIdServlet extends HttpServlet {
         final String baseUrl = getBaseUrl();
         final String realm = UriBuilder.fromUri(baseUrl).replacePath("/").build().toString();
         manager.setRealm(realm); // change to your domain
-        manager.setReturnTo(baseUrl + "/plugins/servlet/open-id-authentication"); // change to your servlet url
-    }
-
-    private String getBaseUrl() {
-        return applicationProperties.getString(APKeys.JIRA_BASEURL);
+        manager.setReturnTo(baseUrl + "/plugins/servlet/openid-authentication"); // change to your servlet url
     }
 
     @Override
@@ -143,31 +137,6 @@ public class OpenIdServlet extends HttpServlet {
             response.sendRedirect(url);
         } else {
             renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-        }
-    }
-
-    void renderTemplate(final HttpServletResponse response, String template, Map<String, Object> map) throws ServletException, IOException {
-        final Map<String, Object> params = Maps.newHashMap(map);
-        params.put("baseUrl", getBaseUrl());
-
-        JiraHttpUtils.setNoCacheHeaders(response);
-        response.setContentType(getContentType());
-        try {
-            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, params);
-        } catch (SoyException e) {
-            throw new ServletException(e);
-        }
-    }
-
-    String getContentType()
-    {
-        try
-        {
-            return applicationProperties.getContentType();
-        }
-        catch (Exception e)
-        {
-            return "text/html; charset=UTF-8";
         }
     }
 
