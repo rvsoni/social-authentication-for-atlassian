@@ -1,16 +1,32 @@
 AJS.$(function() {
     if (AJS.$("#login-form").length) {
-        var openIds = [];
+        var buttons = [];
 
-        openIds.push(
-            '<a id="open-id-google" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/openid-authentication?op=Google">Using Google</a>');
+        buttons.push('<button class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
+            +' aria-haspopup="true" aria-controls="openid-providers">OpenID</button>');
+        buttons.push('<div id="openid-providers" class="aui-dropdown2 aui-style-default" aria-hidden="true" data-dropdown2-alignment="left">');
+        buttons.push('<ul class="aui-list-truncate">');
+        buttons.push('<li><a href="#" class="loading"><span class="aui-icon aui-icon-wait"></span> Loading, please wait</a></li>');
+        buttons.push('</ul>');
 
-        openIds.push(
-            '<a id="open-id-yahoo" class="aui-button open-id" href="' + contextPath + '/plugins/servlet/openid-authentication?op=Yahoo">Or Yahoo</a>');
+        AJS.$(buttons.join("")).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
 
-        AJS.$(openIds.join("")).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
-        AJS.$(".aui-button.open-id").click(function() {
-            AJS.$(this).removeDirtyWarning();
+        AJS.$.ajax(contextPath + "/rest/jira-openid-authentication/1.0/openIdProviders").done(function(data) {
+            if (AJS.$.isArray(data) && data.length > 0) {
+                var openIds = [], $providers = AJS.$("#openid-providers ul");
+
+                AJS.$(data).each(function(idx, obj) {
+                    openIds.push(
+                        '<li><a id="open-id-"' + obj.id + ' class="open-id" href="'
+                            + contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id + '">' + obj.name + '</a></li>');
+                });
+
+                $providers.find("li a.loading").remove();
+                $providers.append(openIds.join(""));
+                $providers.find("li a").click(function() {
+                    AJS.$(this).removeDirtyWarning();
+                });
+            }
         });
     }
 });
