@@ -8,30 +8,30 @@ import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
 import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.JiraUtils;
-import com.atlassian.jira.util.http.JiraHttpUtils;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
-import com.atlassian.soy.renderer.SoyException;
-import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.expressme.openid.*;
+import org.expressme.openid.Association;
+import org.expressme.openid.Authentication;
+import org.expressme.openid.Endpoint;
+import org.expressme.openid.OpenIdException;
+import org.expressme.openid.OpenIdManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -57,9 +56,14 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     static final String ATTR_MAC = "openid_mac";
     static final String ATTR_ALIAS = "openid_alias";
 
-    final CrowdService crowdService;
-    final UserUtil userUtil;
-    private final LicenseProvider licenseProvider;
+	@Autowired
+    CrowdService crowdService;
+
+	@Autowired
+    UserUtil userUtil;
+
+	@Autowired
+    LicenseProvider licenseProvider;
 
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
@@ -74,16 +78,6 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
     OpenIdManager manager;
 
-    public OpenIdServlet(final ApplicationProperties applicationProperties, final CrowdService crowdService,
-                         final UserUtil userUtil, final SoyTemplateRenderer soyTemplateRenderer,
-                         final LicenseProvider licenseProvider) {
-        this.applicationProperties = applicationProperties;
-        this.crowdService = crowdService;
-        this.userUtil = userUtil;
-        this.soyTemplateRenderer = soyTemplateRenderer;
-        this.licenseProvider = licenseProvider;
-    }
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -92,19 +86,21 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
         final String baseUrl = getBaseUrl();
         final String realm = UriBuilder.fromUri(baseUrl).replacePath("/").build().toString();
+
         manager.setRealm(realm); // change to your domain
         manager.setReturnTo(baseUrl + "/plugins/servlet/openid-authentication"); // change to your servlet url
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String op = request.getParameter("op");
+        final String pid = request.getParameter("pid");
 
         if (!licenseProvider.isValidLicense()) {
             renderTemplate(response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
             return;
         }
-        if (op == null) {
+
+        if (pid == null) {
             try {
                 // check nonce:
                 checkNonce(request.getParameter("openid.response_nonce"));
@@ -120,24 +116,20 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 log.error("OpenID verification failed", e);
                 renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
             }
-        } else if ("Google".equals(op)) {
-            // redirect to Google sign on page:
-            Endpoint endpoint = manager.lookupEndpoint("Google");
-            Association association = manager.lookupAssociation(endpoint);
-            request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-            request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-            String url = manager.getAuthenticationUrl(endpoint, association);
-            response.sendRedirect(url);
-        } else if ("Yahoo".equals(op)) {
-            Endpoint endpoint = manager.lookupEndpoint("Yahoo");
-            Association association = manager.lookupAssociation(endpoint);
-            request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-            request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-            String url = manager.getAuthenticationUrl(endpoint, association);
-            response.sendRedirect(url);
         } else {
-            renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-        }
+			final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(pid));
+			if (provider != null) {
+				// redirect to Google sign on page:
+				Endpoint endpoint = new Endpoint();
+				Association association = manager.lookupAssociation(endpoint);
+				request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
+				request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
+				String url = manager.getAuthenticationUrl(endpoint, association);
+				response.sendRedirect(url);
+			} else {
+				renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+			}
+		}
     }
 
     void showAuthentication(final HttpServletRequest request, HttpServletResponse response, String identity, String email) throws IOException, ServletException {

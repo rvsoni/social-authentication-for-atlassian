@@ -9,6 +9,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
@@ -25,6 +26,9 @@ import java.util.Map;
  * @since v5.2
  */
 public class AbstractOpenIdServlet extends HttpServlet {
+
+	@Autowired
+	OpenIdDao openIdDao;
 
     @Autowired
     SoyTemplateRenderer soyTemplateRenderer;

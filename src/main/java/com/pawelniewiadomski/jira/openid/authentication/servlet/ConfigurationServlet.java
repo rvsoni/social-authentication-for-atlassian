@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
-import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +21,6 @@ import java.util.Map;
 @Component
 public class ConfigurationServlet extends AbstractOpenIdServlet
 {
-    @Autowired
-    OpenIdDao openIdDao;
-
     @Autowired
     WebResourceManager webResourceManager;
 
