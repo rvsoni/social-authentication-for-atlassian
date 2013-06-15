@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -34,7 +33,8 @@ public class OpenIdDao {
 
     @Nullable
     public OpenIdProvider findByName(String name) throws SQLException {
-        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class, Query.select().where("${OpenIdProvider.NAME} = ?", name));
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
+				Query.select().where(String.format("%s = ?", OpenIdProvider.NAME), name));
         if (providers != null && providers.length > 0) {
             return providers[0];
         }

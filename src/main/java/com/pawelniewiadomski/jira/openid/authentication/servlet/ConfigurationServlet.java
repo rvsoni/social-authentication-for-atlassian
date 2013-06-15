@@ -30,25 +30,79 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         if (shouldNotAccess(req, resp)) return;
 
         final String operation = req.getParameter("op");
-        if (StringUtils.equals("add", operation)) {
-            final Map<String, Object> errors = Maps.newHashMap();
-            final String name = req.getParameter("name");
-            final String endpointUrl = req.getParameter("endpointUrl");
-            final String extensionNamespace = req.getParameter("extensionNamespace");
+		if (StringUtils.equals(operation, "edit") || StringUtils.equals(operation, "add")) {
+			final Map<String, Object> errors = Maps.newHashMap();
+			final String name = req.getParameter("name");
+			final String endpointUrl = req.getParameter("endpointUrl");
+			final String extensionNamespace = req.getParameter("extensionNamespace");
+			final String pid = req.getParameter("pid");
+			final OpenIdProvider provider;
+			try {
+				provider = StringUtils.isNotEmpty(pid) ? openIdDao.findProvider(Integer.valueOf(pid)) : null;
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 
-            if (StringUtils.isEmpty(name)) {
-                errors.put("name", )
-            }
-            provider = openIdDao.findByName(name);
+			if (StringUtils.isEmpty(name)) {
+				errors.put("name", i18nResolver.getText("configuration.name.empty"));
+			} else {
+				final OpenIdProvider providerByName;
+				try {
+					providerByName = openIdDao.findByName(name);
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
 
-            renderTemplate(resp, "OpenId.Templates.addProvider",
-                    ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(), "errors", errors));
-            return;
-        }
+				if (providerByName != null
+						&& (provider == null || (provider != null && !provider.getId().equals(providerByName.getId())))) {
+					errors.put("name", i18nResolver.getText("configuration.name.must.be.unique"));
+				}
+			}
+
+			if (StringUtils.isEmpty(endpointUrl)) {
+				errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty"));
+			}
+
+			if (!errors.isEmpty()) {
+				final ImmutableMap.Builder<String, Object> mapBuilder = ImmutableMap.builder();
+				mapBuilder.put("currentUrl", req.getRequestURI())
+						.put("errors", errors)
+						.put("values", providerValuesMap(name, endpointUrl, extensionNamespace));
+
+				if (StringUtils.isNotEmpty(pid)) {
+					mapBuilder.put("pid", pid);
+				}
+
+				renderTemplate(resp,
+						provider != null ? "OpenId.Templates.editProvider" : "OpenId.Templates.addProvider",
+						mapBuilder.build());
+				return;
+			} else {
+				try {
+					if (provider != null) {
+						provider.setName(name);
+						provider.setEndpointUrl(endpointUrl);
+						provider.setExtensionNamespace(extensionNamespace);
+						provider.save();
+					} else {
+						openIdDao.createProvider(name, endpointUrl, extensionNamespace);
+					}
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
         resp.sendRedirect(req.getRequestURI());
     }
 
-    @Override
+	private ImmutableMap<String, String> providerValuesMap(String name, String endpointUrl, String extensionNamespace) {
+		return ImmutableMap.of("name", name,
+				"endpointUrl", endpointUrl,
+				"extensionNamespace", extensionNamespace);
+	}
+
+	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         if (shouldNotAccess(req, resp)) return;
@@ -70,8 +124,13 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
                 if (provider != null) {
                     if (StringUtils.equals("delete", operation)) {
 
-                    } else if (StringUtils.equals("edit", operation)) {
-
+                    } else if (StringUtils.equals("edit", operation) && !provider.isInternal()) {
+						renderTemplate(resp, "OpenId.Templates.editProvider",
+								ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
+										"pid", providerId,
+										"values", providerValuesMap(provider.getName(),
+										provider.getEndpointUrl(), provider.getExtensionNamespace())));
+						return;
                     } else if (StringUtils.equals("disable", operation)) {
                         provider.setEnabled(false);
                         provider.save();
