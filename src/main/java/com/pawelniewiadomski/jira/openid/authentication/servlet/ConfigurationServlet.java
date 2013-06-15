@@ -33,7 +33,16 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         if (shouldNotAccess(req, resp)) return;
 
         final String operation = req.getParameter("op");
-		if (StringUtils.equals(operation, "edit") || StringUtils.equals(operation, "add")) {
+		if (StringUtils.equals(operation, "delete")) {
+			if (req.getParameterMap().containsKey("confirm")) {
+				final String pid = req.getParameter("pid");
+				try {
+					openIdDao.deleteProvider(Integer.valueOf(pid));
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		} else if (StringUtils.equals(operation, "edit") || StringUtils.equals(operation, "add")) {
 			final Map<String, Object> errors = Maps.newHashMap();
 			final String name = req.getParameter("name");
 			final String endpointUrl = req.getParameter("endpointUrl");
@@ -125,8 +134,12 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 
                 final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(providerId));
                 if (provider != null) {
-                    if (StringUtils.equals("delete", operation)) {
-
+                    if (StringUtils.equals("delete", operation) && !provider.isInternal()) {
+						renderTemplate(resp, "OpenId.Templates.deleteProvider",
+								ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
+										"pid", providerId,
+										"name", provider.getName()));
+						return;
                     } else if (StringUtils.equals("edit", operation) && !provider.isInternal()) {
 						renderTemplate(resp, "OpenId.Templates.editProvider",
 								ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
@@ -148,7 +161,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
                 // ignore
             }
         }
-
 
         try {
             renderTemplate(resp, "OpenId.Templates.providers",

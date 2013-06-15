@@ -122,6 +122,60 @@
 /**
  * @param currentUrl
  * @param pid
+ * @param name
+ */
+{template .deleteProvider}
+{call aui.page.document}
+    {param windowTitle}Delete OpenID: {$name}{/param}
+    {param headContent}
+        <meta name="decorator" content="admin"/>
+    {/param}
+    {param content}
+        <div id="openid">
+        	{call aui.page.pageHeader}
+				{param content}
+					{call aui.page.pageHeaderMain}
+						{param content}
+							<h2>Delete OpenID: {$name}</h2>
+						{/param}
+					{/call}
+				{/param}
+			{/call}
+
+			{call aui.form.form}
+				{param action}{$currentUrl}?op=delete&pid={$pid}&confirm{/param}
+				{param isTopLabels: true/}
+				{param content}
+					{call aui.message.warning}
+						{param content}
+							You are about to delete provider '{$name}'. This action cannot be undone.
+						{/param}
+					{/call}
+
+					{call aui.form.buttons}
+						{param alignment: 'form-footer'/}
+						{param content}
+							{call aui.form.submit}
+								{param text: 'Delete'/}
+								{param id: 'delete'/}
+							{/call}
+							{call aui.form.linkButton}
+								{param text: 'Cancel'/}
+								{param id: 'cancel'/}
+								{param url}{$currentUrl}{/param}
+							{/call}
+						{/param}
+					{/call}
+				{/param}
+			{/call}
+        </div>
+    {/param}
+{/call}
+{/template}
+
+/**
+ * @param currentUrl
+ * @param pid
  * @param? errors
  * @param? values
  */
