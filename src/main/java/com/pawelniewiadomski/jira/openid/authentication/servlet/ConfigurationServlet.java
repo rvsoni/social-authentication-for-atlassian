@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,10 +52,19 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             throw new UnsupportedOperationException("you don't have permission");
         }
 
+        webResourceManager.requireResourcesForContext("jira-openid-configuration");
+
         final String operation = req.getParameter("op");
+        if (StringUtils.equals("add", operation)) {
+            renderTemplate(resp, "OpenId.Templates.addProvider",
+                    ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI()));
+            return;
+        }
+
         final String providerId = req.getParameter("pid");
         if (StringUtils.isNotEmpty(providerId)) {
             try {
+
                 final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(providerId));
                 if (provider != null) {
                     if (StringUtils.equals("delete", operation)) {
@@ -77,7 +87,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         }
 
         try {
-            webResourceManager.requireResourcesForContext("jira-openid-configuration");
             renderTemplate(resp, "OpenId.Templates.providers",
                     ImmutableMap.<String, Object>of("providers", openIdDao.findAllProviders(),
                             "currentUrl", req.getRequestURI()));
