@@ -9,7 +9,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
-import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;

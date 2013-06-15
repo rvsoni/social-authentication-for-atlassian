@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.activeobjects;
+package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import net.java.ao.DBParam;

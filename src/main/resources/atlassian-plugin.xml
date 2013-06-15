@@ -9,7 +9,6 @@
         <param name="plugin-logo">images/pluginLogo.png</param>
         <param name="plugin-banner">images/banner.png</param>
         <param name="atlassian-licensing-enabled">true</param>
-        <!--param name="configure.url">/plugins/servlet/openid-authentication-license</param-->
     </plugin-info>
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
@@ -32,18 +31,16 @@
         <resource type="download" name="images/" location="/images"/>
         <!--context>jira-openid-authentication-plugin</context-->
     </web-resource>
-
     <web-resource key="jira-openid-configuration-plugin-resources">
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <context>atl.general</context>
-        <resource type="download" name="jira-openid-configuration.css"
-                  location="/css/jira-openid-configuration.less"/>
+        <resource type="download" name="jira-openid-configuration.css" location="/css/jira-openid-configuration.less"/>
         <context>jira-openid-configuration</context>
     </web-resource>
-
+    <rest name="OpenID REST" key="rest-plugin" path="/jira-openid-authentication" version="1.0"/>
     <!-- publish our component -->
     <component key="myPluginComponent" class="com.pawelniewiadomski.jira.openid.authentication.MyPluginComponentImpl"
                public="true">
@@ -82,16 +79,12 @@
         <description key="license-servlet.description">The License Servlet Plugin</description>
         <url-pattern>/openid-authentication-license</url-pattern>
     </servlet>
-
     <component key="licenseProvider" class="com.pawelniewiadomski.jira.openid.authentication.LicenseProvider"/>
     <component key="springContext" class="com.pawelniewiadomski.jira.openid.authentication.SpringContext"/>
-
     <ao key="openid-active-objects">
-        <entity>com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider</entity>
+        <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
     </ao>
-
     <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
-
     <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
               i18n-name-key="openid.admin.link" weight="70">
         <label key="openid.menu.automat"/>

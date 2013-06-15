@@ -19,7 +19,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
-import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -76,19 +77,19 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 }
             });
 
-    OpenIdManager manager;
+    OpenIdManager openIdManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        manager = new OpenIdManager();
+        openIdManager = new OpenIdManager();
 
         final String baseUrl = getBaseUrl();
         final String realm = UriBuilder.fromUri(baseUrl).replacePath("/").build().toString();
 
-        manager.setRealm(realm); // change to your domain
-        manager.setReturnTo(baseUrl + "/plugins/servlet/openid-authentication"); // change to your servlet url
+        openIdManager.setRealm(realm); // change to your domain
+        openIdManager.setReturnTo(baseUrl + "/plugins/servlet/openid-authentication"); // change to your servlet url
     }
 
     @Override
@@ -107,7 +108,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 // get authentication:
                 byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
                 String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
-                Authentication authentication = manager.getAuthentication(request, mac_key, alias);
+                Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
                 String fullName = authentication.getFullname();
                 String email = authentication.getEmail();
                 // TODO: create user if not exist in database:
@@ -117,18 +118,25 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
             }
         } else {
-			final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(pid));
-			if (provider != null) {
+            final OpenIdProvider provider;
+            try {
+                provider = openIdDao.findProvider(Integer.valueOf(pid));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (provider != null) {
 				// redirect to Google sign on page:
-				Endpoint endpoint = new Endpoint();
-				Association association = manager.lookupAssociation(endpoint);
+//				Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
+				Endpoint endpoint = openIdManager.lookupEndpoint("Google");
+				Association association = openIdManager.lookupAssociation(endpoint);
 				request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
 				request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-				String url = manager.getAuthenticationUrl(endpoint, association);
+				String url = openIdManager.getAuthenticationUrl(endpoint, association);
 				response.sendRedirect(url);
-			} else {
-				renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-			}
+            }
+
+            renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
 		}
     }
 

@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.activeobjects;
+package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import net.java.ao.Entity;
 import net.java.ao.Preload;
