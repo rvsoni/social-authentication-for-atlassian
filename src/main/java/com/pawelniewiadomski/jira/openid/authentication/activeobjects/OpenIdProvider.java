@@ -38,6 +38,7 @@ public interface OpenIdProvider extends Entity {
     void setExtensionNamespace(String namespace);
 
     @NotNull
+    @Indexed
     boolean isEnabled();
     void setEnabled(boolean enabled);
 

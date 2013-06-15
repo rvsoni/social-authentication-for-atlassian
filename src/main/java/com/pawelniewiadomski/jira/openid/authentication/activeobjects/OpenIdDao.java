@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -25,10 +26,14 @@ public class OpenIdDao {
             return Arrays.asList(providers);
         }
 
-        createProvider("Google", "https://www.google.com/accounts/o8/id", "ext1", true);
-        createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
+        createDefaultProviders();
 
         return findAllProviders();
+    }
+
+    private void createDefaultProviders() throws SQLException {
+        createProvider("Google", "https://www.google.com/accounts/o8/id", "ext1", true);
+        createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
     }
 
     @Nullable
@@ -66,4 +71,16 @@ public class OpenIdDao {
         return activeObjects.get(OpenIdProvider.class, id);
     }
 
+    @Nonnull
+    public List<OpenIdProvider> findAllEnabledProviders() throws SQLException {
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class, Query.select().where(
+                String.format("%s = true", OpenIdProvider.ENABLED)
+        ));
+
+        if (providers != null && providers.length > 0) {
+            return Arrays.asList(providers);
+        }
+
+        return Collections.emptyList();
+    }
 }
