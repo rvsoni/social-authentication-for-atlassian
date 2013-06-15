@@ -1,18 +1,8 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.plugin.webresource.WebResourceManager;
-import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.auth.LoginUriProvider;
-import com.atlassian.sal.api.message.I18nResolver;
-import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.soy.renderer.SoyTemplateRenderer;
-import com.atlassian.templaterenderer.TemplateRenderer;
-import com.atlassian.upm.api.license.entity.PluginLicense;
-import com.atlassian.upm.api.util.Option;
-import com.atlassian.upm.license.storage.lib.AtlassianMarketplaceUriFactory;
-import com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginUnresolvedException;
-import com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManager;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
@@ -20,14 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -40,17 +26,32 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
     WebResourceManager webResourceManager;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-    {
-        if (userManager.getRemoteUsername() == null)
-        {
-            redirectToLogin(req, resp);
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        if (shouldNotAccess(req, resp)) return;
+
+        final String operation = req.getParameter("op");
+        if (StringUtils.equals("add", operation)) {
+            final Map<String, Object> errors = Maps.newHashMap();
+            final String name = req.getParameter("name");
+            final String endpointUrl = req.getParameter("endpointUrl");
+            final String extensionNamespace = req.getParameter("extensionNamespace");
+
+            if (StringUtils.isEmpty(name)) {
+                errors.put("name", )
+            }
+            provider = openIdDao.findByName(name);
+
+            renderTemplate(resp, "OpenId.Templates.addProvider",
+                    ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(), "errors", errors));
             return;
         }
-        else if (!hasAdminPermission())
-        {
-            throw new UnsupportedOperationException("you don't have permission");
-        }
+        resp.sendRedirect(req.getRequestURI());
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        if (shouldNotAccess(req, resp)) return;
 
         webResourceManager.requireResourcesForContext("jira-openid-configuration");
 
@@ -93,5 +94,18 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
+        if (userManager.getRemoteUsername() == null)
+        {
+            redirectToLogin(req, resp);
+            return true;
+        }
+        else if (!hasAdminPermission())
+        {
+            throw new UnsupportedOperationException("you don't have permission");
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.pawelniewiadomski.jira.openid.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import net.java.ao.DBParam;
+import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,15 @@ public class OpenIdDao {
         createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
 
         return findAllProviders();
+    }
+
+    @Nullable
+    public OpenIdProvider findByName(String name) throws SQLException {
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class, Query.select().where("${OpenIdProvider.NAME} = ?", name));
+        if (providers != null && providers.length > 0) {
+            return providers[0];
+        }
+        return null;
     }
 
     public OpenIdProvider createProvider(String name, String url, String namespace) throws SQLException {

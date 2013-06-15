@@ -2,6 +2,7 @@
 
 /**
  * @param currentUrl
+ * @param? errors
  */
 {template .addProvider}
 {call aui.page.document}
@@ -29,6 +30,11 @@
                                         {param id: 'name'/}
                                         {param type:'text'/}
                                     {/call}
+                                    {if $errors.name}
+                                        {call aui.form.fieldError}
+                                            {param message: $errors.name/}
+                                        {/call}
+                                    {/if}
                                 {/param}
                             {/call}
                             {call aui.form.fieldGroup}
@@ -42,6 +48,11 @@
                                         {param id: 'endpointUrl'/}
                                         {param type:'text'/}
                                     {/call}
+                                    {if $errors.endpointUrl}
+                                        {call aui.form.fieldError}
+                                            {param message: $errors.endpointUrl/}
+                                        {/call}
+                                    {/if}
                                 {/param}
                             {/call}
                             {call aui.form.fieldGroup}
@@ -54,6 +65,11 @@
                                         {param id: 'extensionNamespace'/}
                                         {param type:'text'/}
                                     {/call}
+                                    {if $errors.extensionNamespace}
+                                        {call aui.form.fieldError}
+                                            {param message: $errors.extensionNamespace/}
+                                        {/call}
+                                    {/if}
                                 {/param}
                             {/call}
                         {/param}

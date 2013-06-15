@@ -4,6 +4,7 @@ import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.util.http.JiraHttpUtils;
 import com.atlassian.sal.api.auth.LoginUriProvider;
+import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
@@ -36,6 +37,9 @@ public class AbstractOpenIdServlet extends HttpServlet {
 
     @Autowired
     UserManager userManager;
+
+    @Autowired
+    I18nResolver i18nResolver;
 
     public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
 
