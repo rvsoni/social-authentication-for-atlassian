@@ -1,8 +1,10 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.plugin.webresource.WebResourceManager;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.Map;
 
 @Component
@@ -146,16 +149,26 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             }
         }
 
+
         try {
             renderTemplate(resp, "OpenId.Templates.providers",
-                    ImmutableMap.<String, Object>of("providers", openIdDao.findAllProviders(),
+                    ImmutableMap.<String, Object>of("providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
                             "currentUrl", req.getRequestURI()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
+	public static ImmutableList<OpenIdProvider> getOrderedListOfProviders(Iterable<OpenIdProvider> providers) throws SQLException {
+		return Ordering.from(new Comparator<OpenIdProvider>() {
+			@Override
+			public int compare(OpenIdProvider o1, OpenIdProvider o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		}).immutableSortedCopy(providers);
+	}
+
+	private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         if (userManager.getRemoteUsername() == null)
         {
             redirectToLogin(req, resp);
