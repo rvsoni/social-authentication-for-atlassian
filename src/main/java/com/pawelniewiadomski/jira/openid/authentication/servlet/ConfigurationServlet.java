@@ -1,5 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
+import com.atlassian.plugin.webresource.WebResourceManager;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.message.I18nResolver;
@@ -13,6 +14,7 @@ import com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginUnresolve
 import com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManager;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
     @Autowired
     OpenIdDao openIdDao;
 
+    @Autowired
+    WebResourceManager webResourceManager;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -46,8 +51,36 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             throw new UnsupportedOperationException("you don't have permission");
         }
 
+        final String operation = req.getParameter("op");
+        final String providerId = req.getParameter("pid");
+        if (StringUtils.isNotEmpty(providerId)) {
+            try {
+                final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(providerId));
+                if (provider != null) {
+                    if (StringUtils.equals("delete", operation)) {
+
+                    } else if (StringUtils.equals("edit", operation)) {
+
+                    } else if (StringUtils.equals("disable", operation)) {
+                        provider.setEnabled(false);
+                        provider.save();
+                    } else if (StringUtils.equals("enable", operation)) {
+                        provider.setEnabled(true);
+                        provider.save();
+                    }
+                }
+                resp.sendRedirect(req.getRequestURI());
+                return;
+            } catch (SQLException e) {
+                // ignore
+            }
+        }
+
         try {
-            renderTemplate(resp, "OpenId.Templates.providers", ImmutableMap.<String, Object>of("providers", openIdDao.findAllProviders()));
+            webResourceManager.requireResourcesForContext("jira-openid-configuration");
+            renderTemplate(resp, "OpenId.Templates.providers",
+                    ImmutableMap.<String, Object>of("providers", openIdDao.findAllProviders(),
+                            "currentUrl", req.getRequestURI()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

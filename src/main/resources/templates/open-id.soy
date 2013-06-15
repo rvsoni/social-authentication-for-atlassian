@@ -2,15 +2,65 @@
 
 /**
  * @param providers list of providers
+ * @param currentUrl current URL
  */
 {template .providers}
 {call aui.page.document}
     {param windowTitle: 'OpenID Providers'/}
     {param headContent}
-        <meta name="decorator" content="general"/>
+        <meta name="decorator" content="admin"/>
     {/param}
     {param content}
-        {$providers}
+        <div id="openid" class="list-providers">
+            {call aui.page.pageHeader}
+                {param content}
+                    {call aui.page.pageHeaderMain}
+                        {param content}
+                            <h2>OpenID Providers</h2>
+                            <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
+                        {/param}
+                    {/call}
+                {/param}
+            {/call}
+
+            {call aui.table}
+                {param theadContent}
+                    <th>Name</th>
+                    <th>Endpoint URL</th>
+                    <th>Alias</th>
+                    <th>Operations</th>
+                {/param}
+                {param content}
+                    {foreach $provider in $providers}
+                        <tr{if not $provider.enabled} class="disabled"{/if}>
+                            <td>{$provider.name}</td>
+                            <td>{$provider.endpointUrl}</td>
+                            <td>{$provider.extensionNamespace}</td>
+                            <td data-cell-type="operations">
+                                <ul class="operations-list">
+                                    {if $provider.enabled}
+                                        <li><a href="{$currentUrl}?op=disable&amp;pid={$provider.id}">Disable</a></li>
+                                    {else}
+                                        <li><a href="{$currentUrl}?op=enable&amp;pid={$provider.id}">Enable</a></li>
+                                    {/if}
+                                    {if $provider.internal}
+                                        <li><a href="{$currentUrl}?op=edit&amp;pid={$provider.id}">Edit</a></li>
+                                        <li><a href="{$currentUrl}?op=delete&amp;pid={$provider.id}">Delete</a></li>
+                                    {/if}
+                                </ul>
+                            </td>
+                        </tr>
+                    {/foreach}
+                {/param}
+            {/call}
+
+            {call aui.buttons.button}
+                {param id: 'new-provider'/}
+                {param text}Add Provider{/param}
+                {param tagName: 'a'/}
+                {param extraAttributes}href="{$currentUrl}?op=add"{/param}
+            {/call}
+        </div>
     {/param}
 {/call}
 {/template}

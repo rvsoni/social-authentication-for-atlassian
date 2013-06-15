@@ -24,15 +24,24 @@ public class OpenIdDao {
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);
         }
-        return Collections.emptyList();
+
+        createProvider("Google", "https://www.google.com/accounts/o8/id", "ext1", true);
+        createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
+
+        return findAllProviders();
     }
 
     public OpenIdProvider createProvider(String name, String url, String namespace) throws SQLException {
+        return createProvider(name, url, namespace, false);
+    }
+
+    public OpenIdProvider createProvider(String name, String url, String namespace, boolean internal) throws SQLException {
         return activeObjects.create(OpenIdProvider.class,
                 new DBParam(OpenIdProvider.NAME, name),
                 new DBParam(OpenIdProvider.ENDPOINT_URL, url),
                 new DBParam(OpenIdProvider.ENABLED, true),
-                new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace));
+                new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
+                new DBParam(OpenIdProvider.INTERNAL, internal));
     }
 
     public void deleteProvider(Integer id) throws SQLException {

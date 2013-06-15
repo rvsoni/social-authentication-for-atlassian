@@ -14,6 +14,7 @@ public interface OpenIdProvider extends Entity {
     public static final String ENDPOINT_URL = "ENDPOINT_URL";
     public static final String EXTENSION_NAMESPACE = "EXTENSION_NAMESPACE";
     public static final String ENABLED = "ENABLED";
+    public static final String INTERNAL = "INTERNAL";
 
     @NotNull
     @PrimaryKey
@@ -39,4 +40,8 @@ public interface OpenIdProvider extends Entity {
     @NotNull
     boolean isEnabled();
     void setEnabled(boolean enabled);
+
+    @NotNull
+    boolean isInternal();
+    void setInternal(boolean internal);
 }
