@@ -35,6 +35,7 @@
 			{param id: 'endpointUrl'/}
 			{param type:'text'/}
 			{param value: $values.endpointUrl/}
+			{param width: ''/}
 		{/call}
 		{if $errors.endpointUrl}
 			{call aui.form.fieldError}
@@ -54,6 +55,9 @@
 			{param type:'text'/}
 			{param value: $values.extensionNamespace/}
 		{/call}
+		{call aui.form.fieldDescription}
+		    {param message}Probably you should use 'ext1'{/param}
+        {/call}
 		{if $errors.extensionNamespace}
 			{call aui.form.fieldError}
 				{param message: $errors.extensionNamespace/}
@@ -81,6 +85,7 @@
 					{call aui.page.pageHeaderMain}
 						{param content}
 							<h2>Add OpenID Provider</h2>
+							<p class="description">You can add any OpenID provider that returns e-mail and full name of the user.</p>
 						{/param}
 					{/call}
 				{/param}
@@ -192,6 +197,7 @@
 					{call aui.page.pageHeaderMain}
 						{param content}
 							<h2>Edit OpenID Provider</h2>
+							<p class="description">You can add any OpenID provider that returns e-mail and full name of the user.</p>
 						{/param}
 					{/call}
 				{/param}
@@ -233,6 +239,8 @@
 /**
  * @param providers list of providers
  * @param currentUrl current URL
+ * @param isExternal
+ * @param isPublic
  */
 {template .providers}
 {call aui.page.document}
@@ -252,6 +260,17 @@
                     {/call}
                 {/param}
             {/call}
+
+            {if not $isPublic}
+                <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
+                <p>Users will be matched by e-mail only.</p>
+            {elseif $isExternal}
+                <p>External User Management is enabled, only already existing users will be able to log in using OpenID.</p>
+                <p>Users will be matched by e-mail only.</p>
+            {else}
+                <p>JIRA Public Mode is enabled, OpenID will match existing users by e-mail or create new users.</p>
+                <p>Each enabled OpenID Provider needs to return e-mail and full name at least.</p>
+            {/if}
 
             {call aui.table}
                 {param theadContent}

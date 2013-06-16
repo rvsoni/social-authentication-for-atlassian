@@ -111,7 +111,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
                 String fullName = authentication.getFullname();
                 String email = authentication.getEmail();
-                // TODO: create user if not exist in database:
+
                 showAuthentication(request, response, fullName, email);
             } catch (OpenIdException e) {
                 log.error("OpenID verification failed", e);
@@ -127,8 +127,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
             if (provider != null) {
 				// redirect to Google sign on page:
-//				Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
-				Endpoint endpoint = openIdManager.lookupEndpoint("Google");
+				Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
 				Association association = openIdManager.lookupAssociation(endpoint);
 				request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
 				request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
@@ -150,8 +149,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && !applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT)
-                && JiraUtils.isPublicMode()) {
+        if (user == null && !isExternalUserManagement() && JiraUtils.isPublicMode()) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);

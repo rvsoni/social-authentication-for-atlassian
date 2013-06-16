@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.expressme</groupId>
             <artifactId>JOpenId</artifactId>
-            <version>1.08</version>
+            <version>1.09</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

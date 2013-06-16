@@ -1,5 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
+import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.webresource.WebResourceManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -160,7 +161,10 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 
         try {
             renderTemplate(resp, "OpenId.Templates.providers",
-                    ImmutableMap.<String, Object>of("providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
+                    ImmutableMap.<String, Object>of(
+                            "providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
+                            "isPublic", JiraUtils.isPublicMode(),
+                            "isExternal", isExternalUserManagement(),
                             "currentUrl", req.getRequestURI()));
         } catch (SQLException e) {
             throw new RuntimeException(e);

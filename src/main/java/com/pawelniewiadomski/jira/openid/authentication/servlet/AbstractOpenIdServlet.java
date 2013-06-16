@@ -51,6 +51,10 @@ public class AbstractOpenIdServlet extends HttpServlet {
         return applicationProperties.getString(APKeys.JIRA_BASEURL);
     }
 
+    boolean isExternalUserManagement() {
+        return applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
+    }
+
     void renderTemplate(final HttpServletResponse response, String template, Map<String, Object> map) throws ServletException, IOException {
         final Map<String, Object> params = Maps.newHashMap(map);
         params.put("baseUrl", getBaseUrl());
