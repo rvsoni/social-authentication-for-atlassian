@@ -7,9 +7,10 @@ import com.atlassian.crowd.search.query.entity.UserQuery;
 import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
-import com.atlassian.jira.config.properties.APKeys;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
+import com.atlassian.jira.security.login.LoginManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
@@ -19,8 +20,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.Association;
@@ -65,7 +66,6 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
 	@Autowired
     LicenseProvider licenseProvider;
-
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)
@@ -170,6 +170,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             final HttpSession httpSession = request.getSession();
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
+			ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
             response.sendRedirect(getBaseUrl() + "/secure/Dashboard.jspa");
         } else {

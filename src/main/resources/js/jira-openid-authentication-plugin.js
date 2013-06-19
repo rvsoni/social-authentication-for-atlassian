@@ -26,10 +26,10 @@ AJS.$(function() {
                 });
                 $providers.append(openIds.join(""));
                 $providers.find("li a").click(function() {
-                    AJS.$(this).removeDirtyWarning();
+                    AJS.$("#login-form").removeDirtyWarning();
                 });
             } else {
-				$providers.append("<li>All OpenID providers were disabled</li>");
+				$providers.append("<li><a href='#'>All OpenID providers were disabled</a></li>");
 			}
         });
     }
