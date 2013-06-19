@@ -41,11 +41,11 @@
         <context>jira-openid-configuration</context>
     </web-resource>
     <rest name="OpenID REST" key="rest-plugin" path="/jira-openid-authentication" version="1.0"/>
-    <!-- publish our component -->
-    <component key="myPluginComponent" class="com.pawelniewiadomski.jira.openid.authentication.MyPluginComponentImpl"
-               public="true">
-        <interface>com.pawelniewiadomski.jira.openid.authentication.MyPluginComponent</interface>
-    </component>
+
+	<component key="loadProvidersUpgradeTask" name="Load Default Providers Upgrade Task"
+			   class="com.pawelniewiadomski.jira.openid.authentication.activeobjects.LoadDefaultProvidersComponent" public="true">
+		<interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+	</component>
     <!-- import from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
     <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>

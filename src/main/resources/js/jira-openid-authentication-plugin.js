@@ -12,21 +12,25 @@ AJS.$(function() {
         AJS.$(buttons.join("")).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
 
         AJS.$.ajax(contextPath + "/rest/jira-openid-authentication/1.0/openIdProviders").done(function(data) {
+			var $providers = AJS.$("#openid-providers ul");
+
+			$providers.find("li a.loading").remove();
+
             if (AJS.$.isArray(data) && data.length > 0) {
-                var openIds = [], $providers = AJS.$("#openid-providers ul");
+                var openIds = [];
 
                 AJS.$(data).each(function(idx, obj) {
                     openIds.push(
                         '<li><a id="open-id-"' + obj.id + ' class="open-id" href="'
                             + contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id + '">' + obj.name + '</a></li>');
                 });
-
-                $providers.find("li a.loading").remove();
                 $providers.append(openIds.join(""));
                 $providers.find("li a").click(function() {
                     AJS.$(this).removeDirtyWarning();
                 });
-            }
+            } else {
+				$providers.append("<li>All OpenID providers were disabled</li>");
+			}
         });
     }
 });

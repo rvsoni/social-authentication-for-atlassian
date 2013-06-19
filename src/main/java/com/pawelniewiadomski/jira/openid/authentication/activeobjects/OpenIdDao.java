@@ -25,15 +25,7 @@ public class OpenIdDao {
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);
         }
-
-        createDefaultProviders();
-
-        return findAllProviders();
-    }
-
-    private void createDefaultProviders() throws SQLException {
-        createProvider("Google", "https://www.google.com/accounts/o8/id", "ext1", true);
-        createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
+	  	return Collections.emptyList();
     }
 
     @Nullable

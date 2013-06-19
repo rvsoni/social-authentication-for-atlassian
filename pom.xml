@@ -53,12 +53,12 @@
             <scope>provided</scope>
         </dependency>
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
-        <dependency>
+        <!--dependency>
             <groupId>com.atlassian.plugins</groupId>
             <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
             <version>${plugin.testrunner.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
