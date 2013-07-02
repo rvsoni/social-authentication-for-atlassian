@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -47,17 +48,19 @@ public class AbstractOpenIdServlet extends HttpServlet {
 
     public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
 
-    String getBaseUrl() {
-        return applicationProperties.getString(APKeys.JIRA_BASEURL);
+    String getBaseUrl(HttpServletRequest request) {
+        return UriBuilder.fromUri(request.getRequestURL().toString()).replacePath(request.getContextPath()).build().toString();
     }
 
     boolean isExternalUserManagement() {
         return applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
     }
 
-    void renderTemplate(final HttpServletResponse response, String template, Map<String, Object> map) throws ServletException, IOException {
+    void renderTemplate(final HttpServletRequest request,
+                        final HttpServletResponse response,
+                        String template, Map<String, Object> map) throws ServletException, IOException {
         final Map<String, Object> params = Maps.newHashMap(map);
-        params.put("baseUrl", getBaseUrl());
+        params.put("baseUrl", getBaseUrl(request));
 
         JiraHttpUtils.setNoCacheHeaders(response);
         response.setContentType(getContentType());

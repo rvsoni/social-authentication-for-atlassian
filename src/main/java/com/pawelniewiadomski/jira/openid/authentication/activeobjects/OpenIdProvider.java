@@ -15,6 +15,7 @@ public interface OpenIdProvider extends Entity {
     public static final String EXTENSION_NAMESPACE = "EXTENSION_NAMESPACE";
     public static final String ENABLED = "ENABLED";
     public static final String INTERNAL = "INTERNAL";
+    public static final String CREATE_USERS = "CREATE_USERS";
 
     @NotNull
     @PrimaryKey
@@ -43,6 +44,12 @@ public interface OpenIdProvider extends Entity {
     void setEnabled(boolean enabled);
 
     @NotNull
+    @Default("FALSE")
     boolean isInternal();
     void setInternal(boolean internal);
+
+    @NotNull
+    @Default("TRUE")
+    boolean isCreateUsers();
+    void setCreateUsers(boolean createUsers);
 }

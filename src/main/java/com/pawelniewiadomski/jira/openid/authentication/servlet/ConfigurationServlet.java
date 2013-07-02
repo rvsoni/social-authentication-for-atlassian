@@ -82,7 +82,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 					mapBuilder.put("pid", pid);
 				}
 
-				renderTemplate(resp,
+				renderTemplate(req, resp,
 						provider != null ? "OpenId.Templates.editProvider" : "OpenId.Templates.addProvider",
 						mapBuilder.build());
 				return;
@@ -120,7 +120,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 
         final String operation = req.getParameter("op");
         if (StringUtils.equals("add", operation)) {
-            renderTemplate(resp, "OpenId.Templates.addProvider",
+            renderTemplate(req, resp, "OpenId.Templates.addProvider",
                     ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI()));
             return;
         }
@@ -132,13 +132,13 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
                 final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(providerId));
                 if (provider != null) {
                     if (StringUtils.equals("delete", operation) && !provider.isInternal()) {
-						renderTemplate(resp, "OpenId.Templates.deleteProvider",
+						renderTemplate(req, resp, "OpenId.Templates.deleteProvider",
 								ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
 										"pid", providerId,
 										"name", provider.getName()));
 						return;
                     } else if (StringUtils.equals("edit", operation) && !provider.isInternal()) {
-						renderTemplate(resp, "OpenId.Templates.editProvider",
+						renderTemplate(req, resp, "OpenId.Templates.editProvider",
 								ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
 										"pid", providerId,
 										"values", providerValuesMap(provider.getName(),
@@ -160,7 +160,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         }
 
         try {
-            renderTemplate(resp, "OpenId.Templates.providers",
+            renderTemplate(req, resp, "OpenId.Templates.providers",
                     ImmutableMap.<String, Object>of(
                             "providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
                             "isPublic", JiraUtils.isPublicMode(),

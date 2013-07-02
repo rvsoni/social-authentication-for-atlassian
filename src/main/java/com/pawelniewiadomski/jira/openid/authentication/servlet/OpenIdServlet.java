@@ -20,6 +20,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +43,9 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,6 +60,8 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     static final long TWO_HOUR = ONE_HOUR * 2L;
     static final String ATTR_MAC = "openid_mac";
     static final String ATTR_ALIAS = "openid_alias";
+
+    final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
 
 	@Autowired
     CrowdService crowdService;
@@ -77,19 +82,23 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 }
             });
 
-    OpenIdManager openIdManager;
+    protected String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
+        return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/openid-authentication")
+                .queryParam("pid", provider.getId()).build().toString();
+    }
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-
-        openIdManager = new OpenIdManager();
-
-        final String baseUrl = getBaseUrl();
-        final String realm = UriBuilder.fromUri(baseUrl).replacePath("/").build().toString();
-
-        openIdManager.setRealm(realm); // change to your domain
-        openIdManager.setReturnTo(baseUrl + "/plugins/servlet/openid-authentication"); // change to your servlet url
+    /*
+     * We keep separate OpenIdManagers for each of providers because we want return path to be different for each of them and
+     * OpenIdManager keeps a track on return path and do checks against it (which we want because that improves security).
+     */
+    protected synchronized OpenIdManager getOpenIdManager(String returnTo) {
+        OpenIdManager openIdManager = openIdConnections.get(returnTo);
+        if (openIdManager == null) {
+            openIdManager = new OpenIdManager();
+            openIdManager.setReturnTo(returnTo);
+            openIdConnections.put(returnTo, openIdManager);
+        }
+        return openIdManager;
     }
 
     @Override
@@ -97,51 +106,53 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
         final String pid = request.getParameter("pid");
 
         if (!licenseProvider.isValidLicense()) {
-            renderTemplate(response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            renderTemplate(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
             return;
         }
 
-        if (pid == null) {
-            try {
-                // check nonce:
-                checkNonce(request.getParameter("openid.response_nonce"));
-                // get authentication:
-                byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
-                String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
-                Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
-                String fullName = authentication.getFullname();
-                String email = authentication.getEmail();
+        final OpenIdProvider provider;
+        try {
+            provider = openIdDao.findProvider(Integer.valueOf(pid));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-                showAuthentication(request, response, fullName, email);
-            } catch (OpenIdException e) {
-                log.error("OpenID verification failed", e);
-                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-            }
-        } else {
-            final OpenIdProvider provider;
-            try {
-                provider = openIdDao.findProvider(Integer.valueOf(pid));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        if (provider != null) {
+            final String returnTo = getReturnTo(provider, request);
+            final OpenIdManager openIdManager = getOpenIdManager(returnTo);
+            final String nonce = request.getParameter("openid.response_nonce");
+            if (StringUtils.isNotEmpty(nonce)) {
+                try {
+                    // check nonce:
+                    checkNonce(nonce);
+                    // get authentication:
+                    byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
+                    String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
+                    Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
+                    String fullName = authentication.getFullname();
+                    String email = authentication.getEmail();
 
-            if (provider != null) {
-				// redirect to Google sign on page:
-				Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
-				Association association = openIdManager.lookupAssociation(endpoint);
-				request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-				request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-				String url = openIdManager.getAuthenticationUrl(endpoint, association);
-				response.sendRedirect(url);
+                    showAuthentication(request, response, provider, fullName, email);
+                } catch (OpenIdException e) {
+                    log.error("OpenID verification failed", e);
+                    renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                }
+            } else {
+                Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
+                Association association = openIdManager.lookupAssociation(endpoint);
+                request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
+                request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
+                String url = openIdManager.getAuthenticationUrl(endpoint, association);
+                response.sendRedirect(url);
             }
+        }
 
-            renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-		}
+        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
     }
 
-    void showAuthentication(final HttpServletRequest request, HttpServletResponse response, String identity, String email) throws IOException, ServletException {
+    void showAuthentication(final HttpServletRequest request, HttpServletResponse response, final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
         if (StringUtils.isBlank(email)) {
-            renderTemplate(response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
+            renderTemplate(request, response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
             return;
         }
 
@@ -155,11 +166,11 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                         email, identity);
             } catch (PermissionException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             } catch (CreateException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                renderTemplate(response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             }
         }
@@ -172,9 +183,9 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
 			ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
-            response.sendRedirect(getBaseUrl() + "/secure/Dashboard.jspa");
+            response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
         } else {
-            renderTemplate(response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
+            renderTemplate(request, response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
         }
     }
 
