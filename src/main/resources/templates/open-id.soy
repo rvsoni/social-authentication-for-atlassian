@@ -241,6 +241,7 @@
  * @param currentUrl current URL
  * @param isExternal
  * @param isPublic
+ * @param isAdvanced
  */
 {template .providers}
 {call aui.page.document}
@@ -256,6 +257,22 @@
                         {param content}
                             <h2>OpenID Providers</h2>
                             <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
+                        {/param}
+                    {/call}
+                    {call aui.page.pageHeaderActions}
+                        {param content}
+                            {if $isAdvanced}
+                                {call aui.buttons.button}
+                                    {param id: 'new-provider'/}
+                                    {param text}Add Provider{/param}
+                                    {param tagName: 'a'/}
+                                    {param extraAttributes}href="{$currentUrl}?op=add"{/param}
+                                {/call}
+                            {/if}
+                            {call aui.buttons.button}
+                                {param text: 'Advanced'/}
+                                {param isPressed: $isAdvanced/}
+                            {/call}
                         {/param}
                     {/call}
                 {/param}
@@ -301,13 +318,6 @@
                         </tr>
                     {/foreach}
                 {/param}
-            {/call}
-
-            {call aui.buttons.button}
-                {param id: 'new-provider'/}
-                {param text}Add Provider{/param}
-                {param tagName: 'a'/}
-                {param extraAttributes}href="{$currentUrl}?op=add"{/param}
             {/call}
         </div>
     {/param}

@@ -2,6 +2,7 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.webresource.WebResourceManager;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -24,6 +25,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 {
     @Autowired
     WebResourceManager webResourceManager;
+
+    @Autowired
+    PluginSettingsFactory pluginSettingsFactory;
 
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
@@ -163,6 +167,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             renderTemplate(req, resp, "OpenId.Templates.providers",
                     ImmutableMap.<String, Object>of(
                             "providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
+                            "isAdvanced", isAdvanced(),
                             "isPublic", JiraUtils.isPublicMode(),
                             "isExternal", isExternalUserManagement(),
                             "currentUrl", req.getRequestURI()));
@@ -191,5 +196,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             throw new UnsupportedOperationException("you don't have permission");
         }
         return false;
+    }
+
+    public boolean isAdvanced() {
+        return Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get("advanced.settings.on"));
     }
 }
