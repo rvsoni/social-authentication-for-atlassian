@@ -38,6 +38,7 @@
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <context>atl.general</context>
         <resource type="download" name="jira-openid-configuration.css" location="/css/jira-openid-configuration.less"/>
+        <resource type="download" name="jira-openid-configuration.js" location="/js/jira-openid-configuration.js"/>
         <context>jira-openid-configuration</context>
     </web-resource>
     <rest name="OpenID REST" key="rest-plugin" path="/jira-openid-authentication" version="1.0"/>

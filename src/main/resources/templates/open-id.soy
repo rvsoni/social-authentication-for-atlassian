@@ -239,9 +239,77 @@
 /**
  * @param providers list of providers
  * @param currentUrl current URL
+ */
+{template .advancedProviders}
+{call aui.table}
+    {param theadContent}
+        <th>Name</th>
+        <th>Endpoint URL</th>
+        <th>Alias</th>
+        <th>Operations</th>
+    {/param}
+    {param content}
+        {foreach $provider in $providers}
+            <tr{if not $provider.enabled} class="disabled"{/if}>
+                <td>{$provider.name}</td>
+                <td>{$provider.endpointUrl}</td>
+                <td>{$provider.extensionNamespace}</td>
+                <td data-cell-type="operations">
+                    <ul class="operations-list">
+                        {if $provider.enabled}
+                            <li><a href="{$currentUrl}?op=disable&pid={$provider.id}">Disable</a></li>
+                        {else}
+                            <li><a href="{$currentUrl}?op=enable&pid={$provider.id}">Enable</a></li>
+                        {/if}
+                        {if not $provider.internal}
+                            <li><a href="{$currentUrl}?op=edit&pid={$provider.id}">Edit</a></li>
+                            <li><a href="{$currentUrl}?op=delete&pid={$provider.id}">Delete</a></li>
+                        {/if}
+                    </ul>
+                </td>
+            </tr>
+        {/foreach}
+    {/param}
+{/call}
+{/template}
+
+/**
+ * @param currentUrl
+ */
+{template .googleAppsProvider}
+{call aui.form.form}
+    {param action}{$currentUrl}?allowedDomains{/param}
+    {param id: 'editGoogleDomains'/}
+    {param content}
+        {call aui.form.fieldset}
+            {param legendContent: 'Allowed Domains'/}
+            {param content}
+                {call aui.form.textField}
+                    {param id: 'allowedDomains'/}
+                    {param labelContent: 'Allowed Domains'/}
+                    {param descriptionText: 'Coma separated list of Google Apps domains from which users will be able to log in.'/}
+                {/call}
+            {/param}
+        {/call}
+        {call aui.form.buttons}
+            {param content}
+                {call aui.form.submit}
+                    {param text: 'Save'/}
+                    {param id: 'save'/}
+                {/call}
+            {/param}
+        {/call}
+    {/param}
+{/call}
+{/template}
+
+/**
+ * @param providers list of providers
+ * @param currentUrl current URL
  * @param isExternal
  * @param isPublic
  * @param isAdvanced
+ * @param isCreatingUsers
  */
 {template .providers}
 {call aui.page.document}
@@ -256,7 +324,11 @@
                     {call aui.page.pageHeaderMain}
                         {param content}
                             <h2>OpenID Providers</h2>
-                            <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
+                            {if $isAdvanced}
+                                <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
+                            {else}
+                                <p class="description">In simple mode only Goole provider is enabled. You can configure which Google Apps domains are allowed.</p>
+                            {/if}
                         {/param}
                     {/call}
                     {call aui.page.pageHeaderActions}
@@ -278,9 +350,37 @@
                 {/param}
             {/call}
 
+            {if $isAdvanced}
+                {call .advancedProviders}
+                    {param providers: $providers/}
+                    {param currentUrl: $currentUrl/}
+                {/call}
+            {else}
+                {call .googleAppsProvider}
+                    {param currentUrl: $currentUrl/}
+                {/call}
+            {/if}
+
+            <h3>
+                Automatically Create Users
+                &nbsp;
+                {if $isCreatingUsers}
+                    <span class="aui-lozenge aui-lozenge-success">Enabled</span>
+                {else}
+                    <span class="aui-lozenge aui-lozenge-error">Disabled</span>
+                {/if}
+            </h3>
+
             {if not $isPublic}
-                <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
-                <p>Users will be matched by e-mail only.</p>
+                {if not $isCreatingUsers}
+                    <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
+                    <p>Users will be matched by e-mail only.</p>
+                    <p>Should users be automatically created when using OpenID? <a href="{$currentUrl}?op=createUsers">Click here to allow Open ID to create users.</a></p>
+                {else}
+                    <p>JIRA Public Mode is disabled, but OpenID will create new users.</p>
+                    <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
+                    <p>Should only existing users be allowed when using OpenID? <a href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow Open ID to create new users.</a></p>
+                {/if}
             {elseif $isExternal}
                 <p>External User Management is enabled, only already existing users will be able to log in using OpenID.</p>
                 <p>Users will be matched by e-mail only.</p>
@@ -288,37 +388,6 @@
                 <p>JIRA Public Mode is enabled, OpenID will match existing users by e-mail or create new users.</p>
                 <p>Each enabled OpenID Provider needs to return e-mail and full name at least.</p>
             {/if}
-
-            {call aui.table}
-                {param theadContent}
-                    <th>Name</th>
-                    <th>Endpoint URL</th>
-                    <th>Alias</th>
-                    <th>Operations</th>
-                {/param}
-                {param content}
-                    {foreach $provider in $providers}
-                        <tr{if not $provider.enabled} class="disabled"{/if}>
-                            <td>{$provider.name}</td>
-                            <td>{$provider.endpointUrl}</td>
-                            <td>{$provider.extensionNamespace}</td>
-                            <td data-cell-type="operations">
-                                <ul class="operations-list">
-                                    {if $provider.enabled}
-                                        <li><a href="{$currentUrl}?op=disable&pid={$provider.id}">Disable</a></li>
-                                    {else}
-                                        <li><a href="{$currentUrl}?op=enable&pid={$provider.id}">Enable</a></li>
-                                    {/if}
-                                    {if not $provider.internal}
-                                        <li><a href="{$currentUrl}?op=edit&pid={$provider.id}">Edit</a></li>
-                                        <li><a href="{$currentUrl}?op=delete&pid={$provider.id}">Delete</a></li>
-                                    {/if}
-                                </ul>
-                            </td>
-                        </tr>
-                    {/foreach}
-                {/param}
-            {/call}
         </div>
     {/param}
 {/call}

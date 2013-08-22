@@ -2,11 +2,11 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.webresource.WebResourceManager;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
+import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
     WebResourceManager webResourceManager;
 
     @Autowired
-    PluginSettingsFactory pluginSettingsFactory;
+    GlobalSettings globalSettings;
 
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
@@ -127,6 +127,14 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             renderTemplate(req, resp, "OpenId.Templates.addProvider",
                     ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI()));
             return;
+        } else if (StringUtils.equals("onlyAuthenticate", operation)) {
+            globalSettings.setCreatingUsers(false);
+            resp.sendRedirect(req.getRequestURI());
+            return;
+        } else if (StringUtils.equals("createUsers", operation)) {
+            globalSettings.setCreatingUsers(true);
+            resp.sendRedirect(req.getRequestURI());
+            return;
         }
 
         final String providerId = req.getParameter("pid");
@@ -165,12 +173,13 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 
         try {
             renderTemplate(req, resp, "OpenId.Templates.providers",
-                    ImmutableMap.<String, Object>of(
-                            "providers", getOrderedListOfProviders(openIdDao.findAllProviders()),
-                            "isAdvanced", isAdvanced(),
-                            "isPublic", JiraUtils.isPublicMode(),
-                            "isExternal", isExternalUserManagement(),
-                            "currentUrl", req.getRequestURI()));
+                    ImmutableMap.<String, Object>builder()
+                            .put("providers", getOrderedListOfProviders(openIdDao.findAllProviders()))
+                            .put("isAdvanced", globalSettings.isAdvanced())
+                            .put("isPublic", JiraUtils.isPublicMode())
+                            .put("isCreatingUsers", globalSettings.isCreatingUsers())
+                            .put("isExternal", isExternalUserManagement())
+                            .put("currentUrl", req.getRequestURI()).build());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -196,9 +205,5 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             throw new UnsupportedOperationException("you don't have permission");
         }
         return false;
-    }
-
-    public boolean isAdvanced() {
-        return Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get("advanced.settings.on"));
     }
 }
