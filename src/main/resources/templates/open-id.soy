@@ -468,6 +468,18 @@
 /**
  * @param baseUrl base URL
  */
+{template .domainMismatch}
+{call .errorWrapper}
+    {param content}
+    Your email address is not on a list of allowed domains. Cannot proceed. Plase try again using different method.
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ */
 {template .noUserMatched}
 {call .errorWrapper}
     {param content}

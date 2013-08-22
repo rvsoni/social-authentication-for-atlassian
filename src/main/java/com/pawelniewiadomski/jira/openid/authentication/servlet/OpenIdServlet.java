@@ -21,6 +21,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
@@ -62,6 +63,9 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     static final String ATTR_ALIAS = "openid_alias";
 
     final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
+
+    @Autowired
+    GlobalSettings globalSettings;
 
 	@Autowired
     CrowdService crowdService;
@@ -150,17 +154,35 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
         renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
     }
 
-    void showAuthentication(final HttpServletRequest request, HttpServletResponse response, final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
+    void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
+                            final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
         if (StringUtils.isBlank(email)) {
             renderTemplate(request, response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
             return;
+        }
+
+        if (StringUtils.isNotBlank(provider.getAllowedDomains())) {
+            final String[] allowedDomains = StringUtils.split(provider.getAllowedDomains(), ',');
+            final String domain = StringUtils.substringAfter(email, "@");
+            boolean matchingDomain = false;
+            for(final String allowedDomain : allowedDomains) {
+                if (StringUtils.equals(allowedDomain, domain)) {
+                    matchingDomain = true;
+                    break;
+                }
+            }
+            if (!matchingDomain) {
+                renderTemplate(request, response, "OpenId.Templates.domainMismatch", Collections.<String, Object>emptyMap());
+                return;
+            }
         }
 
         User user = (User) Iterables.getFirst(crowdService.search(new UserQuery(
                 User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && !isExternalUserManagement() && JiraUtils.isPublicMode()) {
+        if (user == null && !isExternalUserManagement()
+                && (JiraUtils.isPublicMode() || globalSettings.isCreatingUsers())) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);
