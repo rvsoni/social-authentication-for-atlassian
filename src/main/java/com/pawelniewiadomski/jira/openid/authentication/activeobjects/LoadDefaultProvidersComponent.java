@@ -14,7 +14,9 @@ import java.util.Collections;
  * @since v6.0
  */
 public class LoadDefaultProvidersComponent implements PluginUpgradeTask {
-	@Autowired
+    public static final String GOOGLE = "Google";
+
+    @Autowired
 	OpenIdDao openIdDao;
 
 	@Override
@@ -29,9 +31,11 @@ public class LoadDefaultProvidersComponent implements PluginUpgradeTask {
 
 	@Override
 	public Collection<Message> doUpgrade() throws Exception {
-		openIdDao.createProvider("Google", "https://www.google.com/accounts/o8/id", "ext1", true);
-		openIdDao.createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
-        final OpenIdProvider yahoo = openIdDao.findByName("Yahoo!");
+        final OpenIdProvider google = openIdDao.createProvider(GOOGLE, "https://www.google.com/accounts/o8/id", "ext1", true);
+        google.setEnabled(true);
+        google.save();
+
+        final OpenIdProvider yahoo = openIdDao.createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
         yahoo.setEnabled(false);
         yahoo.save();
 		return Collections.emptyList();

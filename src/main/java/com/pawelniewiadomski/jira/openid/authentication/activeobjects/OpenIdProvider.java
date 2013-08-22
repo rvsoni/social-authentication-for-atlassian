@@ -16,6 +16,7 @@ public interface OpenIdProvider extends Entity {
     public static final String ENABLED = "ENABLED";
     public static final String INTERNAL = "INTERNAL";
     public static final String CREATE_USERS = "CREATE_USERS";
+    public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
 
     @NotNull
     @PrimaryKey
@@ -52,4 +53,8 @@ public interface OpenIdProvider extends Entity {
     @Default("TRUE")
     boolean isCreateUsers();
     void setCreateUsers(boolean createUsers);
+
+    @StringLength(StringLength.MAX_LENGTH)
+    String getAllowedDomains();
+    void setAllowedDomains(String allowedDomains);
 }

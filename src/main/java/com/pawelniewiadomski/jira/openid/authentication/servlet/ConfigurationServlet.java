@@ -2,11 +2,9 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.webresource.WebResourceManager;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
+import com.google.common.collect.*;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.LoadDefaultProvidersComponent;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -48,6 +47,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 			final String name = req.getParameter("name");
 			final String endpointUrl = req.getParameter("endpointUrl");
 			final String extensionNamespace = req.getParameter("extensionNamespace");
+            final String allowedDomains = req.getParameter("allowedDomains");
 			final String pid = req.getParameter("pid");
 			final OpenIdProvider provider;
 			try {
@@ -96,6 +96,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 						provider.setName(name);
 						provider.setEndpointUrl(endpointUrl);
 						provider.setExtensionNamespace(extensionNamespace);
+                        provider.setAllowedDomains(allowedDomains);
 						provider.save();
 					} else {
 						openIdDao.createProvider(name, endpointUrl, extensionNamespace);
@@ -104,7 +105,16 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
 					throw new RuntimeException(e);
 				}
 			}
-		}
+		} else if (StringUtils.equals("allowedDomains", operation)) {
+            OpenIdProvider provider = null;
+            try {
+                provider = openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            provider.setAllowedDomains(req.getParameter("allowedDomains"));
+            provider.save();
+        }
 
         resp.sendRedirect(req.getRequestURI());
     }
@@ -133,6 +143,10 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
             return;
         } else if (StringUtils.equals("createUsers", operation)) {
             globalSettings.setCreatingUsers(true);
+            resp.sendRedirect(req.getRequestURI());
+            return;
+        } else if (StringUtils.equals("advanced", operation)) {
+            globalSettings.setAdvanced(!Boolean.valueOf(req.getParameter("value")));
             resp.sendRedirect(req.getRequestURI());
             return;
         }
@@ -174,18 +188,36 @@ public class ConfigurationServlet extends AbstractOpenIdServlet
         try {
             renderTemplate(req, resp, "OpenId.Templates.providers",
                     ImmutableMap.<String, Object>builder()
-                            .put("providers", getOrderedListOfProviders(openIdDao.findAllProviders()))
-                            .put("isAdvanced", globalSettings.isAdvanced())
+                            .put("providers", isAdvanced()
+                                    ? getOrderedListOfProviders(openIdDao.findAllProviders())
+                                    : ImmutableList.of(openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE)))
+                            .put("isAdvanced", isAdvanced())
                             .put("isPublic", JiraUtils.isPublicMode())
                             .put("isCreatingUsers", globalSettings.isCreatingUsers())
                             .put("isExternal", isExternalUserManagement())
-                            .put("currentUrl", req.getRequestURI()).build());
+                            .put("currentUrl", req.getRequestURI())
+                            .put("isSimpleAvailable", isSimpleAvailable()).build());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-	public static ImmutableList<OpenIdProvider> getOrderedListOfProviders(Iterable<OpenIdProvider> providers) throws SQLException {
+    private boolean isAdvanced() {
+        return globalSettings.isAdvanced() || !isSimpleAvailable();
+    }
+
+    private boolean isSimpleAvailable() {
+        List<OpenIdProvider> providers = null;
+        try {
+            providers = openIdDao.findAllEnabledProviders();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return providers.size() == 1 && StringUtils.equals(providers.get(0).getName(), LoadDefaultProvidersComponent.GOOGLE);
+    }
+
+    public static ImmutableList<OpenIdProvider> getOrderedListOfProviders(Iterable<OpenIdProvider> providers) throws SQLException {
 		return Ordering.from(new Comparator<OpenIdProvider>() {
 			@Override
 			public int compare(OpenIdProvider o1, OpenIdProvider o2) {

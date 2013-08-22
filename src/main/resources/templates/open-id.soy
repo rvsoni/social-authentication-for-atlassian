@@ -275,10 +275,11 @@
 
 /**
  * @param currentUrl
+ * @param provider
  */
 {template .googleAppsProvider}
 {call aui.form.form}
-    {param action}{$currentUrl}?allowedDomains{/param}
+    {param action}{$currentUrl}?op=allowedDomains{/param}
     {param id: 'editGoogleDomains'/}
     {param content}
         {call aui.form.fieldset}
@@ -288,6 +289,7 @@
                     {param id: 'allowedDomains'/}
                     {param labelContent: 'Allowed Domains'/}
                     {param descriptionText: 'Coma separated list of Google Apps domains from which users will be able to log in.'/}
+                    {param value: $provider.allowedDomains/}
                 {/call}
             {/param}
         {/call}
@@ -310,6 +312,7 @@
  * @param isPublic
  * @param isAdvanced
  * @param isCreatingUsers
+ * @param isSimpleAvailable
  */
 {template .providers}
 {call aui.page.document}
@@ -341,10 +344,14 @@
                                     {param extraAttributes}href="{$currentUrl}?op=add"{/param}
                                 {/call}
                             {/if}
-                            {call aui.buttons.button}
-                                {param text: 'Advanced'/}
-                                {param isPressed: $isAdvanced/}
-                            {/call}
+                            {if $isSimpleAvailable}
+                                {call aui.buttons.button}
+                                    {param extraAttributes}href="{$currentUrl}?op=advanced&value={$isAdvanced}"{/param}
+                                    {param tagName: 'a'/}
+                                    {param text: 'Advanced'/}
+                                    {param isPressed: $isAdvanced/}
+                                {/call}
+                            {/if}
                         {/param}
                     {/call}
                 {/param}
@@ -358,6 +365,7 @@
             {else}
                 {call .googleAppsProvider}
                     {param currentUrl: $currentUrl/}
+                    {param provider: $providers[0]/}
                 {/call}
             {/if}
 
