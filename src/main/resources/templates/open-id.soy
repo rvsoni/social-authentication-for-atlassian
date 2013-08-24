@@ -108,7 +108,7 @@
                         {param content}
                             {call aui.form.submit}
                                 {param text: 'Add Provider'/}
-                                {param id: 'add'/}
+                                {param id: 'addProvider'/}
                             {/call}
                             {call aui.form.linkButton}
                                 {param text: 'Cancel'/}
@@ -338,7 +338,7 @@
                         {param content}
                             {if $isAdvanced}
                                 {call aui.buttons.button}
-                                    {param id: 'new-provider'/}
+                                    {param id: 'addProvider'/}
                                     {param text}Add Provider{/param}
                                     {param tagName: 'a'/}
                                     {param extraAttributes}href="{$currentUrl}?op=add"{/param}
@@ -346,6 +346,7 @@
                             {/if}
                             {if $isSimpleAvailable}
                                 {call aui.buttons.button}
+                                    {param id: 'advanced'/}
                                     {param extraAttributes}href="{$currentUrl}?op=advanced&value={$isAdvanced}"{/param}
                                     {param tagName: 'a'/}
                                     {param text: 'Advanced'/}
@@ -373,9 +374,9 @@
                 Automatically Create Users
                 &nbsp;
                 {if $isCreatingUsers}
-                    <span class="aui-lozenge aui-lozenge-success">Enabled</span>
+                    <span id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
                 {else}
-                    <span class="aui-lozenge aui-lozenge-error">Disabled</span>
+                    <span id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
                 {/if}
             </h3>
 
@@ -383,11 +384,11 @@
                 {if not $isCreatingUsers}
                     <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
                     <p>Users will be matched by e-mail only.</p>
-                    <p>Should users be automatically created when using OpenID? <a href="{$currentUrl}?op=createUsers">Click here to allow Open ID to create users.</a></p>
+                    <p>Should users be automatically created when using OpenID? <a id="switchCreatingUsers" data-disable="false" href="{$currentUrl}?op=createUsers">Click here to allow Open ID to create users.</a></p>
                 {else}
                     <p>JIRA Public Mode is disabled, but OpenID will create new users.</p>
                     <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
-                    <p>Should only existing users be allowed when using OpenID? <a href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow Open ID to create new users.</a></p>
+                    <p>Should only existing users be allowed when using OpenID? <a id="switchCreatingUsers" data-disable="true" href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow Open ID to create new users.</a></p>
                 {/if}
             {elseif $isExternal}
                 <p>External User Management is enabled, only already existing users will be able to log in using OpenID.</p>
