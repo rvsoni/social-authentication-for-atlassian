@@ -4,6 +4,7 @@ import com.atlassian.jira.pageobjects.pages.AbstractJiraAdminPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
+import com.atlassian.pageobjects.elements.query.TimedQuery;
 
 public class ConfigurationPage extends AbstractJiraAdminPage {
 
@@ -22,6 +23,12 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
     @ElementBy(id = "addProvider")
     PageElement addProvider;
 
+    @ElementBy(id = "allowedDomains")
+    PageElement allowedDomains;
+
+    @ElementBy(id = "save")
+    PageElement saveAllowedDomains;
+
     @Override
     public String linkId() {
         return "openid";
@@ -37,5 +44,33 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
         return "/plugins/servlet/openid-configuration";
     }
 
+    public TimedCondition isAdvancedPressed() {
+        return advanced.timed().hasAttribute("aria-pressed", "true");
+    }
 
+    public TimedCondition isAllowedDomainsVisible() {
+        return allowedDomains.timed().isVisible();
+    }
+
+    public TimedCondition isSaveAllowedDomainsVisible() {
+        return saveAllowedDomains.timed().isVisible();
+    }
+
+    public TimedCondition isCreatingUsersEnabled() {
+        return creatingUsersState.timed().hasClass("aui-lozenge-success");
+    }
+
+    public ConfigurationPage setAllowedDomains(final String s) {
+        allowedDomains.clear().type(s);
+        return this;
+    }
+
+    public ConfigurationPage save() {
+        saveAllowedDomains.clear();
+        return this;
+    }
+
+    public TimedQuery<String> getAllowedDomains() {
+        return saveAllowedDomains.timed().getText();
+    }
 }
