@@ -9,11 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class TestOpenIdAuthentication extends TestBase {
 
-    private ConfigurationPage configuration;
+    ConfigurationPage configuration;
+    final Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
     @Before
     public void setUp() {

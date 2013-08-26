@@ -218,6 +218,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -291,5 +297,6 @@
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
         <ao.version>0.19.7</ao.version>
         <rest.version>2.7.1</rest.version>
+        <jackson.version>2.0.1</jackson.version>
     </properties>
 </project>
