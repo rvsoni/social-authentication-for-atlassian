@@ -66,7 +66,7 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
     }
 
     public ConfigurationPage save() {
-        saveAllowedDomains.clear();
+        saveAllowedDomains.click();
         return this;
     }
 

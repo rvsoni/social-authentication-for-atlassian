@@ -11,7 +11,7 @@ import org.openqa.selenium.By;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class TestConfigurationPage extends TestBase {
+public class TestOpenIdAuthentication extends TestBase {
 
     private ConfigurationPage configuration;
 
@@ -21,19 +21,21 @@ public class TestConfigurationPage extends TestBase {
         jira().backdoor().project().addProject("Test", "TST", "admin");
 
         configuration = jira().gotoLoginPage().loginAsSysAdmin(ConfigurationPage.class);
+        configuration.setAllowedDomains("spartez.com").save();
+        jira().logout();
+
+        OpenIdLoginPage loginPage = jira().visit(OpenIdLoginPage.class);
+        Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
+        loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
     }
 
     @Test
-    public void testSimpleModeIsDefault() {
-        Poller.waitUntilFalse(configuration.isAdvancedPressed());
-        Poller.waitUntilTrue(configuration.isAllowedDomainsVisible());
-        Poller.waitUntilTrue(configuration.isSaveAllowedDomainsVisible());
-        Poller.waitUntilFalse(configuration.isCreatingUsersEnabled());
+    public void testLogInWithinAllowedDomainsWork() {
+
     }
 
     @Test
-    public void testSaveAllowedDomains() {
-        configuration.setAllowedDomains("test.pl, google.com").save();
-        Poller.waitUntil(configuration.getAllowedDomains(), (Matcher<String>) equalTo("test.pl, google.com"));
+    public void testLogInOutsideAllowedDomainsIsProhibited() {
+
     }
 }

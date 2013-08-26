@@ -2,7 +2,7 @@ AJS.$(function() {
     if (AJS.$("#login-form").length) {
         var buttons = [];
 
-        buttons.push('<button class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
+        buttons.push('<button id="openid-button" class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
             +' aria-haspopup="true" aria-controls="openid-providers">OpenID</button>');
         buttons.push('<div id="openid-providers" class="aui-dropdown2 aui-style-default" aria-hidden="true" data-dropdown2-alignment="left">');
         buttons.push('<ul class="aui-list-truncate">');
@@ -21,7 +21,7 @@ AJS.$(function() {
 
                 AJS.$(data).each(function(idx, obj) {
                     openIds.push(
-                        '<li><a id="open-id-"' + obj.id + ' class="open-id" href="'
+                        '<li><a id="openid-' + obj.id + '" class="openid" href="'
                             + contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id + '">' + obj.name + '</a></li>');
                 });
                 $providers.append(openIds.join(""));
