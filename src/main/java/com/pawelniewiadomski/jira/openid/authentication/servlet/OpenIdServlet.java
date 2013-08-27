@@ -137,9 +137,11 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                     String email = authentication.getEmail();
 
                     showAuthentication(request, response, provider, fullName, email);
+                    return;
                 } catch (OpenIdException e) {
                     log.error("OpenID verification failed", e);
                     renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                    return;
                 }
             } else {
                 Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());

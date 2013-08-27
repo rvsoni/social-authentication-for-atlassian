@@ -317,87 +317,86 @@
 {template .providers}
 {call aui.page.document}
     {param windowTitle: 'OpenID Providers'/}
+    {param extraClasses: 'openid list-providers'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
     {/param}
     {param content}
-        <div id="openid" class="list-providers">
-            {call aui.page.pageHeader}
-                {param content}
-                    {call aui.page.pageHeaderMain}
-                        {param content}
-                            <h2>OpenID Providers</h2>
-                            {if $isAdvanced}
-                                <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
-                            {else}
-                                <p class="description">In simple mode only Goole provider is enabled. You can configure which Google Apps domains are allowed.</p>
-                            {/if}
-                        {/param}
-                    {/call}
-                    {call aui.page.pageHeaderActions}
-                        {param content}
-                            {if $isAdvanced}
-                                {call aui.buttons.button}
-                                    {param id: 'addProvider'/}
-                                    {param text}Add Provider{/param}
-                                    {param tagName: 'a'/}
-                                    {param extraAttributes}href="{$currentUrl}?op=add"{/param}
-                                {/call}
-                            {/if}
-                            {if $isSimpleAvailable}
-                                {call aui.buttons.button}
-                                    {param id: 'advanced'/}
-                                    {param extraAttributes}href="{$currentUrl}?op=advanced&value={$isAdvanced}"{/param}
-                                    {param tagName: 'a'/}
-                                    {param text: 'Advanced'/}
-                                    {param isPressed: $isAdvanced/}
-                                {/call}
-                            {/if}
-                        {/param}
-                    {/call}
-                {/param}
+        {call aui.page.pageHeader}
+            {param content}
+                {call aui.page.pageHeaderMain}
+                    {param content}
+                        <h2>OpenID Providers</h2>
+                        {if $isAdvanced}
+                            <p class="description">The table below shows the OpenID providers currently configured in JIRA.</p>
+                        {else}
+                            <p class="description">In simple mode only Goole provider is enabled. You can configure which Google Apps domains are allowed.</p>
+                        {/if}
+                    {/param}
+                {/call}
+                {call aui.page.pageHeaderActions}
+                    {param content}
+                        {if $isAdvanced}
+                            {call aui.buttons.button}
+                                {param id: 'addProvider'/}
+                                {param text}Add Provider{/param}
+                                {param tagName: 'a'/}
+                                {param extraAttributes}href="{$currentUrl}?op=add"{/param}
+                            {/call}
+                        {/if}
+                        {if $isSimpleAvailable}
+                            {call aui.buttons.button}
+                                {param id: 'advanced'/}
+                                {param extraAttributes}href="{$currentUrl}?op=advanced&value={$isAdvanced}"{/param}
+                                {param tagName: 'a'/}
+                                {param text: 'Advanced'/}
+                                {param isPressed: $isAdvanced/}
+                            {/call}
+                        {/if}
+                    {/param}
+                {/call}
+            {/param}
+        {/call}
+
+        {if $isAdvanced}
+            {call .advancedProviders}
+                {param providers: $providers/}
+                {param currentUrl: $currentUrl/}
             {/call}
+        {else}
+            {call .googleAppsProvider}
+                {param currentUrl: $currentUrl/}
+                {param provider: $providers[0]/}
+            {/call}
+        {/if}
 
-            {if $isAdvanced}
-                {call .advancedProviders}
-                    {param providers: $providers/}
-                    {param currentUrl: $currentUrl/}
-                {/call}
+        <h3>
+            Automatically Create Users
+            &nbsp;
+            {if $isCreatingUsers}
+                <span id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
             {else}
-                {call .googleAppsProvider}
-                    {param currentUrl: $currentUrl/}
-                    {param provider: $providers[0]/}
-                {/call}
+                <span id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
             {/if}
+        </h3>
 
-            <h3>
-                Automatically Create Users
-                &nbsp;
-                {if $isCreatingUsers}
-                    <span id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
-                {else}
-                    <span id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
-                {/if}
-            </h3>
-
-            {if not $isPublic}
-                {if not $isCreatingUsers}
-                    <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
-                    <p>Users will be matched by e-mail only.</p>
-                    <p>Should users be automatically created when using OpenID? <a id="switchCreatingUsers" data-disable="false" href="{$currentUrl}?op=createUsers">Click here to allow Open ID to create users.</a></p>
-                {else}
-                    <p>JIRA Public Mode is disabled, but OpenID will create new users.</p>
-                    <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
-                    <p>Should only existing users be allowed when using OpenID? <a id="switchCreatingUsers" data-disable="true" href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow Open ID to create new users.</a></p>
-                {/if}
-            {elseif $isExternal}
-                <p>External User Management is enabled, only already existing users will be able to log in using OpenID.</p>
+        {if not $isPublic}
+            {if not $isCreatingUsers}
+                <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID.</p>
                 <p>Users will be matched by e-mail only.</p>
+                <p>Should users be automatically created when using OpenID? <a id="switchCreatingUsers" data-disable="false" href="{$currentUrl}?op=createUsers">Click here to allow Open ID to create users.</a></p>
             {else}
-                <p>JIRA Public Mode is enabled, OpenID will match existing users by e-mail or create new users.</p>
-                <p>Each enabled OpenID Provider needs to return e-mail and full name at least.</p>
+                <p>JIRA Public Mode is disabled, but OpenID will create new users.</p>
+                <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
+                <p>Should only existing users be allowed when using OpenID? <a id="switchCreatingUsers" data-disable="true" href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow Open ID to create new users.</a></p>
             {/if}
-        </div>
+        {elseif $isExternal}
+            <p>External User Management is enabled, only already existing users will be able to log in using OpenID.</p>
+            <p>Users will be matched by e-mail only.</p>
+        {else}
+            <p>JIRA Public Mode is enabled, OpenID will match existing users by e-mail or create new users.</p>
+            <p>Each enabled OpenID Provider needs to return e-mail and full name at least.</p>
+        {/if}
     {/param}
 {/call}
 {/template}
@@ -412,6 +411,7 @@
     {param headContent}
         <meta name="decorator" content="general"/>
     {/param}
+    {param extraClasses: 'openid error'/}
     {param pageType: 'focused'/}
     {param content}
         {call aui.page.pagePanel}
@@ -419,7 +419,7 @@
                 {call aui.page.pagePanelContent}
                     {param content}
                         <h2>OpenID Failed</h2>
-                        <div>
+                        <div class="error-message">
                             {$content|noAutoescape}
                         </div>
                         {call aui.buttons.buttons}
