@@ -11,6 +11,7 @@ import it.pageobjects.GoogleLoginPage;
 import it.pageobjects.OpenIdLoginPage;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,11 +37,14 @@ public class TestOpenIdAuthentication extends TestBase {
         configuration.setAllowedDomains("spartez.com").save();
     }
 
+    @After
+    public void tearDown() {
+        jira().logout();
+        jira().getTester().getDriver().navigate().to("https://accounts.google.com/Logout?hl=en&amp;continue=https://www.google.pl/%3Fgws_rd%3Dcr%26ei%3DmzUcUr2UD4zItAaZvoHoBA");
+    }
+
     @Test
     public void testLogInWithinAllowedDomainsWork() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        jira().logout();
-        jira().getTester().getDriver().getDriver().manage().deleteAllCookies();
-
         OpenIdLoginPage loginPage = jira().visit(OpenIdLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
@@ -55,9 +59,6 @@ public class TestOpenIdAuthentication extends TestBase {
 
     @Test
     public void testLogInOutsideAllowedDomainsIsProhibited() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        jira().logout();
-        jira().getTester().getDriver().getDriver().manage().deleteAllCookies();
-
         OpenIdLoginPage loginPage = jira().visit(OpenIdLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
