@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>jira-openid-authentication-plugin</artifactId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
     <organization>
         <name>Pawel Niewiadomski</name>
         <url>http://pawelniewiadomski.com/</url>
