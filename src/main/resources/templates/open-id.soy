@@ -1,69 +1,87 @@
 {namespace OpenId.Templates}
 
 /**
+ * @param? value
+ */
+{template .allowedDomainsTextField}
+{call aui.form.textField}
+    {param id: 'allowedDomains'/}
+    {param labelContent: 'Allowed Domains'/}
+    {param descriptionText: 'Coma separated list of Google Apps domains from which users will be able to log in.'/}
+    {param value: $value/}
+{/call}
+
+{/template}
+/**
  * @param? errors
  * @param? values
+ * @param? internal
  */
 {template .providerDetails}
-{call aui.form.fieldGroup}
-	{param content}
-		{call aui.form.label}
-			{param forField: 'name'/}
-			{param isRequired: true/}
-			{param content: 'Name'/}
-		{/call}
-		{call aui.form.input}
-			{param id: 'name'/}
-			{param type:'text'/}
-			{param value: $values.name/}
-		{/call}
-		{if $errors.name}
-			{call aui.form.fieldError}
-				{param message: $errors.name/}
-			{/call}
-		{/if}
-	{/param}
-{/call}
-{call aui.form.fieldGroup}
-	{param content}
-		{call aui.form.label}
-			{param forField: 'endpointUrl'/}
-			{param isRequired: true/}
-			{param content: 'Provider URL'/}
-		{/call}
-		{call aui.form.input}
-			{param id: 'endpointUrl'/}
-			{param type:'text'/}
-			{param value: $values.endpointUrl/}
-			{param width: ''/}
-		{/call}
-		{if $errors.endpointUrl}
-			{call aui.form.fieldError}
-				{param message: $errors.endpointUrl/}
-			{/call}
-		{/if}
-	{/param}
-{/call}
-{call aui.form.fieldGroup}
-	{param content}
-		{call aui.form.label}
-			{param forField: 'extensionNamespace'/}
-			{param content: 'Alias'/}
-		{/call}
-		{call aui.form.input}
-			{param id: 'extensionNamespace'/}
-			{param type:'text'/}
-			{param value: $values.extensionNamespace/}
-		{/call}
-		{call aui.form.fieldDescription}
-		    {param message}Probably you should use 'ext1'{/param}
-        {/call}
-		{if $errors.extensionNamespace}
-			{call aui.form.fieldError}
-				{param message: $errors.extensionNamespace/}
-			{/call}
-		{/if}
-	{/param}
+{if not $internal}
+    {call aui.form.fieldGroup}
+        {param content}
+            {call aui.form.label}
+                {param forField: 'name'/}
+                {param isRequired: true/}
+                {param content: 'Name'/}
+            {/call}
+            {call aui.form.input}
+                {param id: 'name'/}
+                {param type:'text'/}
+                {param value: $values.name/}
+            {/call}
+            {if $errors.name}
+                {call aui.form.fieldError}
+                    {param message: $errors.name/}
+                {/call}
+            {/if}
+        {/param}
+    {/call}
+    {call aui.form.fieldGroup}
+        {param content}
+            {call aui.form.label}
+                {param forField: 'endpointUrl'/}
+                {param isRequired: true/}
+                {param content: 'Provider URL'/}
+            {/call}
+            {call aui.form.input}
+                {param id: 'endpointUrl'/}
+                {param type:'text'/}
+                {param value: $values.endpointUrl/}
+                {param width: ''/}
+            {/call}
+            {if $errors.endpointUrl}
+                {call aui.form.fieldError}
+                    {param message: $errors.endpointUrl/}
+                {/call}
+            {/if}
+        {/param}
+    {/call}
+    {call aui.form.fieldGroup}
+        {param content}
+            {call aui.form.label}
+                {param forField: 'extensionNamespace'/}
+                {param content: 'Alias'/}
+            {/call}
+            {call aui.form.input}
+                {param id: 'extensionNamespace'/}
+                {param type:'text'/}
+                {param value: $values.extensionNamespace/}
+            {/call}
+            {call aui.form.fieldDescription}
+                {param message}Probably you should use 'ext1'{/param}
+            {/call}
+            {if $errors.extensionNamespace}
+                {call aui.form.fieldError}
+                    {param message: $errors.extensionNamespace/}
+                {/call}
+            {/if}
+        {/param}
+    {/call}
+{/if}
+{call .allowedDomainsTextField}
+    {param value: $values.allowedDomains/}
 {/call}
 {/template}
 
@@ -108,7 +126,7 @@
                         {param content}
                             {call aui.form.submit}
                                 {param text: 'Add Provider'/}
-                                {param id: 'addProvider'/}
+                                {param id: 'saveProvider'/}
                             {/call}
                             {call aui.form.linkButton}
                                 {param text: 'Cancel'/}
@@ -181,6 +199,7 @@
 /**
  * @param currentUrl
  * @param pid
+ * @param? internal
  * @param? errors
  * @param? values
  */
@@ -212,6 +231,7 @@
 							{call .providerDetails}
 								{param errors: $errors/}
 								{param values: $values/}
+								{param internal: $internal/}
 							{/call}
                         {/param}
                     {/call}
@@ -220,7 +240,7 @@
                         {param content}
                             {call aui.form.submit}
                                 {param text: 'Edit Provider'/}
-                                {param id: 'edit'/}
+                                {param id: 'saveProvider'/}
                             {/call}
                             {call aui.form.linkButton}
                                 {param text: 'Cancel'/}
@@ -244,26 +264,28 @@
 {call aui.table}
     {param theadContent}
         <th>Name</th>
-        <th>Endpoint URL</th>
-        <th>Alias</th>
+        <th>Allowed Domains</th>
         <th>Operations</th>
     {/param}
     {param content}
         {foreach $provider in $providers}
             <tr{if not $provider.enabled} class="disabled"{/if}>
                 <td>{$provider.name}</td>
-                <td>{$provider.endpointUrl}</td>
-                <td>{$provider.extensionNamespace}</td>
-                <td data-cell-type="operations">
+                <td>
+                    {if $provider.allowedDomains}
+                        {$provider.allowedDomains}
+                    {/if}
+                </td>
+                <td data-cell-type="operations" data-provider-name="{$provider.name}" data-provider-id="{$provider.id}">
                     <ul class="operations-list">
                         {if $provider.enabled}
-                            <li><a href="{$currentUrl}?op=disable&pid={$provider.id}">Disable</a></li>
+                            <li><a class="disable" href="{$currentUrl}?op=disable&pid={$provider.id}">Disable</a></li>
                         {else}
-                            <li><a href="{$currentUrl}?op=enable&pid={$provider.id}">Enable</a></li>
+                            <li><a class="enable" href="{$currentUrl}?op=enable&pid={$provider.id}">Enable</a></li>
                         {/if}
+                            <li><a class="edit" href="{$currentUrl}?op=edit&pid={$provider.id}">Edit</a></li>
                         {if not $provider.internal}
-                            <li><a href="{$currentUrl}?op=edit&pid={$provider.id}">Edit</a></li>
-                            <li><a href="{$currentUrl}?op=delete&pid={$provider.id}">Delete</a></li>
+                            <li><a class="delete" href="{$currentUrl}?op=delete&pid={$provider.id}">Delete</a></li>
                         {/if}
                     </ul>
                 </td>
@@ -285,10 +307,7 @@
         {call aui.form.fieldset}
             {param legendContent: 'Allowed Domains'/}
             {param content}
-                {call aui.form.textField}
-                    {param id: 'allowedDomains'/}
-                    {param labelContent: 'Allowed Domains'/}
-                    {param descriptionText: 'Coma separated list of Google Apps domains from which users will be able to log in.'/}
+                {call .allowedDomainsTextField}
                     {param value: $provider.allowedDomains/}
                 {/call}
             {/param}

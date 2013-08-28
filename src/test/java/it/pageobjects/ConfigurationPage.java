@@ -5,6 +5,7 @@ import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 import com.atlassian.pageobjects.elements.query.TimedQuery;
+import org.openqa.selenium.By;
 
 public class ConfigurationPage extends AbstractJiraAdminPage {
 
@@ -72,5 +73,10 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
 
     public TimedQuery<String> getAllowedDomains() {
         return saveAllowedDomains.timed().getText();
+    }
+
+    public EditProviderPage editProvider(String name) {
+        elementFinder.find(By.cssSelector(String.format("td[data-provider-name='%s'] .edit", name))).click();
+        return pageBinder.bind(EditProviderPage.class);
     }
 }
