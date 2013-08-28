@@ -216,7 +216,9 @@
 					{call aui.page.pageHeaderMain}
 						{param content}
 							<h2>Edit OpenID Provider</h2>
-							<p class="description">You can add any OpenID provider that returns e-mail and full name of the user.</p>
+							{if $internal}
+							    <p class="description">You can edit Allowed Domains only for an internal OpenID provider.</p>
+							{/if}
 						{/param}
 					{/call}
 				{/param}
