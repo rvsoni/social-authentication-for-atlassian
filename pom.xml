@@ -10,8 +10,8 @@
         <url>http://pawelniewiadomski.com/</url>
     </organization>
     <scm>
-        <connection>scm:git:https://bitbucket.org/pawelniewiadomski/jira-openid.git</connection>
-        <developerConnection>scm:git:https://bitbucket.org/pawelniewiadomski/jira-openid.git</developerConnection>
+        <connection>scm:git:ssh://git@bitbucket.org:pawelniewiadomski/openid-authentication-for-jira.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.org:pawelniewiadomski/openid-authentication-for-jira.git</developerConnection>
     </scm>
     <distributionManagement>
         <repository>
