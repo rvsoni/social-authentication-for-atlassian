@@ -228,6 +228,14 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <preparationGoals>clean test</preparationGoals>
+                    <releaseProfiles>releaseProfile</releaseProfiles>
+                    <!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-jira-plugin</artifactId>
                 <version>${amps.version}</version>
@@ -287,6 +295,15 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>releaseProfile</id>
+            <properties>
+                <maven.test.unit.skip>true</maven.test.unit.skip>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <jira.version>6.0.1</jira.version>
         <amps.version>4.2.5</amps.version>
