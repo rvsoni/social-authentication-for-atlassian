@@ -19,12 +19,6 @@ public interface OpenIdProvider extends Entity {
     public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
 
     @NotNull
-    @PrimaryKey
-    @AutoIncrement
-    Long getId();
-    void setId(Long id);
-
-    @NotNull
     @Unique
     @StringLength(value = 100)
     String getName();

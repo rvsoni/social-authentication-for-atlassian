@@ -67,7 +67,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                 }
 
                 if (providerByName != null
-                        && (provider == null || (provider != null && !provider.getId().equals(providerByName.getId())))) {
+                        && (provider == null || (provider != null && provider.getID() != providerByName.getID()))) {
                     errors.put("name", i18nResolver.getText("configuration.name.must.be.unique"));
                 }
             }

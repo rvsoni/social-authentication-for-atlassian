@@ -1,5 +1,6 @@
 package it;
 
+import com.atlassian.jira.testkit.client.model.JiraMode;
 import com.atlassian.jira.tests.TestBase;
 import com.atlassian.pageobjects.elements.query.Poller;
 import it.pageobjects.ConfigurationPage;
@@ -18,6 +19,7 @@ public class TestConfigurationPage extends TestBase {
     @Before
     public void setUp() {
         jira().backdoor().restoreBlankInstance();
+        backdoor().generalConfiguration().setJiraMode(JiraMode.PRIVATE);
         jira().backdoor().project().addProject("Test", "TST", "admin");
 
         configuration = jira().gotoLoginPage().loginAsSysAdmin(ConfigurationPage.class);
@@ -34,6 +36,7 @@ public class TestConfigurationPage extends TestBase {
     @Test
     public void testSaveAllowedDomains() {
         configuration.setAllowedDomains("test.pl, google.com").save();
+        configuration = jira().visit(ConfigurationPage.class);
         Poller.waitUntil(configuration.getAllowedDomains(), (Matcher<String>) equalTo("test.pl, google.com"));
     }
 }

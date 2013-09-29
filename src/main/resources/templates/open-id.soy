@@ -278,16 +278,16 @@
                         {$provider.allowedDomains}
                     {/if}
                 </td>
-                <td data-cell-type="operations" data-provider-name="{$provider.name}" data-provider-id="{$provider.id}">
+                <td data-cell-type="operations" data-provider-name="{$provider.name}" data-provider-id="{$provider.ID}">
                     <ul class="operations-list">
                         {if $provider.enabled}
-                            <li><a class="disable" href="{$currentUrl}?op=disable&pid={$provider.id}">Disable</a></li>
+                            <li><a class="disable" href="{$currentUrl}?op=disable&pid={$provider.ID}">Disable</a></li>
                         {else}
-                            <li><a class="enable" href="{$currentUrl}?op=enable&pid={$provider.id}">Enable</a></li>
+                            <li><a class="enable" href="{$currentUrl}?op=enable&pid={$provider.ID}">Enable</a></li>
                         {/if}
-                            <li><a class="edit" href="{$currentUrl}?op=edit&pid={$provider.id}">Edit</a></li>
+                            <li><a class="edit" href="{$currentUrl}?op=edit&pid={$provider.ID}">Edit</a></li>
                         {if not $provider.internal}
-                            <li><a class="delete" href="{$currentUrl}?op=delete&pid={$provider.id}">Delete</a></li>
+                            <li><a class="delete" href="{$currentUrl}?op=delete&pid={$provider.ID}">Delete</a></li>
                         {/if}
                     </ul>
                 </td>

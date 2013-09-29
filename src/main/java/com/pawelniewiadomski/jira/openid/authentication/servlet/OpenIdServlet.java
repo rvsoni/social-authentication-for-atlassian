@@ -88,7 +88,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
     protected String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
         return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/openid-authentication")
-                .queryParam("pid", provider.getId()).build().toString();
+                .queryParam("pid", provider.getID()).build().toString();
     }
 
     /*

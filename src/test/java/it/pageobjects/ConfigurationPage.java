@@ -72,7 +72,7 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
     }
 
     public TimedQuery<String> getAllowedDomains() {
-        return saveAllowedDomains.timed().getText();
+        return allowedDomains.timed().getValue();
     }
 
     public EditProviderPage editProvider(String name) {
