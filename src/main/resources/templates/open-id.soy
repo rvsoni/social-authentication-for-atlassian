@@ -259,40 +259,39 @@
 {/template}
 
 /**
- * @param providers list of providers
  * @param currentUrl current URL
  */
 {template .advancedProviders}
 {call aui.table}
+    {param extraAttributes}
+        ng-app="openid.configuration" ng-controller="ConfigurationCtrl"
+    {/param}
     {param theadContent}
         <th>Name</th>
         <th>Allowed Domains</th>
         <th>Operations</th>
     {/param}
     {param content}
-        {foreach $provider in $providers}
-            <tr{if not $provider.enabled} class="disabled"{/if}>
-                <td>{$provider.name}</td>
-                <td>
-                    {if $provider.allowedDomains}
-                        {$provider.allowedDomains}
-                    {/if}
-                </td>
-                <td data-cell-type="operations" data-provider-name="{$provider.name}" data-provider-id="{$provider.ID}">
-                    <ul class="operations-list">
-                        {if $provider.enabled}
-                            <li><a class="disable" href="{$currentUrl}?op=disable&pid={$provider.ID}">Disable</a></li>
-                        {else}
-                            <li><a class="enable" href="{$currentUrl}?op=enable&pid={$provider.ID}">Enable</a></li>
-                        {/if}
-                            <li><a class="edit" href="{$currentUrl}?op=edit&pid={$provider.ID}">Edit</a></li>
-                        {if not $provider.internal}
-                            <li><a class="delete" href="{$currentUrl}?op=delete&pid={$provider.ID}">Delete</a></li>
-                        {/if}
-                    </ul>
-                </td>
-            </tr>
-        {/foreach}
+        <tr ng-repeat="provider in providers">
+            <td>[[provider.name]]</td>
+            <td>[[provider.allowedDomains]]</td>
+            <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.ID]]">
+                <ul class="operations-list">
+                    <li ng-if="provider.enabled">
+                        <a class="disable" href="{$currentUrl}?op=disable&pid=[[$provider.ID]]">Disable</a>
+                    </li>
+                    <li ng-if="!provider.enabled">
+                        <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.ID]]">Enable</a>
+                    </li>
+                    <li>
+                        <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.ID]]">Edit</a>
+                    </li>
+                    <li ng-if="!provider.internal">
+                        <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.ID]]">Delete</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
     {/param}
 {/call}
 {/template}
@@ -381,7 +380,6 @@
 
         {if $isAdvanced}
             {call .advancedProviders}
-                {param providers: $providers/}
                 {param currentUrl: $currentUrl/}
             {/call}
         {else}

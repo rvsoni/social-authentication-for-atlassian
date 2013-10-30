@@ -10,8 +10,10 @@
         <param name="plugin-banner">images/banner.png</param>
         <param name="atlassian-licensing-enabled">true</param>
     </plugin-info>
+
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
+
     <web-resource key="openid-soy-templates">
         <transformation extension="soy">
             <transformer key="soyTransformer"/>
@@ -22,6 +24,7 @@
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
         <resource type="download" name="open-id.js" location="templates/open-id.soy"/>
     </web-resource>
+
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
@@ -31,12 +34,17 @@
         <resource type="download" name="images/" location="/images"/>
         <!--context>jira-openid-authentication-plugin</context-->
     </web-resource>
+
     <web-resource key="jira-openid-configuration-plugin-resources">
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <context>atl.general</context>
+
+        <resource type="download" name="webjars/" location="/META-INF/resources/webjars"/>
+        <resource type="download" name="webjars/angularjs/angular.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular-route.min.js"/>
+
         <resource type="download" name="jira-openid-configuration.css" location="/css/jira-openid-configuration.less"/>
         <resource type="download" name="jira-openid-configuration.js" location="/js/jira-openid-configuration.js"/>
         <context>jira-openid-configuration</context>
