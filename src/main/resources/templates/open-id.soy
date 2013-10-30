@@ -275,19 +275,19 @@
         <tr ng-repeat="provider in providers">
             <td>[[provider.name]]</td>
             <td>[[provider.allowedDomains]]</td>
-            <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.ID]]">
+            <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.id]]">
                 <ul class="operations-list">
                     <li ng-if="provider.enabled">
-                        <a class="disable" href="{$currentUrl}?op=disable&pid=[[$provider.ID]]">Disable</a>
+                        <a class="disable" href="{$currentUrl}?op=disable&pid=[[provider.id]]">Disable</a>
                     </li>
-                    <li ng-if="!provider.enabled">
-                        <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.ID]]">Enable</a>
+                    <li ng-if="provider.enabled == false">
+                        <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.id]]">Enable</a>
                     </li>
                     <li>
-                        <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.ID]]">Edit</a>
+                        <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.id]]">Edit</a>
                     </li>
-                    <li ng-if="!provider.internal">
-                        <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.ID]]">Delete</a>
+                    <li ng-if="provider.internal == false">
+                        <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.id]]">Delete</a>
                     </li>
                 </ul>
             </td>

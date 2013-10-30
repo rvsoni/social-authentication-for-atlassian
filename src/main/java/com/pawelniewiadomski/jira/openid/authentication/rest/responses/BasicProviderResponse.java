@@ -1,10 +1,10 @@
-package com.pawelniewiadomski.jira.openid.authentication.rest;
+package com.pawelniewiadomski.jira.openid.authentication.rest.responses;
 
 import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "openIdProvider")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OpenIdProviderModel {
+public class BasicProviderResponse {
 
     @XmlElement(name =  "id")
     private Integer id;
@@ -12,10 +12,7 @@ public class OpenIdProviderModel {
     @XmlElement(name = "name")
     private String name;
 
-    public OpenIdProviderModel() {
-    }
-
-    public OpenIdProviderModel(Integer id, String name) {
+    public BasicProviderResponse(Integer id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -11,7 +11,7 @@ AJS.$(function() {
 
         AJS.$(buttons.join("")).insertAfter(AJS.$(".buttons-container.form-footer .buttons input:first"));
 
-        AJS.$.ajax(contextPath + "/rest/jira-openid-authentication/1.0/openIdProviders").done(function(data) {
+        AJS.$.ajax(contextPath + "/rest/jira-openid-authentication/1.0/openIdProviders/login").done(function(data) {
 			var $providers = AJS.$("#openid-providers ul");
 
 			$providers.find("li a.loading").remove();
