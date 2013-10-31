@@ -27,6 +27,7 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
+        <resource type="download" name="images/" location="/images"/>
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
         <resource type="download" name="open-id.js" location="templates/open-id.soy"/>
     </web-resource>
@@ -46,6 +47,8 @@
             <transformer key="lessTransformer"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+        <resource type="download" name="images/" location="/images"/>
 
         <resource type="download" name="webjars/" location="/META-INF/resources/webjars"/>
         <resource type="download" name="webjars/angularjs/angular.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
