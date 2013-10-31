@@ -11,6 +11,12 @@
         <param name="atlassian-licensing-enabled">true</param>
     </plugin-info>
 
+    <routing key="routes" path="/openid">
+        <route from="/configuration" to="/plugins/servlet/openid-configuration"/>
+    </routing>
+
+    <sitemesh key="ad-configuration" path="/openid/configuration"/>
+
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
 
@@ -93,7 +99,7 @@
     <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
               i18n-name-key="openid.admin.link" weight="70">
         <label key="openid.menu.automat"/>
-        <link linkId="openid">/plugins/servlet/openid-configuration</link>
+        <link linkId="openid">/openid/configuration</link>
         <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>

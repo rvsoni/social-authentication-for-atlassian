@@ -36,6 +36,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.atlassian.prettyurls</groupId>
+            <artifactId>atlassian-pretty-urls-plugin</artifactId>
+            <version>${prettyurls.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>atlassian-jira-pageobjects</artifactId>
             <version>${jira.version}</version>
@@ -319,6 +325,7 @@
     <properties>
         <jira.version>6.0.1</jira.version>
         <amps.version>4.2.5</amps.version>
+        <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.0.46</testkit.version>
         <upm.license.compatibility.version>2.4.1</upm.license.compatibility.version>
