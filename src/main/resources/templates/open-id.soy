@@ -262,38 +262,41 @@
  * @param currentUrl current URL
  */
 {template .advancedProviders}
-{call aui.table}
-    {param extraAttributes}
-        ng-app="openid.configuration" ng-controller="ConfigurationCtrl"
-    {/param}
-    {param theadContent}
-        <th>Name</th>
-        <th>Allowed Domains</th>
-        <th>Operations</th>
-    {/param}
-    {param content}
-        <tr ng-repeat="provider in providers">
-            <td>[[provider.name]]</td>
-            <td>[[provider.allowedDomains]]</td>
-            <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.id]]">
-                <ul class="operations-list">
-                    <li ng-if="provider.enabled">
-                        <a class="disable" href="{$currentUrl}?op=disable&pid=[[provider.id]]">Disable</a>
-                    </li>
-                    <li ng-if="provider.enabled == false">
-                        <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.id]]">Enable</a>
-                    </li>
-                    <li>
-                        <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.id]]">Edit</a>
-                    </li>
-                    <li ng-if="provider.internal == false">
-                        <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.id]]">Delete</a>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    {/param}
-{/call}
+<div ng-app="openid.configuration" ng-controller="ConfigurationCtrl">
+    <span ng-if="!loaded" class="icon loading"></span>
+    {call aui.table}
+        {param extraAttributes}
+            ng-if="loaded"
+        {/param}
+        {param theadContent}
+            <th>Name</th>
+            <th>Allowed Domains</th>
+            <th>Operations</th>
+        {/param}
+        {param content}
+            <tr ng-repeat="provider in providers">
+                <td>[[provider.name]]</td>
+                <td>[[provider.allowedDomains]]</td>
+                <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.id]]">
+                    <ul class="operations-list">
+                        <li ng-if="provider.enabled">
+                            <a class="disable" href="{$currentUrl}?op=disable&pid=[[provider.id]]">Disable</a>
+                        </li>
+                        <li ng-if="provider.enabled == false">
+                            <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.id]]">Enable</a>
+                        </li>
+                        <li>
+                            <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.id]]">Edit</a>
+                        </li>
+                        <li ng-if="provider.internal == false">
+                            <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.id]]">Delete</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {/param}
+    {/call}
+</div>
 {/template}
 
 /**
