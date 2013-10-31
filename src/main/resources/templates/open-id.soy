@@ -264,6 +264,10 @@
 {template .advancedProviders}
 <div ng-app="openid.configuration" ng-controller="ConfigurationCtrl">
     <span ng-if="!loaded" class="icon loading"></span>
+    {call aui.message.error}
+        {param extraAttributes}ng-if="error"{/param}
+        {param content}There was an error loading providers, please try again or contact the administrator.{/param}
+    {/call}
     {call aui.table}
         {param extraAttributes}
             ng-if="loaded"
