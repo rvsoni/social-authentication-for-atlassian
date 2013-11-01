@@ -28,6 +28,11 @@ public class OpenIdDao {
 	  	return Collections.emptyList();
     }
 
+    @Nonnull
+    public int countAllProviders() {
+        return activeObjects.count(OpenIdProvider.class);
+    }
+
     @Nullable
     public OpenIdProvider findByName(String name) throws SQLException {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
@@ -48,7 +53,8 @@ public class OpenIdDao {
                 new DBParam(OpenIdProvider.ENDPOINT_URL, url),
                 new DBParam(OpenIdProvider.ENABLED, true),
                 new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
-                new DBParam(OpenIdProvider.INTERNAL, internal));
+                new DBParam(OpenIdProvider.INTERNAL, internal),
+                new DBParam(OpenIdProvider.ORDER, countAllProviders()));
     }
 
     public void deleteProvider(Integer id) throws SQLException {

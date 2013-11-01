@@ -55,11 +55,6 @@
         <resource type="download" name="webjars/angularjs/angular.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
         <resource type="download" name="webjars/angularjs/angular-route.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular-route.min.js"/>
 
-        <resource type="download" name="webjars/jquery/jquery.ui.min.js" location="/META-INF/resources/webjars/jquery-ui/1.10.3/ui/minified/jquery.ui.min.js"/>
-        <resource type="download" name="webjars/jquery/jquery.ui.sortable.min.js" location="/META-INF/resources/webjars/jquery-ui/1.10.3/ui/minified/jquery.ui.sortable.min.js"/>
-
-        <resource type="download" name="sortable.js" location="/js/sortable.js"/>
-
         <resource type="download" name="jira-openid-configuration.css" location="/css/jira-openid-configuration.less"/>
         <resource type="download" name="jira-openid-configuration.js" location="/js/jira-openid-configuration.js"/>
         <context>jira-openid-configuration</context>

@@ -56,7 +56,15 @@ public class OpenIdProvidersResource {
         return Ordering.from(new Comparator<OpenIdProvider>() {
             @Override
             public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
-                return o1.getOrder() - o2.getOrder();
+                final int order1 = o1.getOrder() == null ? openIdDao.countAllProviders() : o1.getOrder();
+                final int order2 = o2.getOrder() == null ? openIdDao.countAllProviders() : o2.getOrder();
+
+                return order1 - order2;
+            }
+        }).compound(new Comparator<OpenIdProvider>() {
+            @Override
+            public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
+                return o1.getName().compareTo(o2.getName());
             }
         }).immutableSortedCopy(providers);
     }
