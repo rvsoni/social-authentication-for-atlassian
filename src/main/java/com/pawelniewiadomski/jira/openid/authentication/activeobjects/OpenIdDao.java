@@ -30,8 +30,13 @@ public class OpenIdDao {
     }
 
     @Nonnull
-    public int countAllProviders() {
-        return activeObjects.count(OpenIdProvider.class);
+    public int getNextOrdering() {
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
+                Query.select().order(String.format("%s DESC, %s DESC", OpenIdProvider.ORDERING, OpenIdProvider.NAME)).limit(1));
+        if (providers != null && providers.length > 0) {
+            return providers[providers.length-1].getOrdering() + 1;
+        }
+        return 1;
     }
 
     @Nullable
@@ -55,7 +60,7 @@ public class OpenIdDao {
                 new DBParam(OpenIdProvider.ENABLED, true),
                 new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
                 new DBParam(OpenIdProvider.INTERNAL, internal),
-                new DBParam(OpenIdProvider.ORDERING, countAllProviders()));
+                new DBParam(OpenIdProvider.ORDERING, getNextOrdering()));
     }
 
     public void deleteProvider(Integer id) throws SQLException {
@@ -74,8 +79,8 @@ public class OpenIdDao {
     public List<OpenIdProvider> findAllEnabledProviders() throws SQLException {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
                 Query.select()
-                    .where(String.format("%s = true", OpenIdProvider.ENABLED))
-                    .order(String.format("%s, %s", OpenIdProvider.ORDERING, OpenIdProvider.NAME)));
+                        .where(String.format("%s = true", OpenIdProvider.ENABLED))
+                        .order(String.format("%s, %s", OpenIdProvider.ORDERING, OpenIdProvider.NAME)));
 
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);
