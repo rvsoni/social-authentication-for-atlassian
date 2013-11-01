@@ -21,7 +21,8 @@ public class OpenIdDao {
 
     @Nonnull
     public List<OpenIdProvider> findAllProviders() throws SQLException {
-        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class);
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
+                Query.select().order(String.format("%s, %s", OpenIdProvider.ORDERING, OpenIdProvider.NAME)));
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);
         }
@@ -54,7 +55,7 @@ public class OpenIdDao {
                 new DBParam(OpenIdProvider.ENABLED, true),
                 new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
                 new DBParam(OpenIdProvider.INTERNAL, internal),
-                new DBParam(OpenIdProvider.ORDER, countAllProviders()));
+                new DBParam(OpenIdProvider.ORDERING, countAllProviders()));
     }
 
     public void deleteProvider(Integer id) throws SQLException {
@@ -71,9 +72,10 @@ public class OpenIdDao {
 
     @Nonnull
     public List<OpenIdProvider> findAllEnabledProviders() throws SQLException {
-        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class, Query.select().where(
-                String.format("%s = true", OpenIdProvider.ENABLED)
-        ));
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
+                Query.select()
+                    .where(String.format("%s = true", OpenIdProvider.ENABLED))
+                    .order(String.format("%s, %s", OpenIdProvider.ORDERING, OpenIdProvider.NAME)));
 
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);

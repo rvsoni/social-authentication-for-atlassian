@@ -17,7 +17,7 @@ public interface OpenIdProvider extends Entity {
     public static final String INTERNAL = "INTERNAL";
     public static final String CREATE_USERS = "CREATE_USERS";
     public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
-    public static final String ORDER = "ORDER";
+    public static final String ORDERING = "ORDERING";
 
     @NotNull
     @Unique
@@ -53,6 +53,6 @@ public interface OpenIdProvider extends Entity {
     String getAllowedDomains();
     void setAllowedDomains(String allowedDomains);
 
-    Integer getOrder();
-    void setOrder(Integer order);
+    Integer getOrdering();
+    void setOrdering(Integer ordering);
 }

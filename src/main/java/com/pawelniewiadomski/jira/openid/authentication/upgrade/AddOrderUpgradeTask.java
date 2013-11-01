@@ -29,7 +29,7 @@ public class AddOrderUpgradeTask implements PluginUpgradeTask {
     public Collection<Message> doUpgrade() throws Exception {
         int order = 0;
         for(OpenIdProvider provider : openIdDao.findAllProviders()) {
-            provider.setOrder(order++);
+            provider.setOrdering(order++);
             provider.save();
         }
         return Collections.emptyList();

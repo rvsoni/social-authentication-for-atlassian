@@ -7,15 +7,12 @@ import com.atlassian.jira.security.Permissions;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.BasicProviderResponse;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderResponse;
-import com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,7 +22,6 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 
 @Path("openIdProviders")
@@ -48,7 +44,7 @@ public class OpenIdProvidersResource {
     public Response getLogin() {
         try {
             final List<BasicProviderResponse> loginProviders = Lists.newArrayList(
-                    Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(openIdDao.findAllEnabledProviders(), openIdDao.countAllProviders()),
+                    Iterables.transform(openIdDao.findAllEnabledProviders(),
                     new Function<OpenIdProvider, BasicProviderResponse>() {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
@@ -65,12 +61,12 @@ public class OpenIdProvidersResource {
     protected Response getProvidersResponse() {
         try {
             return Response.ok(Lists.newArrayList(
-                    Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(openIdDao.findAllProviders(), openIdDao.countAllProviders()),
+                    Iterables.transform(openIdDao.findAllProviders(),
                     new Function<OpenIdProvider, BasicProviderResponse>() {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
                             return new ProviderResponse(input.getID(), input.getName(),
-                                    input.isEnabled(), input.getOrder(), input.isInternal(), input.getAllowedDomains());
+                                    input.isEnabled(), input.getOrdering(), input.isInternal(), input.getAllowedDomains());
                         }
                     }))).cacheControl(never()).build();
         } catch (SQLException e) {
@@ -101,10 +97,10 @@ public class OpenIdProvidersResource {
                             final OpenIdProvider currentProvider = providers.get(i);
                             if (currentProvider.getID() == providerId) {
                                 final OpenIdProvider previousProvider = providers.get(i-1);
-                                final int order = currentProvider.getOrder();
+                                final int order = currentProvider.getOrdering();
 
-                                currentProvider.setOrder(previousProvider.getOrder());
-                                previousProvider.setOrder(order);
+                                currentProvider.setOrdering(previousProvider.getOrdering());
+                                previousProvider.setOrdering(order);
 
                                 currentProvider.save();
                                 previousProvider.save();
@@ -134,10 +130,10 @@ public class OpenIdProvidersResource {
                             final OpenIdProvider currentProvider = providers.get(i);
                             if (currentProvider.getID() == providerId) {
                                 final OpenIdProvider nextProvider = providers.get(i+1);
-                                final int order = currentProvider.getOrder();
+                                final int order = currentProvider.getOrdering();
 
-                                currentProvider.setOrder(nextProvider.getOrder());
-                                nextProvider.setOrder(order);
+                                currentProvider.setOrdering(nextProvider.getOrdering());
+                                nextProvider.setOrdering(order);
 
                                 currentProvider.save();
                                 nextProvider.save();

@@ -13,7 +13,7 @@ public class ProviderResponse extends BasicProviderResponse {
     private boolean enabled;
 
     @XmlElement
-    private int order;
+    private int ordering;
 
     @XmlElement
     private boolean internal;
@@ -21,10 +21,10 @@ public class ProviderResponse extends BasicProviderResponse {
     @XmlElement
     private String allowedDomains;
 
-    public ProviderResponse(Integer id, String name, boolean enabled, Integer order, boolean internal, String allowedDomains) {
+    public ProviderResponse(Integer id, String name, boolean enabled, Integer ordering, boolean internal, String allowedDomains) {
         super(id, name);
         this.enabled = enabled;
-        this.order = order == null ? 1 : order;
+        this.ordering = ordering == null ? 1 : ordering;
         this.internal = internal;
         this.allowedDomains = allowedDomains;
     }
@@ -37,12 +37,12 @@ public class ProviderResponse extends BasicProviderResponse {
         this.enabled = enabled;
     }
 
-    public int getOrder() {
-        return order;
+    public int getOrdering() {
+        return ordering;
     }
 
-    public void setOrder(final int order) {
-        this.order = order;
+    public void setOrdering(final int ordering) {
+        this.ordering = ordering;
     }
 
     public boolean isInternal() {

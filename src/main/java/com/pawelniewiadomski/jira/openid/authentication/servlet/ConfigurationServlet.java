@@ -192,7 +192,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             renderTemplate(req, resp, "OpenId.Templates.providers",
                     ImmutableMap.<String, Object>builder()
                             .put("providers", isAdvanced()
-                                    ? getOrderedListOfProviders(openIdDao.findAllProviders(), openIdDao.countAllProviders())
+                                    ? openIdDao.findAllProviders()
                                     : ImmutableList.of(openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE)))
                             .put("isAdvanced", isAdvanced())
                             .put("isPublic", JiraUtils.isPublicMode())
@@ -218,23 +218,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
         }
 
         return providers.size() == 1 && StringUtils.equals(providers.get(0).getName(), LoadDefaultProvidersComponent.GOOGLE);
-    }
-
-    public static ImmutableList<OpenIdProvider> getOrderedListOfProviders(Iterable<OpenIdProvider> providers, final int countProviders) throws SQLException {
-        return Ordering.from(new Comparator<OpenIdProvider>() {
-            @Override
-            public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
-                final int order1 = o1.getOrder() == null ? countProviders : o1.getOrder();
-                final int order2 = o2.getOrder() == null ? countProviders : o2.getOrder();
-
-                return order1 - order2;
-            }
-        }).compound(new Comparator<OpenIdProvider>() {
-            @Override
-            public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        }).immutableSortedCopy(providers);
     }
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
