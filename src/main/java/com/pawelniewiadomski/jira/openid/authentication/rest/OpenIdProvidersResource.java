@@ -1,7 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
+import com.atlassian.fugue.Option;
+import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.PermissionManager;
+import com.atlassian.jira.security.Permissions;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -11,12 +16,11 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.BasicProviderResponse;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderResponse;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,20 +29,26 @@ import java.util.Comparator;
 import java.util.List;
 
 @Path("openIdProviders")
+@Produces({MediaType.APPLICATION_JSON})
 public class OpenIdProvidersResource {
+    private static final Logger log = Logger.getLogger(OpenIdProvidersResource.class);
 
     @Autowired
     OpenIdDao openIdDao;
 
+    @Autowired
+    JiraAuthenticationContext authenticationContext;
+
+    @Autowired
+    PermissionManager permissionManager;
+
     @GET
     @AnonymousAllowed
-    @Produces({MediaType.APPLICATION_JSON})
     @Path("/login")
     public Response getLogin() {
         try {
-            final List<OpenIdProvider> allProviders = sortProvidersByOrder(openIdDao.findAllEnabledProviders());
-
-            final List<BasicProviderResponse> loginProviders = Lists.newArrayList(Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(allProviders),
+            final List<BasicProviderResponse> loginProviders = Lists.newArrayList(
+                    Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(openIdDao.findAllEnabledProviders(), openIdDao.countAllProviders()),
                     new Function<OpenIdProvider, BasicProviderResponse>() {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
@@ -52,29 +62,10 @@ public class OpenIdProvidersResource {
         }
     }
 
-    private ImmutableList<OpenIdProvider> sortProvidersByOrder(Iterable<OpenIdProvider> providers) throws SQLException {
-        return Ordering.from(new Comparator<OpenIdProvider>() {
-            @Override
-            public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
-                final int order1 = o1.getOrder() == null ? openIdDao.countAllProviders() : o1.getOrder();
-                final int order2 = o2.getOrder() == null ? openIdDao.countAllProviders() : o2.getOrder();
-
-                return order1 - order2;
-            }
-        }).compound(new Comparator<OpenIdProvider>() {
-            @Override
-            public int compare(final OpenIdProvider o1, final OpenIdProvider o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        }).immutableSortedCopy(providers);
-    }
-
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getOpenIdProviders() {
+    protected Response getProvidersResponse() {
         try {
-            final List<OpenIdProvider> providers = sortProvidersByOrder(openIdDao.findAllProviders());
-            return Response.ok(Lists.newArrayList(Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(providers),
+            return Response.ok(Lists.newArrayList(
+                    Iterables.transform(ConfigurationServlet.getOrderedListOfProviders(openIdDao.findAllProviders(), openIdDao.countAllProviders()),
                     new Function<OpenIdProvider, BasicProviderResponse>() {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
@@ -85,6 +76,88 @@ public class OpenIdProvidersResource {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GET
+    public Response getOpenIdProviders() {
+        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
+            @Override
+            public Response get() {
+                return getProvidersResponse();
+            }
+        });
+    }
+
+    @POST
+    @Path("/moveUp/{providerId}")
+    public Response moveProviderUp(@PathParam("providerId") final int providerId) {
+        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
+            @Override
+            public Response get() {
+                try {
+                    final List<OpenIdProvider> providers = openIdDao.findAllProviders();
+                    if (providers.size() > 1 && providerId != providers.get(0).getID()) {
+                        for(int i = 1, s = providers.size(); i < s; ++i) {
+                            final OpenIdProvider currentProvider = providers.get(i);
+                            if (currentProvider.getID() == providerId) {
+                                final OpenIdProvider previousProvider = providers.get(i-1);
+                                final int order = currentProvider.getOrder();
+
+                                currentProvider.setOrder(previousProvider.getOrder());
+                                previousProvider.setOrder(order);
+
+                                currentProvider.save();
+                                previousProvider.save();
+                                break;
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    log.warn("Unable to modify Providers", e);
+                }
+
+                return getProvidersResponse();
+            }
+        });
+    }
+
+    @POST
+    @Path("/moveDown/{providerId}")
+    public Response moveProviderDown(@PathParam("providerId") final int providerId) {
+        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
+            @Override
+            public Response get() {
+                try {
+                    final List<OpenIdProvider> providers = openIdDao.findAllProviders();
+                    if (providers.size() > 1 && providerId != providers.get(providers.size() - 1).getID()) {
+                        for(int i = 0, s = providers.size() - 1; i < s; ++i) {
+                            final OpenIdProvider currentProvider = providers.get(i);
+                            if (currentProvider.getID() == providerId) {
+                                final OpenIdProvider nextProvider = providers.get(i+1);
+                                final int order = currentProvider.getOrder();
+
+                                currentProvider.setOrder(nextProvider.getOrder());
+                                nextProvider.setOrder(order);
+
+                                currentProvider.save();
+                                nextProvider.save();
+                                break;
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    log.warn("Unable to modify Providers", e);
+                }
+                return getProvidersResponse();
+            }
+        });
+    }
+
+    protected Option<Response> permissionDeniedIfNotAdmin() {
+        if (permissionManager.hasPermission(Permissions.ADMINISTER, authenticationContext.getUser())) {
+            return Option.none();
+        }
+        return Option.some(Response.status(Response.Status.FORBIDDEN).build());
     }
 
     public static CacheControl never() {

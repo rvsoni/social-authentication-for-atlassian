@@ -7,21 +7,21 @@ import javax.xml.bind.annotation.*;
 public class BasicProviderResponse {
 
     @XmlElement(name =  "id")
-    private Integer id;
+    private int id;
 
     @XmlElement(name = "name")
     private String name;
 
-    public BasicProviderResponse(Integer id, String name) {
+    public BasicProviderResponse(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
