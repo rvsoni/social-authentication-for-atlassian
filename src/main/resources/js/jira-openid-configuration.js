@@ -1,4 +1,4 @@
-var configuration = angular.module("openid.configuration", [])
+var configuration = angular.module("openid.configuration", ["ui.sortable"])
     .constant('contextPath', contextPath)
     .config(['$interpolateProvider', function($interpolateProvider) {
         $interpolateProvider.startSymbol("[[");
