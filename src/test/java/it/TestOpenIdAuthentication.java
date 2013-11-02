@@ -40,7 +40,7 @@ public class TestOpenIdAuthentication extends TestBase {
     @After
     public void tearDown() {
         jira().logout();
-        jira().getTester().getDriver().navigate().to("https://accounts.google.com/Logout?hl=en&amp;continue=https://www.google.pl/%3Fgws_rd%3Dcr%26ei%3DmzUcUr2UD4zItAaZvoHoBA");
+        jira().getTester().getDriver().navigate().to("https://accounts.google.com/Logout?hl=en&continue=https://www.google.pl/");
     }
 
     @Test
@@ -50,6 +50,7 @@ public class TestOpenIdAuthentication extends TestBase {
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
         GoogleLoginPage googleLoginPage = jira().getPageBinder().bind(GoogleLoginPage.class);
+        googleLoginPage.setPersistentCookie(false);
         googleLoginPage.setEmail((String) PropertyUtils.getProperty(passwords, "spartez.user"));
         googleLoginPage.setPassword((String) PropertyUtils.getProperty(passwords, "spartez.password"));
         googleLoginPage.signIn();
@@ -64,6 +65,7 @@ public class TestOpenIdAuthentication extends TestBase {
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
         GoogleLoginPage googleLoginPage = jira().getPageBinder().bind(GoogleLoginPage.class);
+        googleLoginPage.setPersistentCookie(false);
         googleLoginPage.setEmail((String) PropertyUtils.getProperty(passwords, "gmail.user"));
         googleLoginPage.setPassword((String) PropertyUtils.getProperty(passwords, "gmail.password"));
         googleLoginPage.signIn();

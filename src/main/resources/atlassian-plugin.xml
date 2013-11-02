@@ -5,9 +5,9 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="plugin-banner">images/banner.png</param>
+        <param name="plugin-icon">assets/images/pluginIcon.png</param>
+        <param name="plugin-logo">assets/images/pluginLogo.png</param>
+        <param name="plugin-banner">assets/images/banner.png</param>
         <param name="atlassian-licensing-enabled">true</param>
     </plugin-info>
 
@@ -21,7 +21,7 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
-        <resource type="download" name="images/" location="/assets/images"/>
+        <resource type="download" name="images/" location="assets/images"/>
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
         <resource type="download" name="open-id.js" location="views/open-id.soy"/>
     </web-resource>
@@ -30,9 +30,8 @@
     <web-resource key="jira-openid-authentication-plugin-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <context>atl.general</context>
-        <resource type="download" name="jira-openid-authentication-plugin.js"
-                  location="/js/jira-openid-authentication-plugin.js"/>
-        <resource type="download" name="images/" location="/assets/images"/>
+        <resource type="download" name="jira-openid-authentication-plugin.js" location="assets/js/jira-openid-authentication-plugin.js"/>
+        <resource type="download" name="images/" location="assets/images"/>
     </web-resource>
 
     <web-resource key="jira-openid-configuration-plugin-resources">
@@ -41,15 +40,15 @@
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
 
-        <resource type="download" name="images/" location="/assets/images"/>
+        <resource type="download" name="images/" location="assets/images"/>
 
-        <resource type="download" name="webjars/" location="/META-INF/resources/webjars"/>
+        <resource type="download" name="webjars/" location="META-INF/resources/webjars"/>
 
-        <resource type="download" name="webjars/angularjs/angular.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
-        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular-route.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular.min.js" location="META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular-route.min.js"/>
 
-        <resource type="download" name="jira-openid-configuration.css" location="/assets/css/openid.less"/>
-        <resource type="download" name="jira-openid-configuration.js" location="/assets/js/jira-openid-configuration.js"/>
+        <resource type="download" name="jira-openid-configuration.css" location="assets/css/openid.less"/>
+        <resource type="download" name="jira-openid-configuration.js" location="assets/js/jira-openid-configuration.js"/>
         <context>jira-openid-configuration</context>
     </web-resource>
 

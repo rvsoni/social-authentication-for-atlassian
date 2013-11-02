@@ -1,6 +1,7 @@
 package it.pageobjects;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
+import com.atlassian.pageobjects.elements.CheckboxElement;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
@@ -15,14 +16,21 @@ public class GoogleLoginPage extends AbstractJiraPage {
     @ElementBy(id = "signIn")
     PageElement signInButton;
 
+    @ElementBy(id = "PersistentCookie")
+    CheckboxElement persistentCookie;
+
     @Override
     public TimedCondition isAt() {
-        return email.timed().isVisible();
+        return password.timed().isVisible();
     }
 
     @Override
     public String getUrl() {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public boolean isEmailVisible() {
+        return this.email.isVisible();
     }
 
     public GoogleLoginPage setEmail(String email) {
@@ -39,5 +47,13 @@ public class GoogleLoginPage extends AbstractJiraPage {
 
     public void signIn() {
         this.signInButton.click();
+    }
+
+    public void setPersistentCookie(final boolean b) {
+        if (b) {
+            persistentCookie.check();
+        } else {
+            persistentCookie.uncheck();
+        }
     }
 }
