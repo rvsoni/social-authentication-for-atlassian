@@ -11,12 +11,6 @@
         <param name="atlassian-licensing-enabled">true</param>
     </plugin-info>
 
-    <routing key="routes" path="/openid">
-        <route from="/configuration" to="/plugins/servlet/openid-configuration"/>
-    </routing>
-
-    <sitemesh key="ad-configuration" path="/openid/configuration"/>
-
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="jira-openid-authentication-plugin"/>
 
@@ -27,9 +21,9 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
-        <resource type="download" name="images/" location="/images"/>
+        <resource type="download" name="images/" location="/assets/images"/>
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
-        <resource type="download" name="open-id.js" location="templates/open-id.soy"/>
+        <resource type="download" name="open-id.js" location="views/open-id.soy"/>
     </web-resource>
 
     <!-- add our web resources -->
@@ -38,8 +32,7 @@
         <context>atl.general</context>
         <resource type="download" name="jira-openid-authentication-plugin.js"
                   location="/js/jira-openid-authentication-plugin.js"/>
-        <resource type="download" name="images/" location="/images"/>
-        <!--context>jira-openid-authentication-plugin</context-->
+        <resource type="download" name="images/" location="/assets/images"/>
     </web-resource>
 
     <web-resource key="jira-openid-configuration-plugin-resources">
@@ -48,17 +41,18 @@
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
 
-        <resource type="download" name="images/" location="/images"/>
+        <resource type="download" name="images/" location="/assets/images"/>
 
         <resource type="download" name="webjars/" location="/META-INF/resources/webjars"/>
 
         <resource type="download" name="webjars/angularjs/angular.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular.min.js"/>
         <resource type="download" name="webjars/angularjs/angular-route.min.js" location="/META-INF/resources/webjars/angularjs/1.2.0-rc.2/angular-route.min.js"/>
 
-        <resource type="download" name="jira-openid-configuration.css" location="/css/jira-openid-configuration.less"/>
-        <resource type="download" name="jira-openid-configuration.js" location="/js/jira-openid-configuration.js"/>
+        <resource type="download" name="jira-openid-configuration.css" location="/assets/css/openid.less"/>
+        <resource type="download" name="jira-openid-configuration.js" location="/assets/js/jira-openid-configuration.js"/>
         <context>jira-openid-configuration</context>
     </web-resource>
+
     <rest name="OpenID REST" key="rest-plugin" path="/jira-openid-authentication" version="1.0"/>
 
     <!-- import from the product container -->
@@ -96,10 +90,23 @@
     </servlet>
     <component key="licenseProvider" class="com.pawelniewiadomski.jira.openid.authentication.LicenseProvider"/>
     <component key="springContext" class="com.pawelniewiadomski.jira.openid.authentication.SpringContext"/>
+
+    <!-- Active Objects -->
+
+    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
+
     <ao key="openid-active-objects">
         <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
     </ao>
-    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
+
+    <!-- Pretty links -->
+    <routing key="routes" path="/openid">
+        <route from="/configuration" to="/plugins/servlet/openid-configuration"/>
+    </routing>
+
+    <sitemesh key="ad-configuration" path="/openid/configuration"/>
+
+    <!-- Web items -->
     <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
               i18n-name-key="openid.admin.link" weight="70">
         <label key="openid.menu.automat"/>
@@ -118,4 +125,24 @@
                class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
+
+    <!-- Gadget -->
+    <gadget key="openid-login-gadget" location="openid-login-gadget.xml">
+        <resource type="download" name="gadgetIcon.png" location="assets/images/gadgetIcon.png"/>
+    </gadget>
+
+    <web-resource key="openid-login-gadget-resources">
+        <dependency>jira.webresources:global-static</dependency>
+        <dependency>com.atlassian.gadgets.publisher:ajs-gadgets</dependency>
+        <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
+        <transformation extension="soy">
+            <transformer key="soyTransformer"/>
+        </transformation>
+        <transformation extension="less">
+            <transformer key="lessTransformer"/>
+        </transformation>
+
+        <resource type="download" name="login-gadget.js" location="views/openid-login-gadget.soy"/>
+        <resource type="download" name="openid.css" location="assets/css/openid.less"/>
+    </web-resource>
 </atlassian-plugin>
