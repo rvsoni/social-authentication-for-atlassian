@@ -487,7 +487,7 @@
 {template .error}
 {call .errorWrapper}
     {param content}
-    There was a problem during authentication. Please try again using different method.
+    There was a problem during authentication. Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}
@@ -511,7 +511,7 @@
 {template .domainMismatch}
 {call .errorWrapper}
     {param content}
-    Your email address is not on a list of allowed domains. Cannot proceed. Plase try again using different method.
+    Your email address is not on a list of allowed domains. Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}
