@@ -322,41 +322,6 @@
                 <testkit.version>6.0.47</testkit.version>
             </properties>
         </profile>
-        <profile>
-               <id>test</id>
-               <activation>
-                       <property>
-                               <name>environment</name>
-                               <value>test</value>
-                       </property>
-               </activation>
-               <dependencies>
-                       <dependency>
-                               <groupId>mysql</groupId>
-                               <artifactId>mysql-connector-java</artifactId>
-                               <version>5.1.13</version>
-                               <scope>runtime</scope>
-                       </dependency>
-                       <dependency>
-                               <groupId>net.sourceforge.jtds</groupId>
-                               <artifactId>jtds</artifactId>
-                               <version>1.2.2</version>
-                               <scope>runtime</scope>
-                       </dependency>
-                       <dependency>
-                               <groupId>postgresql</groupId>
-                               <artifactId>postgresql</artifactId>
-                               <version>8.4-701.jdbc3</version>
-                               <scope>runtime</scope>
-                       </dependency>
-                       <dependency>
-                            <groupId>com.oracle</groupId>
-                            <artifactId>ojdbc6</artifactId>
-                            <version>${oracle.jdbc.version}</version>
-                            <scope>runtime</scope>
-                       </dependency>
-               </dependencies>
-       </profile>
     </profiles>
     <properties>
         <jira.version>6.0.1</jira.version>
