@@ -79,7 +79,7 @@ public class OpenIdDao {
     public List<OpenIdProvider> findAllEnabledProviders() throws SQLException {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
                 Query.select()
-                        .where(String.format("%s IS ?", OpenIdProvider.ENABLED), Boolean.TRUE)
+                        .where(String.format("%s = ?", OpenIdProvider.ENABLED), Boolean.TRUE)
                         .order(String.format("%s, %s", OpenIdProvider.ORDERING, OpenIdProvider.NAME)));
 
         if (providers != null && providers.length > 0) {
