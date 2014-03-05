@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.atlassian.selenium:atlassian-webdriver-core:2.1-m22">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/atlassian/selenium/atlassian-webdriver-core/2.1-m22/atlassian-webdriver-core-2.1-m22.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/atlassian/selenium/atlassian-webdriver-core/2.1-m22/atlassian-webdriver-core-2.1-m22-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/atlassian/selenium/atlassian-webdriver-core/2.1-m22/atlassian-webdriver-core-2.1-m22-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

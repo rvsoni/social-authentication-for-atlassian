@@ -2,6 +2,7 @@ package it.pageobjects;
 
 import com.atlassian.jira.pageobjects.components.DropDown;
 import com.atlassian.jira.pageobjects.pages.JiraLoginPage;
+import com.atlassian.jira.pageobjects.pages.btf.JiraBtfLoginPage;
 import com.atlassian.pageobjects.Page;
 import com.atlassian.pageobjects.binder.Init;
 import com.atlassian.pageobjects.elements.ElementBy;
@@ -10,7 +11,7 @@ import com.atlassian.pageobjects.elements.query.TimedCondition;
 import com.atlassian.pageobjects.page.LoginPage;
 import org.openqa.selenium.By;
 
-public class OpenIdLoginPage extends JiraLoginPage {
+public class OpenIdLoginPage extends JiraBtfLoginPage {
 
     @ElementBy(id = "openid-button")
     PageElement openIdButton;

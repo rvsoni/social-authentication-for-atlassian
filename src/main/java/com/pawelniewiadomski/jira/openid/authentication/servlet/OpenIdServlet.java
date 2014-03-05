@@ -19,6 +19,7 @@ import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
@@ -33,6 +34,7 @@ import org.expressme.openid.OpenIdException;
 import org.expressme.openid.OpenIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.net.ssl.SSLException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -144,12 +146,18 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                     return;
                 }
             } else {
-                Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
-                Association association = openIdManager.lookupAssociation(endpoint);
-                request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-                request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-                String url = openIdManager.getAuthenticationUrl(endpoint, association);
-                response.sendRedirect(url);
+                try {
+                    Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
+                    Association association = openIdManager.lookupAssociation(endpoint);
+                    request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
+                    request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
+                    String url = openIdManager.getAuthenticationUrl(endpoint, association);
+                    response.sendRedirect(url);
+                } catch(OpenIdException e) {
+                    log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
+                    renderTemplate(request, response, "OpenId.Templates.error", ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
+                    return;
+                }
             }
         }
 

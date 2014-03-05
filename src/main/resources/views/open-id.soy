@@ -483,11 +483,20 @@
 
 /**
  * @param baseUrl base URL
+ * @param? sslError in case it's SSL mis-configuration
  */
 {template .error}
 {call .errorWrapper}
     {param content}
-    There was a problem during authentication. Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
+
+        There was a problem during authentication.&nbsp;
+
+        {if $sslError}
+            SSL connection failed. Refer to logs for details.
+        {else}
+            Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
+        {/if}
+
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}

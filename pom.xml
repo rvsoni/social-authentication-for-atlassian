@@ -315,20 +315,13 @@
                 <skipTests>true</skipTests>
             </properties>
         </profile>
-        <profile>
-            <id>jira-6.1</id>
-            <properties>
-                <jira.version>6.1</jira.version>
-                <testkit.version>6.0.47</testkit.version>
-            </properties>
-        </profile>
     </profiles>
     <properties>
-        <jira.version>6.0.1</jira.version>
+        <jira.version>6.2</jira.version>
         <amps.version>4.2.5</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
-        <testkit.version>6.0.46</testkit.version>
+        <testkit.version>6.2.21</testkit.version>
         <upm.license.compatibility.version>2.4.1</upm.license.compatibility.version>
         <sal.api.version>2.4.0</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
