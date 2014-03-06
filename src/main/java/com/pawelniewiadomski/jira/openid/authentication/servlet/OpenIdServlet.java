@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
  * @since v5.2
  */
 public class OpenIdServlet extends AbstractOpenIdServlet {
+    public static final String RETURN_URL_PARAMETER = "returnUrl";
     final Logger log = Logger.getLogger(this.getClass());
 
     static final long ONE_HOUR = 3600000L;
@@ -109,11 +110,15 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final String pid = request.getParameter("pid");
-
         if (!licenseProvider.isValidLicense()) {
             renderTemplate(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
             return;
+        }
+
+        final String pid = request.getParameter("pid");
+        final String returnUrl = request.getParameter(RETURN_URL_PARAMETER);
+        if (StringUtils.isNotBlank(returnUrl)) {
+            request.getSession().setAttribute(RETURN_URL_PARAMETER, returnUrl);
         }
 
         final OpenIdProvider provider;
@@ -123,43 +128,47 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             throw new RuntimeException(e);
         }
 
-        if (provider != null) {
-            final String returnTo = getReturnTo(provider, request);
-            final OpenIdManager openIdManager = getOpenIdManager(returnTo);
-            final String nonce = request.getParameter("openid.response_nonce");
-            if (StringUtils.isNotEmpty(nonce)) {
-                try {
-                    // check nonce:
-                    checkNonce(nonce);
-                    // get authentication:
-                    byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
-                    String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
-                    Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
-                    String fullName = authentication.getFullname();
-                    String email = authentication.getEmail();
+        try {
+            if (provider != null) {
+                final String returnTo = getReturnTo(provider, request);
+                final OpenIdManager openIdManager = getOpenIdManager(returnTo);
+                final String nonce = request.getParameter("openid.response_nonce");
+                if (StringUtils.isNotEmpty(nonce)) {
+                    try {
+                        // check nonce:
+                        checkNonce(nonce);
+                        // get authentication:
+                        byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
+                        String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
+                        Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
+                        String fullName = authentication.getFullname();
+                        String email = authentication.getEmail();
 
-                    showAuthentication(request, response, provider, fullName, email);
-                    return;
-                } catch (OpenIdException e) {
-                    log.error("OpenID verification failed", e);
-                    renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-                    return;
-                }
-            } else {
-                try {
-                    Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
-                    Association association = openIdManager.lookupAssociation(endpoint);
-                    request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-                    request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-                    String url = openIdManager.getAuthenticationUrl(endpoint, association);
-                    response.sendRedirect(url);
-                } catch(OpenIdException e) {
-                    log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
-                    renderTemplate(request, response, "OpenId.Templates.error",
-                            ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
-                    return;
+                        showAuthentication(request, response, provider, fullName, email);
+                        return;
+                    } catch (OpenIdException e) {
+                        log.error("OpenID verification failed", e);
+                        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                        return;
+                    }
+                } else {
+                    try {
+                        Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
+                        Association association = openIdManager.lookupAssociation(endpoint);
+                        request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
+                        request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
+                        String url = openIdManager.getAuthenticationUrl(endpoint, association);
+                        response.sendRedirect(url);
+                    } catch(OpenIdException e) {
+                        log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
+                        renderTemplate(request, response, "OpenId.Templates.error",
+                                ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
+                        return;
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
         }
 
         renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
@@ -216,7 +225,12 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
 			ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
-            response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
+            final String returnUrl = (String) httpSession.getAttribute(RETURN_URL_PARAMETER);
+            if (StringUtils.isNotBlank(returnUrl)) {
+                response.sendRedirect(getBaseUrl(request) + returnUrl);
+            } else {
+                response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
+            }
         } else {
             renderTemplate(request, response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
         }

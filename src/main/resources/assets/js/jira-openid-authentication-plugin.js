@@ -20,9 +20,15 @@ AJS.$(function() {
                 var openIds = [];
 
                 AJS.$(data).each(function(idx, obj) {
+                    var authenticationUrl = contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id;
+                    var returnUrl = getParameterByName("os_destination", window.location.href);
+                    if (returnUrl) {
+                        authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);
+                    }
+
                     openIds.push(
                         '<li><a id="openid-' + obj.id + '" class="openid" href="'
-                            + contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id + '">' + obj.name + '</a></li>');
+                            + authenticationUrl + '">' + obj.name + '</a></li>');
                 });
                 $providers.append(openIds.join(""));
                 $providers.find("li a").click(function() {
@@ -32,5 +38,17 @@ AJS.$(function() {
 				$providers.append("<li><a href='#'>All OpenID providers were disabled</a></li>");
 			}
         });
+    }
+
+    function getParameterByName(name, href)
+    {
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( href );
+        if( results == null )
+            return "";
+        else
+            return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 });
