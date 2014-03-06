@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52ca1f1b-49c5-41f4-8e0c-8c4501d80bc3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/it/pageobjects/OpenIdLoginPage.java" afterPath="$PROJECT_DIR$/src/test/java/it/pageobjects/OpenIdLoginPage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/pawelniewiadomski/jira/openid/authentication/servlet/OpenIdServlet.java" afterPath="$PROJECT_DIR$/src/main/java/com/pawelniewiadomski/jira/openid/authentication/servlet/OpenIdServlet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/views/open-id.soy" afterPath="$PROJECT_DIR$/src/main/resources/views/open-id.soy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="jira-openid-authentication-plugin.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -69,12 +69,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OpenIdServlet.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="OpenIdServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pawelniewiadomski/jira/openid/authentication/servlet/OpenIdServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="156" column="67" selection-start="6819" selection-end="6819" vertical-scroll-proportion="0.25855514" vertical-offset="1341" max-vertical-offset="3150">
+            <state line="158" column="28" selection-start="6986" selection-end="6986" vertical-scroll-proportion="0.0" vertical-offset="1341" max-vertical-offset="3165">
               <folding>
-                <element signature="e#6971#6987#0" expanded="true" />
+                <element signature="e#6999#7015#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -83,7 +83,16 @@
       <file leaf-file-name="open-id.soy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/views/open-id.soy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="491" column="56" selection-start="17058" selection-end="17058" vertical-scroll-proportion="-10.346154" vertical-offset="7096" max-vertical-offset="8340">
+            <state line="488" column="20" selection-start="16980" selection-end="16980" vertical-scroll-proportion="-8.615385" vertical-offset="7096" max-vertical-offset="8340">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="256" column="20" selection-start="10149" selection-end="10149" vertical-scroll-proportion="0.4508519" vertical-offset="3496" max-vertical-offset="5085">
               <folding />
             </state>
           </provider>
@@ -112,8 +121,9 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/test/java/it/pageobjects/OpenIdLoginPage.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/views/open-id.soy" />
         <option value="$PROJECT_DIR$/src/main/java/com/pawelniewiadomski/jira/openid/authentication/servlet/OpenIdServlet.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/views/open-id.soy" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
@@ -568,13 +578,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/views/open-id.soy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="491" column="56" selection-start="17058" selection-end="17058" vertical-scroll-proportion="-10.346154" vertical-offset="7096" max-vertical-offset="8340">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/assets/js/jira-openid-authentication-plugin.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="789">
@@ -584,10 +587,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/pawelniewiadomski/jira/openid/authentication/servlet/OpenIdServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="67" selection-start="6819" selection-end="6819" vertical-scroll-proportion="0.25855514" vertical-offset="1341" max-vertical-offset="3150">
+        <state line="158" column="28" selection-start="6986" selection-end="6986" vertical-scroll-proportion="0.0" vertical-offset="1341" max-vertical-offset="3165">
           <folding>
-            <element signature="e#6971#6987#0" expanded="true" />
+            <element signature="e#6999#7015#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/views/open-id.soy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="488" column="20" selection-start="16980" selection-end="16980" vertical-scroll-proportion="-8.615385" vertical-offset="7096" max-vertical-offset="8340">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="256" column="20" selection-start="10149" selection-end="10149" vertical-scroll-proportion="0.4508519" vertical-offset="3496" max-vertical-offset="5085">
+          <folding />
         </state>
       </provider>
     </entry>

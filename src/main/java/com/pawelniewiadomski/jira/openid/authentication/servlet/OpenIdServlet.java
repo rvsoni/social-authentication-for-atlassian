@@ -155,7 +155,8 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                     response.sendRedirect(url);
                 } catch(OpenIdException e) {
                     log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
-                    renderTemplate(request, response, "OpenId.Templates.error", ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
+                    renderTemplate(request, response, "OpenId.Templates.error",
+                            ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
                     return;
                 }
             }
