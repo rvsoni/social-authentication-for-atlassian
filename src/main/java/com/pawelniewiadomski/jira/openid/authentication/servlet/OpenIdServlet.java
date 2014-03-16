@@ -109,6 +109,11 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!licenseProvider.isValidLicense()) {
             renderTemplate(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
@@ -154,7 +159,11 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                 } else {
                     try {
                         Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
+                        log.debug(String.format("OpenID Endpoint for %s is %s", provider.getEndpointUrl(), endpoint.toString()));
+
                         Association association = openIdManager.lookupAssociation(endpoint);
+                        log.debug(String.format("OpenID Association for %s is %s", provider.getEndpointUrl(), association.toString()));
+
                         request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
                         request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
                         String url = openIdManager.getAuthenticationUrl(endpoint, association);
