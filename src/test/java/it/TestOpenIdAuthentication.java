@@ -5,10 +5,7 @@ import com.atlassian.jira.tests.TestBase;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
-import it.pageobjects.ConfigurationPage;
-import it.pageobjects.ErrorPage;
-import it.pageobjects.GoogleLoginPage;
-import it.pageobjects.OpenIdLoginPage;
+import it.pageobjects.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -34,7 +31,7 @@ public class TestOpenIdAuthentication extends TestBase {
         jira().backdoor().project().addProject("Test", "TST", "admin");
 
         ConfigurationPage configuration = jira().gotoLoginPage().loginAsSysAdmin(ConfigurationPage.class);
-        configuration.setAllowedDomains("spartez.com").save();
+        configuration.setAllowedDomains("test.pl, spartez.com, abc.pl").save();
     }
 
     @After
@@ -53,8 +50,12 @@ public class TestOpenIdAuthentication extends TestBase {
         googleLoginPage.setPersistentCookie(false);
         googleLoginPage.setEmail((String) PropertyUtils.getProperty(passwords, "spartez.user"));
         googleLoginPage.setPassword((String) PropertyUtils.getProperty(passwords, "spartez.password"));
-        googleLoginPage.signIn();
 
+        Poller.waitUntilTrue(googleLoginPage.isSignInEnabled());
+        DelayedBinder<GoogleApprovePage> approvePage = googleLoginPage.signIn();
+        if (approvePage.canBind()) {
+            approvePage.bind().approve();
+        }
         jira().getPageBinder().bind(DashboardPage.class);
     }
 
@@ -68,7 +69,10 @@ public class TestOpenIdAuthentication extends TestBase {
         googleLoginPage.setPersistentCookie(false);
         googleLoginPage.setEmail((String) PropertyUtils.getProperty(passwords, "gmail.user"));
         googleLoginPage.setPassword((String) PropertyUtils.getProperty(passwords, "gmail.password"));
-        googleLoginPage.signIn();
+        DelayedBinder<GoogleApprovePage> approvePage = googleLoginPage.signIn();
+        if (approvePage.canBind()) {
+            approvePage.bind().approve();
+        }
 
         ErrorPage errorPage = jira().getPageBinder().bind(ErrorPage.class);
         Poller.waitUntil(errorPage.getErrorMessage(), containsString("allowed domains"));

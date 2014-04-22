@@ -318,7 +318,7 @@
     </profiles>
     <properties>
         <jira.version>6.2</jira.version>
-        <amps.version>4.2.5</amps.version>
+        <amps.version>4.2.20</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>

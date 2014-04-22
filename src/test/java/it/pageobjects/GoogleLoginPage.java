@@ -45,8 +45,14 @@ public class GoogleLoginPage extends AbstractJiraPage {
         return this;
     }
 
-    public void signIn() {
+    public TimedCondition isSignInEnabled()
+    {
+        return signInButton.timed().isEnabled();
+    }
+
+    public com.atlassian.pageobjects.DelayedBinder<GoogleApprovePage> signIn() {
         this.signInButton.click();
+        return pageBinder.delayedBind(GoogleApprovePage.class);
     }
 
     public void setPersistentCookie(final boolean b) {

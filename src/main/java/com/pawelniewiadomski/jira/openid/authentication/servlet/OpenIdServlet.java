@@ -195,7 +195,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             final String domain = StringUtils.substringAfter(email, "@");
             boolean matchingDomain = false;
             for(final String allowedDomain : allowedDomains) {
-                if (StringUtils.equals(allowedDomain, domain)) {
+                if (StringUtils.equals(StringUtils.trim(allowedDomain), domain)) {
                     matchingDomain = true;
                     break;
                 }
