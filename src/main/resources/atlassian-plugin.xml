@@ -57,16 +57,25 @@
     <!-- import from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
     <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
-    <servlet name="OpenId Servlet" i18n-name-key="open-id.name" key="openid-servlet"
+
+    <servlet name="OpenId 1.0 Servlet" i18n-name-key="open-id.name" key="openid-1.0-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
         <description key="open-id.description">The OpenId Servlet Plugin</description>
         <url-pattern>/openid-authentication</url-pattern>
     </servlet>
+
+    <servlet name="OpenId Connect Servlet" i18n-name-key="open-id.name" key="openid-connect-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
+        <description key="open-id.description">The OpenId Servlet Plugin</description>
+        <url-pattern>/openid-connect</url-pattern>
+    </servlet>
+
     <servlet name="OpenId Configuration Servlet" i18n-name-key="open-id.name" key="openid-configuration-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
         <description key="open-id.description">The OpenId Configuration Servlet Plugin</description>
         <url-pattern>/openid-configuration</url-pattern>
     </servlet>
+
     <component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
     <component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
     <component-import key="txTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate"/>
@@ -122,6 +131,11 @@
 
     <component key="addOrderUpgradeTask" name="Upgrade Task"
                class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
+
+    <component key="switchGoogleToConnectUpgradeTask" name="Upgrade Task"
+               class="com.pawelniewiadomski.jira.openid.authentication.upgrade.SwitchGoogleToConnectUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
 

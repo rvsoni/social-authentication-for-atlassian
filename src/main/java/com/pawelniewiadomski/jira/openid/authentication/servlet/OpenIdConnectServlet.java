@@ -1,6 +1,24 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriBuilder;
+
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.crowd.search.query.entity.UserQuery;
@@ -8,6 +26,7 @@ import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.security.login.LoginManager;
@@ -16,15 +35,23 @@ import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.nimbusds.oauth2.sdk.ResponseType;
+import com.nimbusds.oauth2.sdk.Scope;
+import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
+import com.nimbusds.openid.connect.sdk.Nonce;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.Association;
@@ -34,27 +61,10 @@ import org.expressme.openid.OpenIdException;
 import org.expressme.openid.OpenIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.net.ssl.SSLException;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
 /**
- * Handling OpenID 1.0 authentications.
+ * Handling OpenID Connect authentications.
  */
-public class OpenIdServlet extends AbstractOpenIdServlet {
+public class OpenIdConnectServlet extends AbstractOpenIdServlet {
     public static final String RETURN_URL_PARAMETER = "returnUrl";
     final Logger log = Logger.getLogger(this.getClass());
 
@@ -125,44 +135,40 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             if (provider != null) {
                 final String returnTo = getReturnTo(provider, request);
                 final OpenIdManager openIdManager = getOpenIdManager(returnTo);
-                final String nonce = request.getParameter("openid.response_nonce");
-                if (StringUtils.isNotEmpty(nonce)) {
-                    try {
-                        // check nonce:
-                        checkNonce(nonce);
-                        // get authentication:
-                        byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
-                        String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
-                        Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
-                        String fullName = authentication.getFullname();
-                        String email = authentication.getEmail();
 
-                        showAuthentication(request, response, provider, fullName, email);
-                        return;
-                    } catch (OpenIdException e) {
-                        log.error("OpenID verification failed", e);
-                        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
-                        return;
-                    }
-                } else {
-                    try {
-                        Endpoint endpoint = openIdManager.lookupEndpoint(provider.getEndpointUrl(), provider.getExtensionNamespace());
-                        log.debug(String.format("OpenID Endpoint for %s is %s", provider.getEndpointUrl(), endpoint.toString()));
-
-                        Association association = openIdManager.lookupAssociation(endpoint);
-                        log.debug(String.format("OpenID Association for %s is %s", provider.getEndpointUrl(), association.toString()));
-
-                        request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());
-                        request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
-                        String url = openIdManager.getAuthenticationUrl(endpoint, association);
-                        response.sendRedirect(url);
-                    } catch(OpenIdException e) {
-                        log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
-                        renderTemplate(request, response, "OpenId.Templates.error",
-                                ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
-                        return;
-                    }
-                }
+//                if (StringUtils.isNotEmpty(nonce)) {
+//                    try {
+//                        // check nonce:
+//                        checkNonce(nonce);
+//                        // get authentication:
+//                        byte[] mac_key = (byte[]) request.getSession().getAttribute(ATTR_MAC);
+//                        String alias = (String) request.getSession().getAttribute(ATTR_ALIAS);
+//                        Authentication authentication = openIdManager.getAuthentication(request, mac_key, alias);
+//                        String fullName = authentication.getFullname();
+//                        String email = authentication.getEmail();
+//
+//                        showAuthentication(request, response, provider, fullName, email);
+//                        return;
+//                    } catch (OpenIdException e) {
+//                        log.error("OpenID verification failed", e);
+//                        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+//                        return;
+//                    }
+//                } else {
+                    ClientID clientID = new ClientID(applicationProperties.getString(APKeys.JIRA_TITLE));
+                    URI callback = new URI(getReturnTo(provider, request));
+                    State state = new State();
+                    Nonce nonce = new Nonce();
+                    AuthenticationRequest req = new AuthenticationRequest(
+                            new URI(provider.getEndpointUrl()),
+                            new ResponseType(ResponseType.Value.CODE),
+                            Scope.parse("openid email profile address"),
+                            clientID,
+                            callback,
+                            state,
+                            nonce);
+                    response.sendRedirect(req.toURI().toString());
+//                }
             }
         } catch (Exception e) {
             log.error("OpenID Authentication failed, there was an error: " + e.getMessage());

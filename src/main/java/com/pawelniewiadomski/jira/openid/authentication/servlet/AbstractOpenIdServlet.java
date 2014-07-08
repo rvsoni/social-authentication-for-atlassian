@@ -10,6 +10,8 @@ import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
@@ -103,5 +105,8 @@ public class AbstractOpenIdServlet extends HttpServlet {
         resp.sendRedirect(loginUriProvider.getLoginUri(URI.create(req.getRequestURL().toString())).toASCIIString());
     }
 
-
+    String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
+        return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/openid-authentication")
+                .queryParam("pid", provider.getID()).build().toString();
+    }
 }

@@ -20,7 +20,13 @@ AJS.$(function() {
                 var openIds = [];
 
                 AJS.$(data).each(function(idx, obj) {
-                    var authenticationUrl = contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id;
+                    var authenticationUrl;
+                    if (obj.connect) {
+                        authenticationUrl = contextPath + '/plugins/servlet/openid-connect?pid=' + obj.id;
+                    } else {
+                        authenticationUrl = contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id;
+                    }
+
                     var returnUrl = getParameterByName("os_destination", window.location.href);
                     if (returnUrl) {
                         authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);

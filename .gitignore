@@ -2,3 +2,5 @@ it.json
 target
 *.iml
 .idea/workspace.xml
+.idea/libraries/
+.idea/dictionaries/pniewiadomski.xml

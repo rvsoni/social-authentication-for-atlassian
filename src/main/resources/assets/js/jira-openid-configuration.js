@@ -15,11 +15,11 @@ var ConfigurationCtrl = ['$scope', '$http', 'restPath', function($scope, $http, 
 
     $scope.moveProviderUp = function(providerId) {
         $http.post(restPath + "/openIdProviders/moveUp/" + providerId).success(setProviders);
-    }
+    };
 
     $scope.moveProviderDown = function(providerId) {
         $http.post(restPath + "/openIdProviders/moveDown/" + providerId).success(setProviders);
-    }
+    };
 
     $http.get(restPath + "/openIdProviders").success(setProviders).error(function(data) {
         $scope.error = true;

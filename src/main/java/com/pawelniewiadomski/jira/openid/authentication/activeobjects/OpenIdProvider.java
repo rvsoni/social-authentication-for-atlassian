@@ -18,6 +18,7 @@ public interface OpenIdProvider extends Entity {
     public static final String CREATE_USERS = "CREATE_USERS";
     public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
     public static final String ORDERING = "ORDERING";
+    public static final String CONNECT = "CONNECT";
 
     @NotNull
     @Unique
@@ -38,6 +39,9 @@ public interface OpenIdProvider extends Entity {
     @Indexed
     boolean isEnabled();
     void setEnabled(boolean enabled);
+
+    boolean isConnect();
+    void setConnect(boolean connect);
 
     @NotNull
     @Default("FALSE")
