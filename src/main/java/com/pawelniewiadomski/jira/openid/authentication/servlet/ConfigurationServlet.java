@@ -54,25 +54,27 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            final boolean isInternal = provider != null && provider.isInternal();
 
-            if (StringUtils.isEmpty(name)) {
-                errors.put("name", i18nResolver.getText("configuration.name.empty"));
-            } else {
-                final OpenIdProvider providerByName;
-                try {
-                    providerByName = openIdDao.findByName(name);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+            if (!isInternal) {
+                if (StringUtils.isEmpty(name)) {
+                    errors.put("name", i18nResolver.getText("configuration.name.empty"));
+                } else {
+                    final OpenIdProvider providerByName;
+                    try {
+                        providerByName = openIdDao.findByName(name);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    if (providerByName != null && (provider == null || provider.getID() != providerByName.getID())) {
+                        errors.put("name", i18nResolver.getText("configuration.name.must.be.unique"));
+                    }
                 }
 
-                if (providerByName != null
-                        && (provider == null || (provider != null && provider.getID() != providerByName.getID()))) {
-                    errors.put("name", i18nResolver.getText("configuration.name.must.be.unique"));
+                if (StringUtils.isEmpty(endpointUrl)) {
+                    errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty"));
                 }
-            }
-
-            if (StringUtils.isEmpty(endpointUrl)) {
-                errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty"));
             }
 
             if (!errors.isEmpty()) {
@@ -92,9 +94,12 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             } else {
                 try {
                     if (provider != null) {
-                        provider.setName(name);
-                        provider.setEndpointUrl(endpointUrl);
-                        provider.setExtensionNamespace(extensionNamespace);
+                        if (!isInternal)
+                        {
+                            provider.setName(name);
+                            provider.setEndpointUrl(endpointUrl);
+                            provider.setExtensionNamespace(extensionNamespace);
+                        }
                         provider.setAllowedDomains(allowedDomains);
                         provider.save();
                     } else {
@@ -105,7 +110,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                 }
             }
         } else if (StringUtils.equals("allowedDomains", operation)) {
-            OpenIdProvider provider = null;
+            OpenIdProvider provider;
             try {
                 provider = openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE);
             } catch (SQLException e) {

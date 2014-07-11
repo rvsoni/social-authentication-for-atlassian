@@ -12,6 +12,16 @@
 {/call}
 
 {/template}
+
+/**
+ * @param forField
+ * @param message
+ * @param? extraClasses
+ */
+{template .fieldError}
+    <div data-field="{$forField}" class="error{call aui.renderExtraClasses data="all" /}">{$message}</div>
+{/template}
+
 /**
  * @param? errors
  * @param? values
@@ -32,7 +42,8 @@
                 {param value: $values.name/}
             {/call}
             {if $errors.name}
-                {call aui.form.fieldError}
+                {call .fieldError}
+                    {param forField: 'name'/}
                     {param message: $errors.name/}
                 {/call}
             {/if}
@@ -52,7 +63,8 @@
                 {param width: ''/}
             {/call}
             {if $errors.endpointUrl}
-                {call aui.form.fieldError}
+                {call .fieldError}
+                    {param forField: 'endpointUrl'/}
                     {param message: $errors.endpointUrl/}
                 {/call}
             {/if}
@@ -73,7 +85,8 @@
                 {param message}Probably you should use 'ext1'{/param}
             {/call}
             {if $errors.extensionNamespace}
-                {call aui.form.fieldError}
+                {call .fieldError}
+                    {param forField: 'extensionNamespace'/}
                     {param message: $errors.extensionNamespace/}
                 {/call}
             {/if}
@@ -224,7 +237,7 @@
 				{/param}
 			{/call}
             {call aui.form.form}
-                {param action}{$currentUrl}?op=add&pid={$pid}{/param}
+                {param action}{$currentUrl}?op=edit&pid={$pid}{/param}
                 {param id: 'editProvider'/}
                 {param content}
                     {call aui.form.fieldset}

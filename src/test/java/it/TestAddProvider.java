@@ -1,21 +1,23 @@
 package it;
 
+import com.atlassian.jira.pageobjects.elements.AuiMessage;
 import com.atlassian.jira.tests.TestBase;
 import com.atlassian.pageobjects.elements.query.Poller;
 import it.pageobjects.AddProviderPage;
 import it.pageobjects.ConfigurationPage;
 import it.pageobjects.EditProviderPage;
 import org.hamcrest.Matcher;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
+import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
+import static com.atlassian.pageobjects.elements.query.Poller.waitUntilTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v5.2
- */
 public class TestAddProvider extends TestBase {
 
     private AddProviderPage addPage;
@@ -41,6 +43,12 @@ public class TestAddProvider extends TestBase {
         EditProviderPage editPage = configurationPage.editProvider("Testing");
         Poller.waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
         Poller.waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
+
+        editPage.setName("");
+        editPage.setEndpointUrl("");
         editPage.save();
+
+        assertThat(editPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
+        assertThat(editPage.getFormErrors(), hasEntry("endpointUrl", "Provider URL must not be empty."));
     }
 }

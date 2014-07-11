@@ -61,6 +61,11 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
         return creatingUsersState.timed().hasClass("aui-lozenge-success");
     }
 
+    public ConfigurationPage clickAdvanced() {
+        advanced.click();
+        return this;
+    }
+
     public ConfigurationPage setAllowedDomains(final String s) {
         allowedDomains.clear().type(s);
         return this;

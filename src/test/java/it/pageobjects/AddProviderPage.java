@@ -1,5 +1,8 @@
 package it.pageobjects;
 
+import java.util.Map;
+
+import com.atlassian.jira.pageobjects.form.FormUtils;
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
@@ -9,6 +12,9 @@ import com.atlassian.pageobjects.elements.query.TimedQuery;
 public class AddProviderPage extends AbstractJiraPage {
     @ElementBy(id = "name")
     PageElement name;
+
+    @ElementBy(cssSelector = "form.aui")
+    PageElement form;
 
     @ElementBy(id = "endpointUrl")
     PageElement endpointUrl;
@@ -49,11 +55,32 @@ public class AddProviderPage extends AbstractJiraPage {
         return pageBinder.bind(ConfigurationPage.class);
     }
 
+    public Map<String, String> getFormErrors()
+    {
+        return FormUtils.getAuiFormErrors(form);
+    }
+
     public TimedQuery<String> getName() {
         return name.timed().getValue();
     }
 
     public TimedQuery<String> getEndpointUrl() {
         return endpointUrl.timed().getValue();
+    }
+
+    public TimedCondition isEndpointUrlVisible() {
+        return endpointUrl.timed().isVisible();
+    }
+
+    public TimedCondition isNameVisible() {
+        return name.timed().isVisible();
+    }
+
+    public TimedCondition isAllowedDomainsVisible() {
+        return allowedDomains.timed().isVisible();
+    }
+
+    public TimedCondition isExtensionNamespaceVisible() {
+        return extensionNamespace.timed().isVisible();
     }
 }
