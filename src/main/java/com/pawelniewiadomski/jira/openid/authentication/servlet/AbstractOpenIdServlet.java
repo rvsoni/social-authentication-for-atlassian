@@ -23,11 +23,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v5.2
- */
 public class AbstractOpenIdServlet extends HttpServlet {
 
 	@Autowired

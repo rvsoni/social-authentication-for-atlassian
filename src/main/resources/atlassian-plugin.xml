@@ -65,7 +65,7 @@
     </servlet>
 
     <servlet name="OpenId Connect Servlet" i18n-name-key="open-id.name" key="openid-connect-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OAuthServlet">
         <description key="open-id.description">The OpenId Servlet Plugin</description>
         <url-pattern>/openid-connect</url-pattern>
     </servlet>
@@ -116,8 +116,8 @@
 
     <!-- Web items -->
     <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
-              i18n-name-key="openid.admin.link" weight="70">
-        <label key="openid.menu.automat"/>
+              weight="70">
+        <label key="openid.menu"/>
         <link linkId="openid">/openid/configuration</link>
         <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
@@ -131,11 +131,6 @@
 
     <component key="addOrderUpgradeTask" name="Upgrade Task"
                class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
-        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
-    </component>
-
-    <component key="switchGoogleToConnectUpgradeTask" name="Upgrade Task"
-               class="com.pawelniewiadomski.jira.openid.authentication.upgrade.SwitchGoogleToConnectUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
 
