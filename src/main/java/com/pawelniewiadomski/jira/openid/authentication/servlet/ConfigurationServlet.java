@@ -2,6 +2,8 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.webresource.WebResourceManager;
+import com.atlassian.webresource.api.assembler.PageBuilderService;
+
 import com.google.common.collect.*;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.upgrade.LoadDefaultProvidersComponent;
@@ -22,7 +24,7 @@ import java.util.Map;
 @Component
 public class ConfigurationServlet extends AbstractOpenIdServlet {
     @Autowired
-    WebResourceManager webResourceManager;
+    PageBuilderService pageBuilderService;
 
     @Autowired
     GlobalSettings globalSettings;
@@ -136,7 +138,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
 
-        webResourceManager.requireResourcesForContext("jira-openid-configuration");
+        pageBuilderService.assembler().resources().requireContext("jira-openid-configuration");
 
         final String operation = req.getParameter("op");
         if (StringUtils.equals("add", operation)) {
@@ -149,10 +151,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             return;
         } else if (StringUtils.equals("createUsers", operation)) {
             globalSettings.setCreatingUsers(true);
-            resp.sendRedirect(req.getRequestURI());
-            return;
-        } else if (StringUtils.equals("advanced", operation)) {
-            globalSettings.setAdvanced(!Boolean.valueOf(req.getParameter("value")));
             resp.sendRedirect(req.getRequestURI());
             return;
         }
@@ -171,12 +169,13 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                         return;
                     } else if (StringUtils.equals("edit", operation)) {
                         renderTemplate(req, resp, "OpenId.Templates.editProvider",
-                                ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
+                                ImmutableMap.of(
+                                        "currentUrl", req.getRequestURI(),
                                         "pid", providerId,
                                         "internal", provider.isInternal(),
                                         "values", providerValuesMap(provider.getName(),
-                                        provider.getEndpointUrl(), provider.getExtensionNamespace(),
-                                        provider.getAllowedDomains())));
+                                                provider.getEndpointUrl(), provider.getExtensionNamespace(),
+                                                provider.getAllowedDomains())));
                         return;
                     } else if (StringUtils.equals("disable", operation)) {
                         provider.setEnabled(false);
@@ -193,36 +192,13 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             }
         }
 
-        try {
-            renderTemplate(req, resp, "OpenId.Templates.providers",
-                    ImmutableMap.<String, Object>builder()
-                            .put("providers", isAdvanced()
-                                    ? openIdDao.findAllProviders()
-                                    : ImmutableList.of(openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE)))
-                            .put("isAdvanced", isAdvanced())
-                            .put("isPublic", JiraUtils.isPublicMode())
-                            .put("isCreatingUsers", globalSettings.isCreatingUsers())
-                            .put("isExternal", isExternalUserManagement())
-                            .put("currentUrl", req.getRequestURI())
-                            .put("isSimpleAvailable", isSimpleAvailable()).build());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean isAdvanced() {
-        return globalSettings.isAdvanced() || !isSimpleAvailable();
-    }
-
-    private boolean isSimpleAvailable() {
-        List<OpenIdProvider> providers = null;
-        try {
-            providers = openIdDao.findAllEnabledProviders();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return providers.size() == 1 && StringUtils.equals(providers.get(0).getName(), LoadDefaultProvidersComponent.GOOGLE);
+        renderTemplate(req, resp, "OpenId.Templates.providers",
+                ImmutableMap.<String, Object>builder()
+                        .put("isPublic", JiraUtils.isPublicMode())
+                        .put("isCreatingUsers", globalSettings.isCreatingUsers())
+                        .put("isExternal", isExternalUserManagement())
+                        .put("currentUrl", req.getRequestURI())
+                        .build());
     }
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
