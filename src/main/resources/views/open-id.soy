@@ -25,74 +25,132 @@
 /**
  * @param? errors
  * @param? values
- * @param? internal
  */
 {template .providerDetails}
-{if not $internal}
-    {call aui.form.fieldGroup}
-        {param content}
-            {call aui.form.label}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'name'/}
+            {param isRequired: true/}
+            {param content: 'Name'/}
+        {/call}
+        {call aui.form.input}
+            {param id: 'name'/}
+            {param type:'text'/}
+            {param value: $values.name/}
+        {/call}
+        {if $errors.name}
+            {call .fieldError}
                 {param forField: 'name'/}
-                {param isRequired: true/}
-                {param content: 'Name'/}
+                {param message: $errors.name/}
             {/call}
-            {call aui.form.input}
-                {param id: 'name'/}
-                {param type:'text'/}
-                {param value: $values.name/}
-            {/call}
-            {if $errors.name}
-                {call .fieldError}
-                    {param forField: 'name'/}
-                    {param message: $errors.name/}
-                {/call}
-            {/if}
-        {/param}
-    {/call}
-    {call aui.form.fieldGroup}
-        {param content}
-            {call aui.form.label}
+        {/if}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'endpointUrl'/}
+            {param isRequired: true/}
+            {param content: 'Provider URL'/}
+        {/call}
+        {call aui.form.input}
+            {param id: 'endpointUrl'/}
+            {param type:'text'/}
+            {param width: ''/}
+            {param value: $values.endpointUrl/}
+        {/call}
+        {if $errors.endpointUrl}
+            {call .fieldError}
                 {param forField: 'endpointUrl'/}
-                {param isRequired: true/}
-                {param content: 'Provider URL'/}
+                {param message: $errors.endpointUrl/}
             {/call}
-            {call aui.form.input}
-                {param id: 'endpointUrl'/}
-                {param type:'text'/}
-                {param value: $values.endpointUrl/}
-                {param width: ''/}
-            {/call}
-            {if $errors.endpointUrl}
-                {call .fieldError}
-                    {param forField: 'endpointUrl'/}
-                    {param message: $errors.endpointUrl/}
-                {/call}
-            {/if}
-        {/param}
-    {/call}
-    {call aui.form.fieldGroup}
-        {param content}
-            {call aui.form.label}
+        {/if}
+    {/param}
+{/call}
+<fieldset class="group">
+    <legend><span>OpenID version</span></legend>
+    <div class="radio">
+        <input id="openid1" class="radio" type="radio" name="providerType" value="openid1" {if not $values.providerType or $values.providerType == 'openid1'}checked="true"{/if}>
+        <label for="openid1">OpenID 1.0</label>
+    </div>
+    <div class="radio">
+        <input id="oauth2" class="radio" type="radio" name="providerType" value="oauth2" {if $values.providerType == 'oauth2'}checked="true"{/if}>
+        <label for="oauth2">OpenID Connect/OAuth 2.0</label>
+    </div>
+</fieldset>
+{call aui.form.fieldGroup}
+    {param extraClasses}openid1{/param}
+    {param content}
+        {call aui.form.label}
+            {param isRequired: true/}
+            {param forField: 'extensionNamespace'/}
+            {param content: 'Alias'/}
+        {/call}
+        {call aui.form.input}
+            {param id: 'extensionNamespace'/}
+            {param type:'text'/}
+            {param value: $values.extensionNamespace/}
+        {/call}
+        {call aui.form.fieldDescription}
+            {param message}Probably you should use 'ext1'{/param}
+        {/call}
+        {if $errors.extensionNamespace}
+            {call .fieldError}
                 {param forField: 'extensionNamespace'/}
-                {param content: 'Alias'/}
+                {param message: $errors.extensionNamespace/}
             {/call}
-            {call aui.form.input}
-                {param id: 'extensionNamespace'/}
-                {param type:'text'/}
-                {param value: $values.extensionNamespace/}
+        {/if}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraClasses}oauth2{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientId'/}
+            {param content: 'Client ID'/}
+            {param isRequired: true/}
+        {/call}
+        {call aui.form.input}
+            {param id: 'clientId'/}
+            {param type:'text'/}
+            {param value: $values.clientId/}
+        {/call}
+        {call aui.form.fieldDescription}
+            {param message}Client ID that was established at the provider's site{/param}
+        {/call}
+        {if $errors.clientId}
+            {call .fieldError}
+                {param forField: 'clientId'/}
+                {param message: $errors.clientId/}
             {/call}
-            {call aui.form.fieldDescription}
-                {param message}Probably you should use 'ext1'{/param}
+        {/if}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraClasses}oauth2{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientSecret'/}
+            {param content: 'Client Secret'/}
+            {param isRequired: true/}
+        {/call}
+        {call aui.form.input}
+            {param id: 'clientSecret'/}
+            {param type:'text'/}
+            {param value: $values.clientSecret/}
+        {/call}
+        {call aui.form.fieldDescription}
+            {param message}Client Secret that was established at the provider's site{/param}
+        {/call}
+        {if $errors.clientSecret}
+            {call .fieldError}
+                {param forField: 'clientSecret'/}
+                {param message: $errors.clientSecret/}
             {/call}
-            {if $errors.extensionNamespace}
-                {call .fieldError}
-                    {param forField: 'extensionNamespace'/}
-                    {param message: $errors.extensionNamespace/}
-                {/call}
-            {/if}
-        {/param}
-    {/call}
-{/if}
+        {/if}
+    {/param}
+{/call}
 {call .allowedDomainsTextField}
     {param value: $values.allowedDomains/}
 {/call}
@@ -105,7 +163,7 @@
  */
 {template .addProvider}
 {call aui.page.document}
-    {param windowTitle: 'Add OpenID Provider'/}
+    {param windowTitle: 'Add Authentication Provider'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
     {/param}
@@ -115,8 +173,8 @@
 				{param content}
 					{call aui.page.pageHeaderMain}
 						{param content}
-							<h2>Add OpenID Provider</h2>
-							<p class="description">You can add any OpenID provider that returns e-mail and full name of the user.</p>
+							<h2>Add Authentication Provider</h2>
+							<p class="description">You can add any OpenID/OAuth 2.0 provider that returns e-mail and full name of the user.</p>
 						{/param}
 					{/call}
 				{/param}
@@ -212,13 +270,12 @@
 /**
  * @param currentUrl
  * @param pid
- * @param? internal
  * @param? errors
  * @param? values
  */
 {template .editProvider}
 {call aui.page.document}
-    {param windowTitle: 'Edit OpenID Provider'/}
+    {param windowTitle: 'Edit Authentication Provider'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
     {/param}
@@ -228,10 +285,7 @@
 				{param content}
 					{call aui.page.pageHeaderMain}
 						{param content}
-							<h2>Edit OpenID Provider</h2>
-							{if $internal}
-							    <p class="description">You can edit Allowed Domains only for an internal OpenID provider.</p>
-							{/if}
+							<h2>Edit Authentication Provider</h2>
 						{/param}
 					{/call}
 				{/param}
@@ -246,7 +300,6 @@
 							{call .providerDetails}
 								{param errors: $errors/}
 								{param values: $values/}
-								{param internal: $internal/}
 							{/call}
                         {/param}
                     {/call}
@@ -318,7 +371,7 @@
                             <li>
                                 <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.id]]">Edit</a>
                             </li>
-                            <li ng-if="provider.internal == false">
+                            <li>
                                 <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.id]]">Delete</a>
                             </li>
                         </ul>

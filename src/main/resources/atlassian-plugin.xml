@@ -134,6 +134,11 @@
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
 
+    <component key="providerTypeUpgradeTask" name="Upgrade Task"
+               class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
+
     <!-- Gadget -->
     <gadget key="openid-login-gadget" location="openid-login-gadget.xml">
         <resource type="download" name="gadgetIcon.png" location="assets/images/gadgetIcon.png"/>

@@ -9,6 +9,9 @@ import net.java.ao.schema.*;
 @Preload
 public interface OpenIdProvider extends Entity {
 
+    public static final String OPENID_TYPE = "openid1";
+    public static final String OAUTH2_TYPE = "oauth2";
+
     public static final String ID = "ID";
     public static final String NAME = "NAME";
     public static final String ENDPOINT_URL = "ENDPOINT_URL";
@@ -19,6 +22,7 @@ public interface OpenIdProvider extends Entity {
     public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
     public static final String ORDERING = "ORDERING";
     public static final String CONNECT = "CONNECT";
+    public static final String PROVIDER_TYPE = "PROVIDER_TYPE";
 
     @NotNull
     @Unique
@@ -59,4 +63,16 @@ public interface OpenIdProvider extends Entity {
 
     Integer getOrdering();
     void setOrdering(Integer ordering);
+
+    @StringLength(StringLength.MAX_LENGTH)
+    String getProviderType();
+    void setProviderType(String type);
+
+    @StringLength(StringLength.MAX_LENGTH)
+    String getClientId();
+    void setClientId(String clientId);
+
+    @StringLength(StringLength.MAX_LENGTH)
+    String getClientSecret();
+    void setClientSecret(String clientSecret);
 }

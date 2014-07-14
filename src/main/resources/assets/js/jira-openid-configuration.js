@@ -25,3 +25,20 @@ var ConfigurationCtrl = ['$scope', '$http', 'restPath', function($scope, $http, 
         $scope.error = true;
     });
 }];
+
+(function($) {
+    $(function () {
+        var showOrHide = function () {
+            if ($('#openid1').attr('checked')) {
+                $('.oauth2').hide();
+                $('.openid1').show();
+            } else {
+                $('.oauth2').show();
+                $('.openid1').hide();
+            }
+        };
+
+        $('input[name=providerType]').click(showOrHide);
+        showOrHide();
+    });
+}(AJS.$));

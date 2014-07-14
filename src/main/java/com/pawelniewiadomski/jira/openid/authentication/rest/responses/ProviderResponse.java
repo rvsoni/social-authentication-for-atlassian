@@ -60,4 +60,6 @@ public class ProviderResponse extends BasicProviderResponse {
     public void setAllowedDomains(final String allowedDomains) {
         this.allowedDomains = allowedDomains;
     }
+
+
 }
