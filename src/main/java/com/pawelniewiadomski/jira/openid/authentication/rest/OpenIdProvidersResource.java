@@ -48,7 +48,7 @@ public class OpenIdProvidersResource {
                     new Function<OpenIdProvider, BasicProviderResponse>() {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
-                            return new BasicProviderResponse(input.getID(), input.getName());
+                            return new BasicProviderResponse(input.getID(), input.getName(), input.getProviderType());
                         }
                     }));
 
@@ -66,7 +66,7 @@ public class OpenIdProvidersResource {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
                             return new ProviderResponse(input.getID(), input.getName(),
-                                    input.isEnabled(), input.getOrdering(), input.isInternal(), input.getAllowedDomains());
+                                    input.isEnabled(), input.getOrdering(), input.isInternal(), input.getAllowedDomains(), input.getProviderType());
                         }
                     }))).cacheControl(never()).build();
         } catch (SQLException e) {

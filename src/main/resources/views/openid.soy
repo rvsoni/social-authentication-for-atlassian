@@ -60,6 +60,12 @@
             {param width: ''/}
             {param value: $values.endpointUrl/}
         {/call}
+        <div class="description">
+            <ul class="operations-list">
+                <li><a class="preset google">Google</a></li>
+                <li><a class="preset yahoo">Yahoo!</a></li>
+            </li>
+        </div>
         {if $errors.endpointUrl}
             {call .fieldError}
                 {param forField: 'endpointUrl'/}
@@ -168,7 +174,7 @@
         <meta name="decorator" content="admin"/>
     {/param}
     {param content}
-        <div id="openid">
+        <div class="openid">
         	{call aui.page.pageHeader}
 				{param content}
 					{call aui.page.pageHeaderMain}
@@ -225,7 +231,7 @@
         <meta name="decorator" content="admin"/>
     {/param}
     {param content}
-        <div id="openid">
+        <div class="openid">
         	{call aui.page.pageHeader}
 				{param content}
 					{call aui.page.pageHeaderMain}
@@ -280,7 +286,7 @@
         <meta name="decorator" content="admin"/>
     {/param}
     {param content}
-        <div id="openid">
+        <div class="openid">
         	{call aui.page.pageHeader}
 				{param content}
 					{call aui.page.pageHeaderMain}

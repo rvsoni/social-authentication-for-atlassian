@@ -23,7 +23,7 @@
         </transformation>
         <resource type="download" name="images/" location="assets/images"/>
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
-        <resource type="download" name="open-id.js" location="views/open-id.soy"/>
+        <resource type="download" name="openid.js" location="views/openid.soy"/>
     </web-resource>
 
     <!-- add our web resources -->

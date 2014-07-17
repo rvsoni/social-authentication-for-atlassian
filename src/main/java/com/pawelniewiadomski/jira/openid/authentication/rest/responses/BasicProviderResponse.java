@@ -12,9 +12,13 @@ public class BasicProviderResponse {
     @XmlElement(name = "name")
     private String name;
 
-    public BasicProviderResponse(int id, String name) {
+    @XmlElement(name = "providerType")
+    private String providerType;
+
+    public BasicProviderResponse(int id, String name, String providerType) {
         this.id = id;
         this.name = name;
+        this.providerType = providerType;
     }
 
     public int getId() {
@@ -31,5 +35,15 @@ public class BasicProviderResponse {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public String getProviderType()
+    {
+        return providerType;
+    }
+
+    public void setProviderType(String providerType)
+    {
+        this.providerType = providerType;
     }
 }

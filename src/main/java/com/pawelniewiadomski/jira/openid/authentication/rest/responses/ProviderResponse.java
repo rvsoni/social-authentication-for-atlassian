@@ -21,8 +21,8 @@ public class ProviderResponse extends BasicProviderResponse {
     @XmlElement
     private String allowedDomains;
 
-    public ProviderResponse(Integer id, String name, boolean enabled, Integer ordering, boolean internal, String allowedDomains) {
-        super(id, name);
+    public ProviderResponse(Integer id, String name, boolean enabled, Integer ordering, boolean internal, String allowedDomains, String providerType) {
+        super(id, name, providerType);
         this.enabled = enabled;
         this.ordering = ordering == null ? 1 : ordering;
         this.internal = internal;
