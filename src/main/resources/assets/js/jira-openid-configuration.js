@@ -44,6 +44,7 @@ var ConfigurationCtrl = ['$scope', '$http', 'restPath', function($scope, $http, 
         $('.preset').click(function() {
             var $this = $(this);
 
+            $('input[name=name]').val($this.data("name"));
             $('input[name=endpointUrl]').val($this.data("endpointurl"));
 
             if ($this.data("providertype") == "oauth2") {
