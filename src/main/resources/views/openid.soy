@@ -26,6 +26,8 @@
  * @param? errors
  * @param? values
  * @param presets
+ * @param callbackId
+ * @param callbackUrl
  */
 {template .providerDetails}
 {call aui.form.fieldGroup}
@@ -82,7 +84,7 @@
     {/param}
 {/call}
 <fieldset class="group">
-    <legend><span>OpenID version</span></legend>
+    <legend><span>Provider Type</span></legend>
     <div class="radio">
         <input id="openid1" class="radio" type="radio" name="providerType" value="openid1" {if not $values.providerType or $values.providerType == 'openid1'}checked="true"{/if}>
         <label for="openid1">OpenID 1.0</label>
@@ -114,6 +116,20 @@
                 {param message: $errors.extensionNamespace/}
             {/call}
         {/if}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraClasses}oauth2{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'callbackUrl'/}
+            {param content: 'Callback URL'/}
+        {/call}
+        <input type="hidden" name="callbackId" value="{$callbackId}">
+        <span id="callbackUrl">{$callbackUrl}</span>
+        {call aui.form.fieldDescription}
+            {param message}You need to submit it to your authentication provider.{/param}
+        {/call}
     {/param}
 {/call}
 {call aui.form.fieldGroup}
@@ -174,6 +190,8 @@
  * @param? errors
  * @param? values
  * @param presets
+ * @param callbackId
+ * @param callbackUrl
  */
 {template .addProvider}
 {call aui.page.document}
@@ -194,7 +212,7 @@
 				{/param}
 			{/call}
             {call aui.form.form}
-                {param action}{$currentUrl}?op=add{/param}
+                {param action: ''/}
                 {param id: 'addProvider'/}
                 {param content}
                     {call aui.form.fieldset}
@@ -204,6 +222,8 @@
 								{param errors: $errors/}
 								{param values: $values/}
 							    {param presets: $presets/}
+							    {param callbackId: $callbackId/}
+							    {param callbackUrl: $callbackUrl/}
 							{/call}
                         {/param}
                     {/call}
@@ -284,10 +304,11 @@
 
 /**
  * @param currentUrl
- * @param pid
  * @param? errors
  * @param? values
  * @param presets
+ * @param callbackId
+ * @param callbackUrl
  */
 {template .editProvider}
 {call aui.page.document}
@@ -307,7 +328,7 @@
 				{/param}
 			{/call}
             {call aui.form.form}
-                {param action}{$currentUrl}?op=edit&pid={$pid}{/param}
+                {param action: ''/}
                 {param id: 'editProvider'/}
                 {param content}
                     {call aui.form.fieldset}
@@ -317,6 +338,8 @@
 								{param errors: $errors/}
 								{param values: $values/}
 								{param presets: $presets/}
+								{param callbackId: $callbackId/}
+								{param callbackUrl: $callbackUrl/}
 							{/call}
                         {/param}
                     {/call}
@@ -342,7 +365,6 @@
 {/template}
 
 /**
- * @param currentUrl current URL
  */
 {template .advancedProviders}
 <div ng-app="openid.configuration" ng-controller="ConfigurationCtrl">
@@ -380,16 +402,16 @@
                     <td data-cell-type="operations" data-provider-name="[[provider.name]]" data-provider-id="[[provider.id]]">
                         <ul class="operations-list">
                             <li ng-if="provider.enabled">
-                                <a class="disable" href="{$currentUrl}?op=disable&pid=[[provider.id]]">Disable</a>
+                                <a class="disable" href="?op=disable&pid=[[provider.id]]">Disable</a>
                             </li>
                             <li ng-if="provider.enabled == false">
-                                <a class="enable" href="{$currentUrl}?op=enable&pid=[[provider.id]]">Enable</a>
+                                <a class="enable" href="?op=enable&pid=[[provider.id]]">Enable</a>
                             </li>
                             <li>
-                                <a class="edit" href="{$currentUrl}?op=edit&pid=[[provider.id]]">Edit</a>
+                                <a class="edit" href="?op=edit&pid=[[provider.id]]">Edit</a>
                             </li>
                             <li>
-                                <a class="delete" href="{$currentUrl}?op=delete&pid=[[provider.id]]">Delete</a>
+                                <a class="delete" href="?op=delete&pid=[[provider.id]]">Delete</a>
                             </li>
                         </ul>
                     </td>

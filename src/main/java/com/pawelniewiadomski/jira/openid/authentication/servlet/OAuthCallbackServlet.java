@@ -4,7 +4,6 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,20 +20,33 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Handling OpenID Connect authentications.
  */
-public class OAuthServlet extends AbstractOpenIdServlet
+public class OAuthCallbackServlet extends AbstractOpenIdServlet
 {
     final Logger log = Logger.getLogger(this.getClass());
 
+    @Autowired
+    GlobalSettings globalSettings;
+
+	@Autowired
+    CrowdService crowdService;
+
+	@Autowired
+    UserUtil userUtil;
+
 	@Autowired
     LicenseProvider licenseProvider;
+
+    @Autowired
+    JiraHome jiraHome;
+
+    @Autowired
+    AuthenticationService authenticationService;
 
     @Autowired
     TemplateHelper templateHelper;
@@ -49,39 +61,31 @@ public class OAuthServlet extends AbstractOpenIdServlet
             return;
         }
 
-        final String pid = request.getParameter("pid");
-        final String returnUrl = request.getParameter(AuthenticationService.RETURN_URL_PARAMETER);
-        if (StringUtils.isNotBlank(returnUrl)) {
-            request.getSession().setAttribute(AuthenticationService.RETURN_URL_PARAMETER, returnUrl);
-        }
-
+        final String cid = request.getParameter("cid");
         final OpenIdProvider provider;
         try {
-            provider = openIdDao.findProvider(Integer.valueOf(pid));
+            provider = openIdDao.findByCallbackId(cid);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        try {
-            if (provider != null) {
-                final String state = UUID.randomUUID().toString();
-
-                request.getSession().setAttribute(AuthenticationService.STATE_IN_SESSION, state);
-
-                OAuthClientRequest oauthRequest = OAuthClientRequest
-                        .authorizationLocation(provider.getEndpointUrl())
-                        .setClientId(provider.getClientId())
-                        .setResponseType("code")
-                        .setState(state)
-                        .setScope("openid email")
-                        .setRedirectURI(getReturnTo(provider, request))
-                        .buildQueryMessage();
-
-                response.sendRedirect(oauthRequest.getLocationUri());
+        if (provider != null) {
+            try
+            {
+                final OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
+                final String state = (String) request.getSession().getAttribute(AuthenticationService.STATE_IN_SESSION);
+                if (StringUtils.equals(state, oar.getState()))
+                {
+                    authenticationService.showAuthentication(request, response, provider, "test", "test");
+                    return;
+                }
+            } catch (Exception e) {
+                log.error("OpenID verification failed", e);
+                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                return;
             }
-        } catch (Exception e) {
-            log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
         }
 
-        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());    }
+        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+    }
 }

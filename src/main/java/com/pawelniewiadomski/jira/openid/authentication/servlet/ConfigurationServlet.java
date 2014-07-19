@@ -5,11 +5,14 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
@@ -18,13 +21,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.YahooProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 public class ConfigurationServlet extends AbstractOpenIdServlet {
@@ -63,6 +69,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             final String clientId = req.getParameter("clientId");
             final String clientSecret = req.getParameter("clientSecret");
             final String pid = req.getParameter("pid");
+            final String callbackId = getCallbackId(req);
             final OpenIdProvider provider;
             try {
                 provider = StringUtils.isNotEmpty(pid) ? openIdDao.findProvider(Integer.valueOf(pid)) : null;
@@ -107,6 +114,8 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                 mapBuilder.put("currentUrl", req.getRequestURI())
                         .put("errors", errors)
                         .put("presets", getPresets())
+                        .put("callbackId", callbackId)
+                        .put("callbackUrl", getCallbackUrl(callbackId))
                         .put("values", providerValuesMap(name, endpointUrl, extensionNamespace, allowedDomains,
                                 providerType, clientId, clientSecret));
 
@@ -127,6 +136,10 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                         if (providerType.equals(OpenIdProvider.OAUTH2_TYPE)) {
                             provider.setClientId(clientId);
                             provider.setClientSecret(clientSecret);
+                            if (isEmpty(provider.getCallbackId()))
+                            {
+                                provider.setCallbackId(getCallbackId(req));
+                            }
                         } else {
                             provider.setExtensionNamespace(extensionNamespace);
                         }
@@ -170,7 +183,10 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
         final String operation = req.getParameter("op");
         if (StringUtils.equals("add", operation)) {
             templateHelper.render(req, resp, "OpenId.Templates.addProvider",
-                    ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(), "presets", getPresets()));
+                    ImmutableMap.of(
+                            "currentUrl", req.getRequestURI(),
+                            "callbackId", getCallbackId(req),
+                            "presets", getPresets()));
             return;
         } else if (StringUtils.equals("onlyAuthenticate", operation)) {
             globalSettings.setCreatingUsers(false);
@@ -188,18 +204,20 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
                 final OpenIdProvider provider = openIdDao.findProvider(Integer.valueOf(providerId));
                 if (provider != null) {
-                    if (StringUtils.equals("delete", operation) && !provider.isInternal()) {
+                    if (StringUtils.equals("delete", operation)) {
                         templateHelper.render(req, resp, "OpenId.Templates.deleteProvider",
                                 ImmutableMap.<String, Object>of("currentUrl", req.getRequestURI(),
                                         "pid", providerId,
                                         "name", provider.getName()));
                         return;
                     } else if (StringUtils.equals("edit", operation)) {
+                        final String callbackId = getCallbackId(provider);
                         templateHelper.render(req, resp, "OpenId.Templates.editProvider",
                                 ImmutableMap.of(
                                         "currentUrl", req.getRequestURI(),
-                                        "pid", providerId,
                                         "presets", getPresets(),
+                                        "callbackId", callbackId,
+                                        "callbackUrl", getCallbackUrl(callbackId),
                                         "values", providerValuesMap(provider.getName(),
                                                 provider.getEndpointUrl(), provider.getExtensionNamespace(),
                                                 provider.getAllowedDomains(), provider.getProviderType(),
@@ -227,6 +245,24 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                         .put("isExternal", isExternalUserManagement())
                         .put("currentUrl", req.getRequestURI())
                         .build());
+    }
+
+    @Nonnull
+    private String getCallbackUrl(@Nonnull String callbackId)
+    {
+        return applicationProperties.getString(APKeys.JIRA_BASEURL) + "/plugins/servlet/oauth2-callback?cid=" + callbackId;
+    }
+
+    @Nonnull
+    private String getCallbackId(OpenIdProvider p)
+    {
+        return defaultIfEmpty(p.getCallbackId(), UUID.randomUUID().toString());
+    }
+
+    @Nonnull
+    private String getCallbackId(HttpServletRequest req)
+    {
+        return defaultIfEmpty(req.getParameter("callbackId"), UUID.randomUUID().toString());
     }
 
     private List<Map<String, String>> getPresets()

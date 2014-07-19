@@ -17,12 +17,11 @@ public interface OpenIdProvider extends Entity {
     public static final String ENDPOINT_URL = "ENDPOINT_URL";
     public static final String EXTENSION_NAMESPACE = "EXTENSION_NAMESPACE";
     public static final String ENABLED = "ENABLED";
-    public static final String INTERNAL = "INTERNAL";
     public static final String CREATE_USERS = "CREATE_USERS";
     public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
     public static final String ORDERING = "ORDERING";
-    public static final String CONNECT = "CONNECT";
     public static final String PROVIDER_TYPE = "PROVIDER_TYPE";
+    public static final String CALLBACK_ID = "CALLBACK_ID";
 
     @NotNull
     @Unique
@@ -48,11 +47,6 @@ public interface OpenIdProvider extends Entity {
     void setConnect(boolean connect);
 
     @NotNull
-    @Default("FALSE")
-    boolean isInternal();
-    void setInternal(boolean internal);
-
-    @NotNull
     @Default("TRUE")
     boolean isCreateUsers();
     void setCreateUsers(boolean createUsers);
@@ -75,4 +69,8 @@ public interface OpenIdProvider extends Entity {
     @StringLength(StringLength.MAX_LENGTH)
     String getClientSecret();
     void setClientSecret(String clientSecret);
+
+    @StringLength(value = 68)
+    String getCallbackId();
+    void setCallbackId(String callbackId);
 }

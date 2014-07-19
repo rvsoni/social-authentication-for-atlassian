@@ -66,7 +66,7 @@ public class OpenIdProvidersResource {
                         @Override
                         public BasicProviderResponse apply(@Nullable final OpenIdProvider input) {
                             return new ProviderResponse(input.getID(), input.getName(),
-                                    input.isEnabled(), input.getOrdering(), input.isInternal(), input.getAllowedDomains(), input.getProviderType());
+                                    input.isEnabled(), input.getOrdering(), input.getAllowedDomains(), input.getProviderType());
                         }
                     }))).cacheControl(never()).build();
         } catch (SQLException e) {

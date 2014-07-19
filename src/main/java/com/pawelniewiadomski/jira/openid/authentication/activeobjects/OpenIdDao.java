@@ -40,9 +40,19 @@ public class OpenIdDao {
     }
 
     @Nullable
-    public OpenIdProvider findByName(String name) throws SQLException {
+    public OpenIdProvider findByName(@Nonnull String name) throws SQLException {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
 				Query.select().where(String.format("%s = ?", OpenIdProvider.NAME), name));
+        if (providers != null && providers.length > 0) {
+            return providers[0];
+        }
+        return null;
+    }
+
+    @Nullable
+    public OpenIdProvider findByCallbackId(@Nonnull String cid) throws SQLException {
+        final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
+                Query.select().where(String.format("%s = ?", OpenIdProvider.CALLBACK_ID), cid));
         if (providers != null && providers.length > 0) {
             return providers[0];
         }
@@ -59,7 +69,6 @@ public class OpenIdDao {
                 new DBParam(OpenIdProvider.ENDPOINT_URL, url),
                 new DBParam(OpenIdProvider.ENABLED, true),
                 new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
-                new DBParam(OpenIdProvider.INTERNAL, internal),
                 new DBParam(OpenIdProvider.ORDERING, getNextOrdering()));
     }
 

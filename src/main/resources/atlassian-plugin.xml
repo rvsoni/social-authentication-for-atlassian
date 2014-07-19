@@ -58,21 +58,23 @@
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
     <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
 
-    <servlet name="OpenId 1.0 Servlet" i18n-name-key="open-id.name" key="openid-1.0-servlet"
+    <servlet name="OpenId 1.0 Servlet" key="openid-1.0-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
-        <description key="open-id.description">The OpenId Servlet Plugin</description>
         <url-pattern>/openid-authentication</url-pattern>
     </servlet>
 
-    <servlet name="OpenId Connect Servlet" i18n-name-key="open-id.name" key="openid-connect-servlet"
+    <servlet name="OpenId Connect Servlet" key="openid-connect-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.OAuthServlet">
-        <description key="open-id.description">The OpenId Servlet Plugin</description>
         <url-pattern>/openid-connect</url-pattern>
     </servlet>
 
-    <servlet name="OpenId Configuration Servlet" i18n-name-key="open-id.name" key="openid-configuration-servlet"
+    <servlet name="OAuth2 Callback Servlet" key="oauth2-callback-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OAuthCallbackServlet">
+        <url-pattern>/oauth2-callback</url-pattern>
+    </servlet>
+
+    <servlet name="OpenId Configuration Servlet" key="openid-configuration-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
-        <description key="open-id.description">The OpenId Configuration Servlet Plugin</description>
         <url-pattern>/openid-configuration</url-pattern>
     </servlet>
 
