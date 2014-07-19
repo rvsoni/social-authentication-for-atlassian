@@ -19,8 +19,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.upgrade.LoadDefaultProvidersComponent;
-import com.pawelniewiadomski.jira.openid.authentication.upgrade.YahooProvider;
+import com.pawelniewiadomski.jira.openid.authentication.YahooProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
@@ -140,15 +139,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                     throw new RuntimeException(e);
                 }
             }
-        } else if (StringUtils.equals("allowedDomains", operation)) {
-            OpenIdProvider provider;
-            try {
-                provider = openIdDao.findByName(LoadDefaultProvidersComponent.GOOGLE);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            provider.setAllowedDomains(req.getParameter("allowedDomains"));
-            provider.save();
         }
 
         resp.sendRedirect(req.getRequestURI());

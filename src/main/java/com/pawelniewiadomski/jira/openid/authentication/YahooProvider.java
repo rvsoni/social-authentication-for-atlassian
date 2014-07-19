@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.upgrade;
+package com.pawelniewiadomski.jira.openid.authentication;
 
 public class YahooProvider
 {

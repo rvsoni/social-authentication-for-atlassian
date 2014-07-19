@@ -3,7 +3,7 @@ AJS.$(function() {
         var buttons = [];
 
         buttons.push('<button id="openid-button" class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
-            +' aria-haspopup="true" aria-controls="openid-providers">OpenID</button>');
+            +' aria-haspopup="true" aria-controls="openid-providers">Social Login</button>');
         buttons.push('<div id="openid-providers" class="aui-dropdown2 aui-style-default" aria-hidden="true" data-dropdown2-alignment="left">');
         buttons.push('<ul class="aui-list-truncate">');
         buttons.push('<li><a href="#" class="loading"><span class="aui-icon aui-icon-wait"></span> Loading, please wait</a></li>');
