@@ -7,7 +7,7 @@
 {call aui.form.textField}
     {param id: 'allowedDomains'/}
     {param labelContent: 'Allowed Domains'/}
-    {param descriptionText: 'Coma separated list of Google Apps domains from which users will be able to log in.'/}
+    {param descriptionText: 'Limit access to users having emails from given domains.'/}
     {param value: $value/}
 {/call}
 
@@ -25,6 +25,7 @@
 /**
  * @param? errors
  * @param? values
+ * @param presets
  */
 {template .providerDetails}
 {call aui.form.fieldGroup}
@@ -62,8 +63,14 @@
         {/call}
         <div class="description">
             <ul class="operations-list">
-                <li><a class="preset google">Google</a></li>
-                <li><a class="preset yahoo">Yahoo!</a></li>
+                {foreach $preset in $presets}
+                    <li>
+                        <a class="preset"
+                        {foreach $k in keys($preset)}
+                            data-{$k}="{$preset[$k]}"
+                        {/foreach}
+                        >{$preset.name}</a></li>
+                {/foreach}
             </li>
         </div>
         {if $errors.endpointUrl}
@@ -166,6 +173,7 @@
  * @param currentUrl
  * @param? errors
  * @param? values
+ * @param presets
  */
 {template .addProvider}
 {call aui.page.document}
@@ -195,6 +203,7 @@
 							{call .providerDetails}
 								{param errors: $errors/}
 								{param values: $values/}
+							    {param presets: $presets/}
 							{/call}
                         {/param}
                     {/call}
@@ -278,6 +287,7 @@
  * @param pid
  * @param? errors
  * @param? values
+ * @param presets
  */
 {template .editProvider}
 {call aui.page.document}
@@ -306,6 +316,7 @@
 							{call .providerDetails}
 								{param errors: $errors/}
 								{param values: $values/}
+								{param presets: $presets/}
 							{/call}
                         {/param}
                     {/call}

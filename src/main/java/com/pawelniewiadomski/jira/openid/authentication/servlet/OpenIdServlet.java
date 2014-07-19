@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,6 +65,9 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     @Autowired
     AuthenticationService authenticationService;
 
+    @Autowired
+    TemplateHelper templateHelper;
+
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)
             .expireAfterWrite(2, TimeUnit.HOURS)
@@ -91,7 +95,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!licenseProvider.isValidLicense()) {
-            renderTemplate(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
             return;
         }
 
@@ -128,7 +132,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                         return;
                     } catch (OpenIdException e) {
                         log.error("OpenID verification failed", e);
-                        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                         return;
                     }
                 } else {
@@ -145,7 +149,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                         response.sendRedirect(url);
                     } catch(OpenIdException e) {
                         log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
-                        renderTemplate(request, response, "OpenId.Templates.error",
+                        templateHelper.render(request, response, "OpenId.Templates.error",
                                 ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
                         return;
                     }
@@ -155,7 +159,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
         }
 
-        renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
     }
 
     void checkNonce(String nonce) {

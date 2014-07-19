@@ -41,16 +41,17 @@ var ConfigurationCtrl = ['$scope', '$http', 'restPath', function($scope, $http, 
         $('input[name=providerType]').click(showOrHide);
         showOrHide();
 
-        $('.preset.google').click(function() {
-            $('input[name=endpointUrl]').val('https://accounts.google.com/o/oauth2/auth');
-            $('#oauth2').attr('checked', true);
-            showOrHide();
-        });
+        $('.preset').click(function() {
+            var $this = $(this);
 
-        $('.preset.yahoo').click(function() {
-            $('input[name=endpointUrl]').val('http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds');
-            $('input[name=extensionNamespace]').val('ax');
-            $('#openid1').attr('checked', true);
+            $('input[name=endpointUrl]').val($this.data("endpointurl"));
+
+            if ($this.data("providertype") == "oauth2") {
+                $('#oauth2').attr('checked', true);
+            } else {
+                $('#openid1').attr('checked', true);
+                $('input[name=extensionNamespace]').val($this.data("extensionnamespace"));
+            }
             showOrHide();
         });
     });

@@ -30,8 +30,11 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
 
 @Service
 public class AuthenticationService extends AbstractOpenIdServlet
@@ -49,11 +52,14 @@ public class AuthenticationService extends AbstractOpenIdServlet
     @Autowired
     private GlobalSettings globalSettings;
 
+    @Autowired
+    TemplateHelper templateHelper;
+
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                             final OpenIdProvider provider, String identity, String email) throws IOException, ServletException
     {
         if (StringUtils.isBlank(email)) {
-            renderTemplate(request, response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
             return;
         }
 
@@ -68,7 +74,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
                 }
             }
             if (!matchingDomain) {
-                renderTemplate(request, response, "OpenId.Templates.domainMismatch", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.domainMismatch", Collections.<String, Object>emptyMap());
                 return;
             }
         }
@@ -84,11 +90,11 @@ public class AuthenticationService extends AbstractOpenIdServlet
                         email, identity);
             } catch (PermissionException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             } catch (CreateException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                renderTemplate(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
                 return;
             }
         }
@@ -108,7 +114,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
                 response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
             }
         } else {
-            renderTemplate(request, response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
         }
     }
 }

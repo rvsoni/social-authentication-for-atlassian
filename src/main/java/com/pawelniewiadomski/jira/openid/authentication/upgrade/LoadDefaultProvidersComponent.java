@@ -37,7 +37,7 @@ public class LoadDefaultProvidersComponent implements PluginUpgradeTask {
         google.setEnabled(true);
         google.save();
 
-        final OpenIdProvider yahoo = openIdDao.createProvider("Yahoo!", "http://open.login.yahooapis.com/openid20/www.yahoo.com/xrds", "ax", true);
+        final OpenIdProvider yahoo = openIdDao.createProvider(YahooProvider.NAME, YahooProvider.ENDPOINT_URL, YahooProvider.EXTENSION_NAMESPACE, true);
         yahoo.setEnabled(false);
         yahoo.save();
 		return Collections.emptyList();

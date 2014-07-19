@@ -2,6 +2,7 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
+import com.atlassian.jira.util.BaseUrl;
 import com.atlassian.jira.util.http.JiraHttpUtils;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.message.I18nResolver;
@@ -23,13 +24,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
+
 public class AbstractOpenIdServlet extends HttpServlet {
 
 	@Autowired
 	OpenIdDao openIdDao;
-
-    @Autowired
-    SoyTemplateRenderer soyTemplateRenderer;
 
     @Autowired
     ApplicationProperties applicationProperties;
@@ -43,41 +43,8 @@ public class AbstractOpenIdServlet extends HttpServlet {
     @Autowired
     I18nResolver i18nResolver;
 
-    public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
-
-    String getBaseUrl(HttpServletRequest request) {
-        return UriBuilder.fromUri(request.getRequestURL().toString()).replacePath(request.getContextPath()).build().toString();
-    }
-
     boolean isExternalUserManagement() {
         return applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
-    }
-
-    void renderTemplate(final HttpServletRequest request,
-                        final HttpServletResponse response,
-                        String template, Map<String, Object> map) throws ServletException, IOException {
-        final Map<String, Object> params = Maps.newHashMap(map);
-        params.put("baseUrl", getBaseUrl(request));
-
-        JiraHttpUtils.setNoCacheHeaders(response);
-        response.setContentType(getContentType());
-        try {
-            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, params);
-        } catch (SoyException e) {
-            throw new ServletException(e);
-        }
-    }
-
-    String getContentType()
-    {
-        try
-        {
-            return applicationProperties.getContentType();
-        }
-        catch (Exception e)
-        {
-            return "text/html; charset=UTF-8";
-        }
     }
 
     boolean hasAdminPermission()
