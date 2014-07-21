@@ -112,6 +112,7 @@
     <!-- Pretty links -->
     <routing key="routes" path="/openid">
         <route from="/configuration" to="/plugins/servlet/openid-configuration"/>
+        <route from="/plugins/servlet/oauth-callback/{cid}" to="/plugins/servlet/oauth-callback?cid={cid}"/>
     </routing>
 
     <sitemesh key="ad-configuration" path="/openid/configuration"/>

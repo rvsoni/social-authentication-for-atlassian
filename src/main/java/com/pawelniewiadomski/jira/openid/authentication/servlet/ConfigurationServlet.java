@@ -70,7 +70,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             final String clientSecret = req.getParameter("clientSecret");
             final String pid = req.getParameter("pid");
             final String callbackId = getCallbackId(req);
-            final OpenIdProvider provider;
+            OpenIdProvider provider;
             try {
                 provider = StringUtils.isNotEmpty(pid) ? openIdDao.findProvider(Integer.valueOf(pid)) : null;
             } catch (SQLException e) {
@@ -129,25 +129,26 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                 return;
             } else {
                 try {
-                    if (provider != null) {
-                        provider.setName(name);
-                        provider.setEndpointUrl(endpointUrl);
-                        provider.setProviderType(providerType);
-                        if (providerType.equals(OpenIdProvider.OAUTH2_TYPE)) {
-                            provider.setClientId(clientId);
-                            provider.setClientSecret(clientSecret);
-                            if (isEmpty(provider.getCallbackId()))
-                            {
-                                provider.setCallbackId(getCallbackId(req));
-                            }
-                        } else {
-                            provider.setExtensionNamespace(extensionNamespace);
-                        }
-                        provider.setAllowedDomains(allowedDomains);
-                        provider.save();
-                    } else {
-                        openIdDao.createProvider(name, endpointUrl, extensionNamespace);
+                    if (provider == null)
+                    {
+                        provider = openIdDao.createProvider(name, endpointUrl, extensionNamespace);
                     }
+
+                    provider.setName(name);
+                    provider.setEndpointUrl(endpointUrl);
+                    provider.setProviderType(providerType);
+                    if (providerType.equals(OpenIdProvider.OAUTH2_TYPE)) {
+                        provider.setClientId(clientId);
+                        provider.setClientSecret(clientSecret);
+                        if (isEmpty(provider.getCallbackId()))
+                        {
+                            provider.setCallbackId(getCallbackId(req));
+                        }
+                    } else {
+                        provider.setExtensionNamespace(extensionNamespace);
+                    }
+                    provider.setAllowedDomains(allowedDomains);
+                    provider.save();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -182,10 +183,12 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
         final String operation = req.getParameter("op");
         if (StringUtils.equals("add", operation)) {
+            final String callbackId = getCallbackId(req);
             templateHelper.render(req, resp, "OpenId.Templates.addProvider",
                     ImmutableMap.of(
                             "currentUrl", req.getRequestURI(),
-                            "callbackId", getCallbackId(req),
+                            "callbackId", callbackId,
+                            "callbackUrl", getCallbackUrl(callbackId),
                             "presets", getPresets()));
             return;
         } else if (StringUtils.equals("onlyAuthenticate", operation)) {
