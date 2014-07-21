@@ -253,7 +253,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     @Nonnull
     private String getCallbackUrl(@Nonnull String callbackId)
     {
-        return applicationProperties.getString(APKeys.JIRA_BASEURL) + "/plugins/servlet/oauth2-callback?cid=" + callbackId;
+        return applicationProperties.getString(APKeys.JIRA_BASEURL) + "/plugins/servlet/oauth2-callback/" + callbackId;
     }
 
     @Nonnull
