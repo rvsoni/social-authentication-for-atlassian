@@ -80,9 +80,10 @@ public class OAuthServlet extends AbstractOpenIdServlet
                 OAuth2ConnectionFactory<Google> connectionFactory = authenticationService.getConnectionFactory();
 
                 final OAuth2Parameters parameters = new OAuth2Parameters();
-                parameters.setScope("openid email");
+                parameters.setScope("openid profile email https://www.googleapis.com/auth/plus.login");
                 parameters.setState(state);
                 parameters.setRedirectUri(getReturnTo(provider, request));
+                parameters.set("prompt", "select_account");
 
                 response.sendRedirect(connectionFactory.getOAuthOperations().buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE,
                         parameters));
