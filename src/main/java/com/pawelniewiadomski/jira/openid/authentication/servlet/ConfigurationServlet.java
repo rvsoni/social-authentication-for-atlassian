@@ -182,10 +182,12 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
         final String operation = req.getParameter("op");
         if (StringUtils.equals("add", operation)) {
+            final String callbackId = getCallbackId(req);
             templateHelper.render(req, resp, "OpenId.Templates.addProvider",
                     ImmutableMap.of(
                             "currentUrl", req.getRequestURI(),
-                            "callbackId", getCallbackId(req),
+                            "callbackId", callbackId,
+                            "callbackUrl", getCallbackUrl(callbackId),
                             "presets", getPresets()));
             return;
         } else if (StringUtils.equals("onlyAuthenticate", operation)) {
@@ -250,7 +252,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     @Nonnull
     private String getCallbackUrl(@Nonnull String callbackId)
     {
-        return applicationProperties.getString(APKeys.JIRA_BASEURL) + "/plugins/servlet/oauth2-callback?cid=" + callbackId;
+        return applicationProperties.getString(APKeys.JIRA_BASEURL) + "/openid/oauth2-callback/" + callbackId;
     }
 
     @Nonnull
