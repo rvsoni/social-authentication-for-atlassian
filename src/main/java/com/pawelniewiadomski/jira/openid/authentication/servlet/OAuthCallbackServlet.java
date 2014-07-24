@@ -78,27 +78,17 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
                 if (StringUtils.equals(state, request.getParameter("state")))
                 {
                     final GoogleAuthenticationService oauthAuthenticationService = new GoogleAuthenticationService(provider.getClientId(),
-                            provider.getClientSecret()) {
-
-                        @Override
-                        protected String buildReturnToUrl(HttpServletRequest request)
-                        {
-                            return getReturnTo(provider, request);
-                        }
-                    };
+                            provider.getClientSecret());
 
                     final SocialAuthenticationToken token = oauthAuthenticationService.getAuthToken(request, response);
 
-                    if (token != null)
-                    {
-                        final UserProfile userProfile = token.getConnection().fetchUserProfile();
+                    final UserProfile userProfile = token.getConnection().fetchUserProfile();
 
-                        if (userProfile != null)
-                        {
-                            authenticationService.showAuthentication(request, response, provider,
-                                    userProfile.getFirstName() + " " + userProfile.getLastName(), userProfile.getEmail());
-                            return;
-                        }
+                    if (userProfile != null)
+                    {
+                        authenticationService.showAuthentication(request, response, provider,
+                                userProfile.getFirstName() + " " + userProfile.getLastName(), userProfile.getEmail());
+                        return;
                     }
                 }
             } catch (Exception e) {
