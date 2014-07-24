@@ -20,10 +20,8 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.UserProfile;
-import org.springframework.social.google.security.GoogleAuthenticationService;
-import org.springframework.social.security.SocialAuthenticationToken;
 
 /**
  * Handling OpenID Connect authentications.
@@ -74,22 +72,12 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
         if (provider != null) {
             try
             {
+                final OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
                 final String state = (String) request.getSession().getAttribute(AuthenticationService.STATE_IN_SESSION);
-                if (StringUtils.equals(state, request.getParameter("state")))
+                if (StringUtils.equals(state, oar.getState()))
                 {
-                    final GoogleAuthenticationService oauthAuthenticationService = new GoogleAuthenticationService(provider.getClientId(),
-                            provider.getClientSecret());
-
-                    final SocialAuthenticationToken token = oauthAuthenticationService.getAuthToken(request, response);
-
-                    final UserProfile userProfile = token.getConnection().fetchUserProfile();
-
-                    if (userProfile != null)
-                    {
-                        authenticationService.showAuthentication(request, response, provider,
-                                userProfile.getFirstName() + " " + userProfile.getLastName(), userProfile.getEmail());
-                        return;
-                    }
+                    authenticationService.showAuthentication(request, response, provider, "test", "test");
+                    return;
                 }
             } catch (Exception e) {
                 log.error("OpenID verification failed", e);

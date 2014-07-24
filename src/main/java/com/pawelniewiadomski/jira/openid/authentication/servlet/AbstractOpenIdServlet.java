@@ -69,6 +69,6 @@ public class AbstractOpenIdServlet extends HttpServlet {
 
     String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
         return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/oauth2-callback")
-                .path(provider.getCallbackId()).build().toString();
+                .queryParam("cid", provider.getCallbackId()).build().toString();
     }
 }

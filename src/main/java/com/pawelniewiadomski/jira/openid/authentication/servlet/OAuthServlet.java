@@ -14,7 +14,6 @@ import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.user.util.UserUtil;
 
-import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
@@ -24,11 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.support.OAuth2ConnectionFactory;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.security.GoogleAuthenticationService;
-import org.springframework.social.oauth2.GrantType;
-import org.springframework.social.oauth2.OAuth2Parameters;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -74,18 +68,16 @@ public class OAuthServlet extends AbstractOpenIdServlet
 
                 request.getSession().setAttribute(AuthenticationService.STATE_IN_SESSION, state);
 
-                GoogleAuthenticationService authenticationService = new GoogleAuthenticationService(provider.getClientId(),
-                        provider.getClientSecret());
+                OAuthClientRequest oauthRequest = OAuthClientRequest
+                        .authorizationLocation(provider.getEndpointUrl())
+                        .setClientId(provider.getClientId())
+                        .setResponseType("code")
+                        .setState(state)
+                        .setScope("openid email")
+                        .setRedirectURI(getReturnTo(provider, request))
+                        .buildQueryMessage();
 
-                OAuth2ConnectionFactory<Google> connectionFactory = authenticationService.getConnectionFactory();
-
-                final OAuth2Parameters parameters = new OAuth2Parameters();
-                parameters.setScope("openid email");
-                parameters.setState(state);
-                parameters.setRedirectUri(getReturnTo(provider, request));
-
-                response.sendRedirect(connectionFactory.getOAuthOperations().buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE,
-                        parameters));
+                response.sendRedirect(oauthRequest.getLocationUri());
             }
         } catch (Exception e) {
             log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
