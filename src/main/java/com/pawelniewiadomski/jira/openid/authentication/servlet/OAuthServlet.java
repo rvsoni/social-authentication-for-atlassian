@@ -10,21 +10,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.atlassian.crowd.embedded.api.CrowdService;
-import com.atlassian.jira.config.util.JiraHome;
-import com.atlassian.jira.user.util.UserUtil;
-
-import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static com.atlassian.jira.util.dbc.Assertions.notNull;
 
 /**
  * Handling OpenID Connect authentications.
@@ -41,6 +39,9 @@ public class OAuthServlet extends AbstractOpenIdServlet
 
     @Autowired
     OpenIdDao openIdDao;
+
+    @Autowired
+    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,12 +69,16 @@ public class OAuthServlet extends AbstractOpenIdServlet
 
                 request.getSession().setAttribute(AuthenticationService.STATE_IN_SESSION, state);
 
-                OAuthClientRequest oauthRequest = OAuthClientRequest
-                        .authorizationLocation(provider.getEndpointUrl())
+                final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
+                        discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
+
+                final OAuthClientRequest oauthRequest = OAuthClientRequest
+                        .authorizationLocation(discoveryDocument.getAuthorizationUrl())
                         .setClientId(provider.getClientId())
-                        .setResponseType("code")
+                        .setResponseType(ResponseType.CODE.toString())
                         .setState(state)
-                        .setScope("openid email")
+                        .setScope("openid email profile")
+                        .setParameter("prompt", "select_account")
                         .setRedirectURI(getReturnTo(provider, request))
                         .buildQueryMessage();
 

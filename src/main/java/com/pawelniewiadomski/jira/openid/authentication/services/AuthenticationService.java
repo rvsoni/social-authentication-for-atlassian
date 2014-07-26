@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.servlet;
+package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -27,10 +27,11 @@ import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.servlet.AbstractOpenIdServlet;
+import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

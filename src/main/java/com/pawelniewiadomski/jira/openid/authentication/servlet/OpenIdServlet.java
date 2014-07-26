@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

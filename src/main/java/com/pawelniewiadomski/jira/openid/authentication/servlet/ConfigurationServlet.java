@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider;
 import com.pawelniewiadomski.jira.openid.authentication.YahooProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 
@@ -42,6 +43,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
     @Autowired
     TemplateHelper templateHelper;
+
+    @Autowired
+    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
@@ -97,6 +101,11 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             }
 
             if (providerType.equals(OpenIdProvider.OAUTH2_TYPE)) {
+                try {
+                    discoveryDocumentProvider.getDiscoveryDocument(endpointUrl);
+                } catch(Exception e) {
+                    errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", endpointUrl));
+                }
                 if (StringUtils.isEmpty(clientId)) {
                     errors.put("clientId", i18nResolver.getText("configuration.clientId.empty"));
                 }

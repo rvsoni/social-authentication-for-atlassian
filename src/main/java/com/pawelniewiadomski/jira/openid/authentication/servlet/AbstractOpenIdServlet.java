@@ -43,11 +43,11 @@ public class AbstractOpenIdServlet extends HttpServlet {
     @Autowired
     I18nResolver i18nResolver;
 
-    boolean isExternalUserManagement() {
+    protected boolean isExternalUserManagement() {
         return applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
     }
 
-    boolean hasAdminPermission()
+    protected boolean hasAdminPermission()
     {
         String user = userManager.getRemoteUsername();
         try
