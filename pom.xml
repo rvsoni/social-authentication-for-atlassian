@@ -12,7 +12,8 @@
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org/pawelniewiadomski/openid-authentication-for-jira.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/pawelniewiadomski/openid-authentication-for-jira.git</developerConnection>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
     <distributionManagement>
         <repository>
             <id>dropbox</id>
