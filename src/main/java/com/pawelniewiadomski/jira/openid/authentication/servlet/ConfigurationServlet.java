@@ -296,7 +296,8 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
         providers.add(ImmutableMap.of(
                 "name", "Google",
                 "endpointUrl", "https://accounts.google.com",
-                "providerType", "oauth2"
+                "providerType", "oauth2",
+                "hint", "To obtain Client ID and Client Secret please create for your JIRA a project in <a target=_blank href=\"https://console.developers.google.com\">Google Developer Console</a> and also enable Google+ API"
         ));
 
         return Ordering.from(new Comparator<Map<String, String>>()

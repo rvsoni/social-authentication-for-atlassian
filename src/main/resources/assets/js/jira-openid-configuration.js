@@ -47,6 +47,13 @@ var ConfigurationCtrl = ['$scope', '$http', 'restPath', function($scope, $http, 
             $('input[name=name]').val($this.data("name"));
             $('input[name=endpointUrl]').val($this.data("endpointurl"));
 
+            if ($this.data("hint")) {
+                $('.hint > .hint-text').html($this.data("hint"));
+                $('.hint').removeClass('hidden');
+            } else {
+                $('.hint').addClass('hidden');
+            }
+
             if ($this.data("providertype") == "oauth2") {
                 $('#oauth2').attr('checked', true);
             } else {

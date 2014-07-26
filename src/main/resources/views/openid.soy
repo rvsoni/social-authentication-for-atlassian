@@ -81,6 +81,12 @@
                 {param message: $errors.endpointUrl/}
             {/call}
         {/if}
+        {call aui.message.info}
+            {param extraClasses: 'hint hidden'/}
+            {param content}
+                <span class="hint-text"></span>
+            {/param}
+        {/call}
     {/param}
 {/call}
 <fieldset class="group">
@@ -198,6 +204,8 @@
     {param windowTitle: 'Add Authentication Provider'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
+        <meta name="admin.active.section" content="users_groups_configuration/embedded_crowd_section"/>
+        <meta name="admin.active.tab" content="openid"/>
     {/param}
     {param content}
         <div class="openid">
@@ -315,6 +323,8 @@
     {param windowTitle: 'Edit Authentication Provider'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
+        <meta name="admin.active.section" content="users_groups_configuration/embedded_crowd_section"/>
+        <meta name="admin.active.tab" content="openid"/>
     {/param}
     {param content}
         <div class="openid">
@@ -411,7 +421,7 @@
                                 <a class="edit" href="?op=edit&pid=[[provider.id]]">Edit</a>
                             </li>
                             <li>
-                                <a class="delete" href="?op=delete&pid=[[provider.id]]">Delete</a>
+                                <a class="delete" id="delete_[[provider.id]]" href="?op=delete&pid=[[provider.id]]">Delete</a>
                             </li>
                         </ul>
                     </td>
