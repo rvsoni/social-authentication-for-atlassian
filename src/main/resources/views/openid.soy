@@ -427,6 +427,11 @@
                     </td>
                 </tr>
             </tbody>
+            <tfoot ng-hide="providers.length">
+                <tr>
+                    <td colspan="100"><div style="text-align: center">You don't have any OpenID providers configured yet.</div></td>
+                </tr>
+            </tfoot>
         {/param}
     {/call}
 </div>
