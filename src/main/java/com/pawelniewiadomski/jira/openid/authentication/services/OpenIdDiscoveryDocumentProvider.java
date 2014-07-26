@@ -13,7 +13,6 @@ import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdDiscoveryRe
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.springframework.stereotype.Service;

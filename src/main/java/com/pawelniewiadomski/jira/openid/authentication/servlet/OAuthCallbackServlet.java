@@ -112,10 +112,10 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
                     final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
                     String username = email;
 
-                    final String userinfoUrl = discoveryDocument.getUserinfoUrl();
-                    if (isNotEmpty(userinfoUrl))
+                    final String userInfoUrl = discoveryDocument.getUserinfoUrl();
+                    if (isNotEmpty(userInfoUrl))
                     {
-                        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userinfoUrl)
+                        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
                                 .setAccessToken(accessToken)
                                 .buildQueryMessage();
 

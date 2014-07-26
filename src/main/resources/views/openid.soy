@@ -430,7 +430,7 @@
  */
 {template .providers}
 {call aui.page.document}
-    {param windowTitle: 'Social Authentication Providers'/}
+    {param windowTitle: getText('openid.authentication.providers')/}
     {param extraClasses: 'openid list-providers'/}
     {param headContent}
         <meta name="decorator" content="admin"/>
@@ -442,7 +442,7 @@
             {param content}
                 {call aui.page.pageHeaderMain}
                     {param content}
-                        <h2>Social Authentication Providers</h2>
+                        <h2>{getText('openid.authentication.providers')}</h2>
                         <p class="description">The table below shows the authentication providers currently configured in JIRA.</p>
                     {/param}
                 {/call}
@@ -475,21 +475,21 @@
 
         {if not $isPublic}
             {if not $isCreatingUsers}
-                <p>JIRA Public Mode is disabled, only already existing users will be able to log in using social authentication.</p>
+                <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID authentication.</p>
                 <p>Users will be matched by e-mail only.</p>
-                <p>Should users be automatically created when using social authentication?
+                <p>Should users be automatically created when using OpenID authentication?
                 <a id="switchCreatingUsers" data-disable="false" href="{$currentUrl}?op=createUsers">Click here to allow the plugin to create users.</a></p>
             {else}
                 <p>JIRA Public Mode is disabled, but the plugin will create new users.</p>
                 <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
-                <p>Should only existing users be allowed when using social authentication?
+                <p>Should only existing users be allowed when using OpenID authentication?
                 <a id="switchCreatingUsers" data-disable="true" href="{$currentUrl}?op=onlyAuthenticate">Click here to disallow the plugin to create new users.</a></p>
             {/if}
         {elseif $isExternal}
-            <p>External User Management is enabled, only already existing users will be able to log in using social authentication.</p>
+            <p>External User Management is enabled, only already existing users will be able to log in using OpenID authentication.</p>
             <p>Users will be matched by e-mail only.</p>
         {else}
-            <p>JIRA Public Mode is enabled, social authentication will match existing users by e-mail or create new users.</p>
+            <p>JIRA Public Mode is enabled, OpenID authentication will match existing users by e-mail or create new users.</p>
             <p>Each enabled Provider needs to return e-mail and full name at least.</p>
         {/if}
     {/param}

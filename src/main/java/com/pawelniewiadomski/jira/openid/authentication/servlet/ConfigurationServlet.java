@@ -280,17 +280,25 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     private List<Map<String, String>> getPresets()
     {
         final List<Map<String, String>> providers = Lists.newArrayList();
-        for(OAuthProviderType provider : OAuthProviderType.values()) {
-            providers.add(ImmutableMap.of(
-                    "name", provider.getProviderName(),
-                    "endpointUrl", provider.getAuthzEndpoint(),
-                    "providerType", "oauth2"));
-        }
+//        for(OAuthProviderType provider : OAuthProviderType.values()) {
+//            providers.add(ImmutableMap.of(
+//                    "name", provider.getProviderName(),
+//                    "endpointUrl", provider.getAuthzEndpoint(),
+//                    "providerType", "oauth2"));
+//        }
+
         providers.add(ImmutableMap.of(
                 "name", YahooProvider.NAME,
                 "endpointUrl", YahooProvider.ENDPOINT_URL,
                 "extensionNamespace", YahooProvider.EXTENSION_NAMESPACE,
                 "providerType", "openid"));
+
+        providers.add(ImmutableMap.of(
+                "name", "Google",
+                "endpointUrl", "https://accounts.google.com",
+                "providerType", "oauth2"
+        ));
+
         return Ordering.from(new Comparator<Map<String, String>>()
         {
             @Override
