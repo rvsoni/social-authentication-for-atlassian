@@ -36,6 +36,7 @@ import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.atlassian.jira.util.dbc.Assertions.notNull;
+import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 

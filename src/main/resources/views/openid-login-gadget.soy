@@ -13,7 +13,13 @@
             {param extraClasses}openid{/param}
             {param text}{$provider.name}{/param}
             {param tagName: 'a'/}
-            {param extraAttributes}href="{$baseUrl}/plugins/servlet/openid-authentication?pid={$provider.id}"{/param}
+            {param extraAttributes}
+                {if $provider.providerType == 'oauth2'}
+                    href="{$baseUrl}/plugins/servlet/openid-connect?pid={$provider.id}"
+                {else}
+                    href="{$baseUrl}/plugins/servlet/openid-authentication?pid={$provider.id}"
+                {/if}
+            {/param}
         {/call}
     {/foreach}
 </div>

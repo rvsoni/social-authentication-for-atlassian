@@ -23,6 +23,7 @@ import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.atlassian.jira.util.dbc.Assertions.notNull;
+import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 
 /**
  * Handling OpenID Connect authentications.

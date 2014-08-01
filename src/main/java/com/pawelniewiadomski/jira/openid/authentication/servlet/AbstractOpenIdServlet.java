@@ -66,9 +66,4 @@ public class AbstractOpenIdServlet extends HttpServlet {
     {
         resp.sendRedirect(loginUriProvider.getLoginUri(URI.create(req.getRequestURL().toString())).toASCIIString());
     }
-
-    String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
-        return UriBuilder.fromUri(getBaseUrl(request)).path("/openid/oauth2-callback")
-                .path(provider.getCallbackId()).build().toString();
-    }
 }

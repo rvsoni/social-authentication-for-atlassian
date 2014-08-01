@@ -9,10 +9,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.SSLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriBuilder;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.jira.user.util.UserUtil;
@@ -35,6 +37,8 @@ import org.expressme.openid.Endpoint;
 import org.expressme.openid.OpenIdException;
 import org.expressme.openid.OpenIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
 
 /**
  * Handling OpenID 1.0 authentications.
@@ -90,6 +94,12 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             openIdConnections.put(returnTo, openIdManager);
         }
         return openIdManager;
+    }
+
+    @Nonnull
+    protected String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
+        return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/openid-authentication")
+                .queryParam("pid", provider.getID()).build().toString();
     }
 
     @Override
