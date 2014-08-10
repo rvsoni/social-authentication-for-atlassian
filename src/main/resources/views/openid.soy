@@ -50,6 +50,21 @@
         {/if}
     {/param}
 {/call}
+<fieldset class="group">
+    <legend>Use preset for</legend>
+    <div class="presets">
+        <ul class="operations-list">
+            {foreach $preset in $presets}
+                <li>
+                    <a class="preset"
+                    {foreach $k in keys($preset)}
+                        data-{$k}="{$preset[$k]}"
+                    {/foreach}
+                    >{$preset.name}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+</fieldset>
 {call aui.form.fieldGroup}
     {param content}
         {call aui.form.label}
@@ -63,18 +78,6 @@
             {param width: ''/}
             {param value: $values.endpointUrl/}
         {/call}
-        <div class="description">
-            <ul class="operations-list">
-                {foreach $preset in $presets}
-                    <li>
-                        <a class="preset"
-                        {foreach $k in keys($preset)}
-                            data-{$k}="{$preset[$k]}"
-                        {/foreach}
-                        >{$preset.name}</a></li>
-                {/foreach}
-            </li>
-        </div>
         {if $errors.endpointUrl}
             {call .fieldError}
                 {param forField: 'endpointUrl'/}
