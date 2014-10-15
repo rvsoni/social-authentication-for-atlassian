@@ -52,9 +52,9 @@ public class OAuthServlet extends AbstractOpenIdServlet
         }
 
         final String pid = request.getParameter("pid");
-        final String returnUrl = request.getParameter(AuthenticationService.RETURN_URL_PARAMETER);
+        final String returnUrl = request.getParameter(AuthenticationService.RETURN_URL_PARAM);
         if (StringUtils.isNotBlank(returnUrl)) {
-            request.getSession().setAttribute(AuthenticationService.RETURN_URL_PARAMETER, returnUrl);
+            request.getSession().setAttribute(AuthenticationService.RETURN_URL_SESSION, returnUrl);
         }
 
         final OpenIdProvider provider;

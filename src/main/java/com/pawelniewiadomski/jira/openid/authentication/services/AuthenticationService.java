@@ -40,8 +40,9 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHe
 @Service
 public class AuthenticationService extends AbstractOpenIdServlet
 {
-    public static final String RETURN_URL_PARAMETER = AuthenticationService.class.getName() + ".returnUrl";
+    public static final String RETURN_URL_SESSION = AuthenticationService.class.getName() + ".returnUrl";
     public static final String STATE_IN_SESSION = AuthenticationService.class.getName() + ".state";
+    public static final String RETURN_URL_PARAM = "returnUrl";
 
     final Logger log = Logger.getLogger(this.getClass());
 
@@ -109,7 +110,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
             ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
-            final String returnUrl = (String) httpSession.getAttribute(RETURN_URL_PARAMETER);
+            final String returnUrl = (String) httpSession.getAttribute(RETURN_URL_SESSION);
             if (StringUtils.isNotBlank(returnUrl)) {
                 response.sendRedirect(getBaseUrl(request) + returnUrl);
             } else {

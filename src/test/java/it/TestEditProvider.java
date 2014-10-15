@@ -1,34 +1,29 @@
 package it;
 
-import com.atlassian.jira.tests.TestBase;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import it.pageobjects.ConfigurationPage;
 import it.pageobjects.EditProviderPage;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilTrue;
 
-public class TestEditProvider extends TestBase {
+public class TestEditProvider extends BaseJiraWebTest {
 
     private ConfigurationPage configurationPage;
 
     @Before
     public void setUp() {
-        jira().backdoor().restoreBlankInstance();
-        jira().backdoor().project().addProject("Test", "TST", "admin");
+        jira.backdoor().restoreBlankInstance();
+        jira.backdoor().project().addProject("Test", "TST", "admin");
 
-        configurationPage = jira().gotoLoginPage().loginAsSysAdmin(ConfigurationPage.class);
+        configurationPage = jira.gotoLoginPage().loginAsSysAdmin(ConfigurationPage.class);
     }
 
     @Test
     public void editingBuiltInProviderShouldSucceed()
     {
-        waitUntilFalse(configurationPage.isAdvancedPressed());
-        configurationPage.clickAdvanced();
-        waitUntilTrue(configurationPage.isAdvancedPressed());
         EditProviderPage editPage = configurationPage.editProvider("Google");
         waitUntilFalse(editPage.isEndpointUrlVisible());
         waitUntilFalse(editPage.isExtensionNamespaceVisible());

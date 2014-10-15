@@ -15,21 +15,6 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
     @ElementBy(id = "creatingUsersState")
     PageElement creatingUsersState;
 
-    @ElementBy(id = "switchCreatingUsers")
-    PageElement switchCreatingUsers;
-
-    @ElementBy(id = "advanced")
-    PageElement advanced;
-
-    @ElementBy(id = "addProvider")
-    PageElement addProvider;
-
-    @ElementBy(id = "allowedDomains")
-    PageElement allowedDomains;
-
-    @ElementBy(id = "save")
-    PageElement saveAllowedDomains;
-
     @Override
     public String linkId() {
         return "openid";
@@ -45,39 +30,8 @@ public class ConfigurationPage extends AbstractJiraAdminPage {
         return "/plugins/servlet/openid-configuration";
     }
 
-    public TimedCondition isAdvancedPressed() {
-        return advanced.timed().hasAttribute("aria-pressed", "true");
-    }
-
-    public TimedCondition isAllowedDomainsVisible() {
-        return allowedDomains.timed().isVisible();
-    }
-
-    public TimedCondition isSaveAllowedDomainsVisible() {
-        return saveAllowedDomains.timed().isVisible();
-    }
-
     public TimedCondition isCreatingUsersEnabled() {
         return creatingUsersState.timed().hasClass("aui-lozenge-success");
-    }
-
-    public ConfigurationPage clickAdvanced() {
-        advanced.click();
-        return this;
-    }
-
-    public ConfigurationPage setAllowedDomains(final String s) {
-        allowedDomains.clear().type(s);
-        return this;
-    }
-
-    public ConfigurationPage save() {
-        saveAllowedDomains.click();
-        return this;
-    }
-
-    public TimedQuery<String> getAllowedDomains() {
-        return allowedDomains.timed().getValue();
     }
 
     public EditProviderPage editProvider(String name) {

@@ -1,5 +1,6 @@
 package it;
 
+import com.google.common.base.Preconditions;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -21,8 +22,11 @@ public class ItEnvironment {
     public static Map<String, Object> getConfiguration() {
         final ObjectMapper mapper = new ObjectMapper();
         final Map<String, Object> configuration;
+        final File src = new File("it.json");
+
+        Preconditions.checkArgument(src.exists(), "it.json doesn't exist in the working directory!");
         try {
-            configuration = mapper.readValue(new File("it.json"), new TypeReference<Map<String, Object>>(){});
+            configuration = mapper.readValue(src, new TypeReference<Map<String, Object>>(){});
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

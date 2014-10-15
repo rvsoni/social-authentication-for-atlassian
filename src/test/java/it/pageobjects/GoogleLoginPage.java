@@ -58,7 +58,7 @@ public class GoogleLoginPage extends AbstractJiraPage {
     public void setPersistentCookie(final boolean b) {
         if (b) {
             persistentCookie.check();
-        } else {
+        } else if (persistentCookie.isPresent()) {
             persistentCookie.uncheck();
         }
     }

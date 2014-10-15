@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jira-openid-authentication-plugin.iml" filepath="$PROJECT_DIR$/jira-openid-authentication-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jira-openid-authentication-plugin.iml" filepath="$PROJECT_DIR$/jira-openid-authentication-plugin.iml" />
     </modules>
   </component>
 </project>

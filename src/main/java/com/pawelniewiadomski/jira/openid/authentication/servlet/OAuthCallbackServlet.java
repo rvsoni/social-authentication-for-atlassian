@@ -14,6 +14,7 @@ import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.user.util.UserUtil;
 
+import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
@@ -31,6 +32,7 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,43 +96,51 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
             {
                 final OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
                 final String state = (String) request.getSession().getAttribute(AuthenticationService.STATE_IN_SESSION);
-                if (StringUtils.equals(state, oar.getState()))
-                {
-                    final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
-                            discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
-
-                    final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-                    final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(discoveryDocument.getTokenUrl())
-                            .setGrantType(GrantType.AUTHORIZATION_CODE)
-                            .setClientId(provider.getClientId())
-                            .setClientSecret(provider.getClientSecret())
-                            .setRedirectURI(getReturnTo(provider, request))
-                            .setCode(oar.getCode())
-                            .buildBodyMessage();
-
-                    final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
-                    final String accessToken = token.getAccessToken();
-                    final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
-                    String username = email;
-
-                    final String userInfoUrl = discoveryDocument.getUserinfoUrl();
-                    if (isNotEmpty(userInfoUrl))
-                    {
-                        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
-                                .setAccessToken(accessToken)
-                                .buildQueryMessage();
-
-                        OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
-                        Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
-                        username = defaultIfEmpty((String) userInfo.get("name"), email);
-                    }
-
-                    authenticationService.showAuthentication(request, response, provider, username, email);
+                if (!StringUtils.equals(state, oar.getState())) {
+                    templateHelper.render(request, response, "OpenId.Templates.invalidState",
+                            ImmutableMap.<String, Object>of("providerName", provider.getName()));
                     return;
                 }
+
+                final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
+                        discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
+
+                final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+                final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(discoveryDocument.getTokenUrl())
+                        .setGrantType(GrantType.AUTHORIZATION_CODE)
+                        .setClientId(provider.getClientId())
+                        .setClientSecret(provider.getClientSecret())
+                        .setRedirectURI(getReturnTo(provider, request))
+                        .setCode(oar.getCode())
+                        .buildBodyMessage();
+
+                final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
+                final String accessToken = token.getAccessToken();
+                final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
+                String username = email;
+
+                final String userInfoUrl = discoveryDocument.getUserinfoUrl();
+                if (isNotEmpty(userInfoUrl))
+                {
+                    OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
+                            .setAccessToken(accessToken)
+                            .buildQueryMessage();
+
+                    OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+                    Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
+                    username = defaultIfEmpty((String) userInfo.get("name"), email);
+                }
+
+                authenticationService.showAuthentication(request, response, provider, username, email);
+                return;
             } catch (Exception e) {
-                log.error("OpenID verification failed", e);
-                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                if (e instanceof OAuthProblemException) {
+                    templateHelper.render(request, response, "OpenId.Templates.invalidClient",
+                            ImmutableMap.<String, Object>of("providerName", provider.getName()));
+                } else {
+                    log.error("OpenID verification failed", e);
+                    templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                }
                 return;
             }
         }

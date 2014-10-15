@@ -4,10 +4,14 @@ import java.util.Map;
 
 import com.atlassian.jira.pageobjects.form.FormUtils;
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
+import com.atlassian.pageobjects.elements.CheckboxElement;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
+import com.atlassian.pageobjects.elements.WebDriverElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 import com.atlassian.pageobjects.elements.query.TimedQuery;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import org.openqa.selenium.By;
 
 public class AddProviderPage extends AbstractJiraPage {
     @ElementBy(id = "name")
@@ -27,6 +31,21 @@ public class AddProviderPage extends AbstractJiraPage {
 
     @ElementBy(id = "saveProvider")
     PageElement saveProvider;
+
+    @ElementBy(id = "oauth2")
+    CheckboxElement oauth2Checkbox;
+
+    @ElementBy(id = "openid1")
+    CheckboxElement openIdCheckbox;
+
+    @ElementBy(id = "clientId")
+    PageElement clientId;
+
+    @ElementBy(id = "clientSecret")
+    PageElement clientSecret;
+
+    @ElementBy(id = "callbackId")
+    WebDriverElement callbackId;
 
     @Override
     public TimedCondition isAt() {
@@ -82,5 +101,30 @@ public class AddProviderPage extends AbstractJiraPage {
 
     public TimedCondition isExtensionNamespaceVisible() {
         return extensionNamespace.timed().isVisible();
+    }
+
+    public AddProviderPage setClientId(String clientId) {
+        this.clientId.clear().type(clientId);
+        return this;
+    }
+
+    public AddProviderPage setClientSecret(String clientSecret) {
+        this.clientSecret.clear().type(clientSecret);
+        return this;
+    }
+
+    public AddProviderPage setCallbackId(String id) {
+        driver.executeScript("AJS.$('#callbackId').val(arguments[0])", id);
+        return this;
+    }
+
+    public AddProviderPage setProviderType(String providerType) {
+        elementFinder.find(By.id(providerType), CheckboxElement.class).check();
+        return this;
+    }
+
+    public AddProviderPage setAllowedDomains(String allowedDomains) {
+        this.allowedDomains.clear().type(allowedDomains);
+        return this;
     }
 }

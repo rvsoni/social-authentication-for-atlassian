@@ -134,7 +134,7 @@
             {param forField: 'callbackUrl'/}
             {param content: 'Callback URL'/}
         {/call}
-        <input type="hidden" name="callbackId" value="{$callbackId}">
+        <input id="callbackId" type="hidden" name="callbackId" value="{$callbackId}">
         <span id="callbackUrl">{$callbackUrl}</span>
         {call aui.form.fieldDescription}
             {param message}You need to submit it to your authentication provider.{/param}
@@ -568,9 +568,35 @@
         {if $sslError}
             SSL connection failed. Please refer to logs for details and <a href="https://confluence.atlassian.com/display/JIRA/Connecting+to+SSL+services">check    how to set up SSL connections</a>.
         {else}
-            Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
+            Please refer to logs for an additional info.
         {/if}
 
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ * @param providerName name of the provider
+ */
+{template .invalidState}
+{call .errorWrapper}
+    {param content}
+        Response from {$providerName} didn't match the state saved in the session. Either JIRA server was restarted or your session was renewed.
+    {/param}
+    {param baseUrl: $baseUrl/}
+{/call}
+{/template}
+
+/**
+ * @param baseUrl base URL
+ * @param providerName name of the provider
+ */
+{template .invalidClient}
+{call .errorWrapper}
+    {param content}
+        {$providerName} returned 'invalid_client' which suggests an invalid configuration, please check if Client ID and Client Secret match with those offered by {$providerName}.
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}
@@ -594,7 +620,7 @@
 {template .domainMismatch}
 {call .errorWrapper}
     {param content}
-    Your email address is not on a list of allowed domains. Please <a href="https://accounts.google.com/Logout" target="_blank">log out from Google</a> and try again.
+    Your email address is not on a list of allowed domains. Please use a different account to log in.
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}
