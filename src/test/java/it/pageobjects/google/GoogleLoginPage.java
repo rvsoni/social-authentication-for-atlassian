@@ -1,4 +1,4 @@
-package it.pageobjects;
+package it.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.CheckboxElement;
@@ -16,8 +16,8 @@ public class GoogleLoginPage extends AbstractJiraPage {
     @ElementBy(id = "signIn")
     PageElement signInButton;
 
-    @ElementBy(id = "PersistentCookie")
-    CheckboxElement persistentCookie;
+    @ElementBy(id = "account-chooser-link")
+    PageElement accountChooserLink;
 
     @Override
     public TimedCondition isAt() {
@@ -55,11 +55,8 @@ public class GoogleLoginPage extends AbstractJiraPage {
         return pageBinder.delayedBind(GoogleApprovePage.class);
     }
 
-    public void setPersistentCookie(final boolean b) {
-        if (b) {
-            persistentCookie.check();
-        } else if (persistentCookie.isPresent()) {
-            persistentCookie.uncheck();
-        }
+    public GoogleAccountChooserPage selectDifferentAccount() {
+        accountChooserLink.click();
+        return pageBinder.bind(GoogleAccountChooserPage.class);
     }
 }
