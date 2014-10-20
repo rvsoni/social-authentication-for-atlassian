@@ -11,6 +11,7 @@ import com.atlassian.pageobjects.elements.WebDriverElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 import com.atlassian.pageobjects.elements.query.TimedQuery;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import org.apache.sanselan.formats.jpeg.segments.APPNSegment;
 import org.openqa.selenium.By;
 
 public class AddProviderPage extends AbstractJiraPage {
@@ -101,6 +102,11 @@ public class AddProviderPage extends AbstractJiraPage {
 
     public TimedCondition isExtensionNamespaceVisible() {
         return extensionNamespace.timed().isVisible();
+    }
+
+    public AddProviderPage setExtensionNamespace(String namespace) {
+        this.extensionNamespace.clear().type(namespace);
+        return this;
     }
 
     public AddProviderPage setClientId(String clientId) {

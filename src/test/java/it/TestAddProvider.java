@@ -1,6 +1,7 @@
 package it;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
+import com.atlassian.jira.pageobjects.config.LoginAs;
 import com.atlassian.pageobjects.elements.query.Poller;
 import it.pageobjects.AddProviderPage;
 import it.pageobjects.ConfigurationPage;
@@ -26,12 +27,14 @@ public class TestAddProvider extends BaseJiraWebTest {
     }
 
     @Test
+    @LoginAs(anonymous = true)
     public void testAddAndEdit() {
         final String name = "Testing";
         final String endpointUrl = "http://asdkasjdkald.pl";
 
         addPage.setName(name);
         addPage.setEndpointUrl(endpointUrl);
+        addPage.setExtensionNamespace("ext1");
 
         ConfigurationPage configurationPage = addPage.save();
 
