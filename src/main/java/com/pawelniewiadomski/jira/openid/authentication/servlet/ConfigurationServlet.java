@@ -101,10 +101,14 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
             }
 
             if (providerType.equals(OpenIdProvider.OAUTH2_TYPE)) {
-                try {
-                    discoveryDocumentProvider.getDiscoveryDocument(endpointUrl);
-                } catch(Exception e) {
-                    errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", endpointUrl));
+                if (StringUtils.isEmpty(endpointUrl)) {
+                    errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty", endpointUrl));
+                } else {
+                    try {
+                        discoveryDocumentProvider.getDiscoveryDocument(endpointUrl);
+                    } catch (Exception e) {
+                        errors.put("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", endpointUrl));
+                    }
                 }
                 if (StringUtils.isEmpty(clientId)) {
                     errors.put("clientId", i18nResolver.getText("configuration.clientId.empty"));

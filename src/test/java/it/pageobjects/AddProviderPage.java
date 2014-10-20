@@ -70,6 +70,11 @@ public class AddProviderPage extends AbstractJiraPage {
         return this;
     }
 
+    public AddProviderPage saveWithErrors() {
+        saveProvider.click();
+        return this;
+    }
+
     public ConfigurationPage save() {
         saveProvider.click();
         return pageBinder.bind(ConfigurationPage.class);

@@ -3,10 +3,12 @@ package it;
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
 import com.atlassian.pageobjects.elements.query.Poller;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import it.pageobjects.AddProviderPage;
 import it.pageobjects.ConfigurationPage;
 import it.pageobjects.EditProviderPage;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,11 +25,36 @@ public class TestAddProvider extends BaseJiraWebTest {
         jira.backdoor().restoreBlankInstance();
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
-        addPage = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
+        addPage = jira.visit(AddProviderPage.class);
     }
 
     @Test
-    @LoginAs(anonymous = true)
+    public void testAddOAuthErrors() {
+        addPage.setProviderType(OpenIdProvider.OAUTH2_TYPE);
+        addPage = addPage.saveWithErrors();
+
+        assertThat(addPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
+        assertThat(addPage.getFormErrors(), hasEntry("endpointUrl", "Provider URL must not be empty."));
+        assertThat(addPage.getFormErrors(), hasEntry("clientId", "Client ID must not be empty."));
+        assertThat(addPage.getFormErrors(), hasEntry("clientSecret", "Client Secret must not be empty."));
+
+        addPage.setEndpointUrl("https://accounts.google.com");
+        addPage = addPage.saveWithErrors();
+
+        assertThat(addPage.getFormErrors().size(), Matchers.equalTo(3));
+        assertThat(addPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
+        assertThat(addPage.getFormErrors(), hasEntry("clientId", "Client ID must not be empty."));
+        assertThat(addPage.getFormErrors(), hasEntry("clientSecret", "Client Secret must not be empty."));
+
+        addPage.setEndpointUrl("https://wp.pl");
+        addPage.setName("Testing").setClientId("XXX").setClientSecret("XXX");
+        addPage = addPage.saveWithErrors();
+
+        assertThat(addPage.getFormErrors().size(), Matchers.equalTo(1));
+        assertThat(addPage.getFormErrors(), hasEntry("endpointUrl", "OpenId Connect discovery document at https://wp.pl/.well-known/openid-configuration is invalid or missing."));
+    }
+
+    @Test
     public void testAddAndEdit() {
         final String name = "Testing";
         final String endpointUrl = "http://asdkasjdkald.pl";
@@ -44,7 +71,7 @@ public class TestAddProvider extends BaseJiraWebTest {
 
         editPage.setName("");
         editPage.setEndpointUrl("");
-        editPage.save();
+        editPage = editPage.saveWithErrors();
 
         assertThat(editPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
         assertThat(editPage.getFormErrors(), hasEntry("endpointUrl", "Provider URL must not be empty."));
