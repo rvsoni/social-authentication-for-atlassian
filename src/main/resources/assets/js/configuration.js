@@ -48,14 +48,18 @@ angular.module("openid.configuration", ['ngRoute'])
         };
 
         $scope.moveProviderUp = function (providerId) {
-            $http.post(restPath + "/openIdProviders/moveUp/" + providerId).success(setProviders);
+            $http.post(restPath + "/providers/moveUp/" + providerId).success(setProviders);
         };
 
         $scope.moveProviderDown = function (providerId) {
-            $http.post(restPath + "/openIdProviders/moveDown/" + providerId).success(setProviders);
+            $http.post(restPath + "/providers/moveDown/" + providerId).success(setProviders);
         };
 
-        $http.get(restPath + "/openIdProviders").success(setProviders).error(function (data) {
+        $scope.enableProvider = function(providerId, enabled) {
+            $http.post(restPath + "/providers/" + providerId + "/state", { enabled: enabled }).success(setProviders);
+        };
+
+        $http.get(restPath + "/providers").success(setProviders).error(function (data) {
             $scope.error = true;
         });
     }])

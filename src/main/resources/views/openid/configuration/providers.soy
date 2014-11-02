@@ -60,16 +60,16 @@
                         <td data-cell-type="operations" data-provider-name="{lb}{lb}provider.name{rb}{rb}" data-provider-id="{lb}{lb}provider.id{rb}{rb}">
                             <ul class="operations-list">
                                 <li ng-if="provider.enabled">
-                                    <a class="disable" href="?op=disable&pid={lb}{lb}provider.id{rb}{rb}">Disable</a>
+                                    <a class="disable" ng-click="enableProvider(provider.id, false)">Disable</a>
                                 </li>
                                 <li ng-if="provider.enabled == false">
-                                    <a class="enable" href="?op=enable&pid={lb}{lb}provider.id{rb}{rb}">Enable</a>
+                                    <a class="enable" ng-click="enableProvider(provider.id, true)">Enable</a>
                                 </li>
                                 <li>
-                                    <a class="edit" href="?op=edit&pid={lb}{lb}provider.id{rb}{rb}">Edit</a>
+                                    <a class="edit" href="#/edit/{lb}{lb}provider.id{rb}{rb}">Edit</a>
                                 </li>
                                 <li>
-                                    <a class="delete" id="delete_{lb}{lb}provider.id{rb}{rb}" href="?op=delete&pid={lb}{lb}provider.id{rb}{rb}">Delete</a>
+                                    <a class="delete" id="delete_{lb}{lb}provider.id{rb}{rb}" href="#/delete/{lb}{lb}provider.id{rb}{rb}">Delete</a>
                                 </li>
                             </ul>
                         </td>
