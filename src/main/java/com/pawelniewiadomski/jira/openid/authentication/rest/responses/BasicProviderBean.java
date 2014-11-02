@@ -1,21 +1,24 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest.responses;
 
-import javax.xml.bind.annotation.*;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 
-@XmlRootElement(name = "openIdProvider")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class BasicProviderResponse {
+@SuppressWarnings("unused")
+@JsonRootName("openIdProvider")
+public class BasicProviderBean {
 
-    @XmlElement(name =  "id")
+    @JsonProperty
     private int id;
 
-    @XmlElement(name = "name")
+    @JsonProperty
     private String name;
 
-    @XmlElement(name = "providerType")
+    @JsonProperty
     private String providerType;
 
-    public BasicProviderResponse(int id, String name, String providerType) {
+    public BasicProviderBean() {}
+
+    public BasicProviderBean(int id, String name, String providerType) {
         this.id = id;
         this.name = name;
         this.providerType = providerType;

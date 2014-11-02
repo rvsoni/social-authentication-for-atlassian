@@ -59,13 +59,20 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', 'baseUrl', function ($scope, baseUrl) {
-        $scope.providerType = "oauth2";
-        $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl',
+        function ($scope, $location, $http, restPath, baseUrl) {
+        $scope.provider = { providerType: "oauth2" };
+        $scope.provider.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
         });
-        $scope.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.callbackId;
+        $scope.provider.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.callbackId;
+
+        $scope.createProvider = function() {
+            $http.post(restPath + '/providers', $scope.provider).success(function() {
+                $location.path('/');
+            });
+        }
     }])
     .controller('EditProviderCtrl', [function () {
 

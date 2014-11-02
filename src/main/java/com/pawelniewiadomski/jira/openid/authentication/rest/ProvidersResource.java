@@ -1,26 +1,134 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.atlassian.jira.util.JiraUtils;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.atlassian.jira.util.ErrorCollection;
+import com.atlassian.jira.util.SimpleErrorCollection;
+import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.base.Supplier;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import org.apache.commons.lang.StringUtils;
+import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
+import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 import java.sql.SQLException;
-import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Path("providers")
 @Produces({MediaType.APPLICATION_JSON})
-public class ProvidersResource {
+public class ProvidersResource extends OpenIdResource {
+
+    @Autowired
+    OpenIdDao openIdDao;
+
+    @Autowired
+    I18nResolver i18nResolver;
+
+    @Autowired
+    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+
+    @POST
+    public Response createProvider(final ProviderBean providerBean) {
+        return permissionDeniedIfNotAdmin().getOrElse(
+                new Supplier<javax.ws.rs.core.Response>() {
+                    @Override
+                    public javax.ws.rs.core.Response get() {
+                        OpenIdProvider provider = null;
+                        ErrorCollection errors = new SimpleErrorCollection();
+
+                        if (isEmpty(providerBean.getName())) {
+                            errors.addError("name", i18nResolver.getText("configuration.name.empty"));
+                        } else {
+                            final OpenIdProvider providerByName;
+                            try {
+                                providerByName = openIdDao.findByName(providerBean.getName());
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            if (providerByName != null) {
+                                errors.addError("name", i18nResolver.getText("configuration.name.must.be.unique"));
+                            }
+                        }
+
+                        if (isEmpty(providerBean.getEndpointUrl())) {
+                            errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty"));
+                        }
+
+                        if (providerBean.getProviderType().equals(OpenIdProvider.OAUTH2_TYPE)) {
+                            if (isEmpty(providerBean.getEndpointUrl())) {
+                                errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.empty", providerBean.getEndpointUrl()));
+                            } else {
+                                try {
+                                    discoveryDocumentProvider.getDiscoveryDocument(providerBean.getEndpointUrl());
+                                } catch (Exception e) {
+                                    errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", providerBean.getEndpointUrl()));
+                                }
+                            }
+                            if (isEmpty(providerBean.getClientId())) {
+                                errors.addError("clientId", i18nResolver.getText("configuration.clientId.empty"));
+                            }
+                            if (isEmpty(providerBean.getClientSecret())) {
+                                errors.addError("clientSecret", i18nResolver.getText("configuration.clientSecret.empty"));
+                            }
+                        } else {
+                            if (isEmpty(providerBean.getExtensionNamespace())) {
+                                errors.addError("extensionNamespace", i18nResolver.getText("configuration.extensionNamespace.empty"));
+                            }
+                        }
+
+                        if (errors.hasAnyErrors()) {
+                            return Response.ok(errors).build();
+                        } else {
+                            try {
+                                if (provider == null) {
+                                    provider = openIdDao.createProvider(providerBean.getName(),
+                                            providerBean.getEndpointUrl(), providerBean.getExtensionNamespace());
+                                }
+
+                                provider.setName(providerBean.getName());
+                                provider.setEndpointUrl(providerBean.getEndpointUrl());
+                                provider.setProviderType(providerBean.getProviderType());
+                                if (provider.getProviderType().equals(OpenIdProvider.OAUTH2_TYPE)) {
+                                    provider.setClientId(providerBean.getClientId());
+                                    provider.setClientSecret(providerBean.getClientSecret());
+                                } else {
+                                    provider.setExtensionNamespace(providerBean.getExtensionNamespace());
+                                }
+                                provider.setAllowedDomains(providerBean.getAllowedDomains());
+                                provider.save();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            return Response.ok(new ProviderBean(provider)).build();
+                        }
+                    }
+                }
+        );
+    }
+
+    @DELETE
+    public Response deleteProvider(final Integer pid) {
+        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<javax.ws.rs.core.Response>() {
+            @Override
+            public Response get() {
+                try {
+                    openIdDao.deleteProvider(pid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                return Response.noContent().build();
+            }
+        });
+    }
+
 //    @Override
 //    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 //        if (shouldNotAccess(req, resp)) return;
@@ -56,7 +164,7 @@ public class ProvidersResource {
 //            }
 //
 //            if (StringUtils.isEmpty(name)) {
-//                errors.put("name", i18nResolver.getText("configuration.name.empty"));
+//                errors.addError("name", i18nResolver.getText("configuration.name.empty"));
 //            } else {
 //                final OpenIdProvider providerByName;
 //                try {
