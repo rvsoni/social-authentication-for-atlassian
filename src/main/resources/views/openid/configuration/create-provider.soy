@@ -1,0 +1,156 @@
+{namespace OpenId.Templates.Configuration}
+
+/**
+ * Common provider details.
+ */
+{template .providerDetails}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'name'/}
+            {param isRequired: true/}
+            {param content: 'Name'/}
+        {/call}
+        <input id="name" class="text" type="text" name="name" ng-model="name" required="true">
+        <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'endpointUrl'/}
+            {param isRequired: true/}
+            {param content: 'Provider URL'/}
+        {/call}
+        <input id="endpointUrl" class="text" type="url" name="endpointUrl" ng-model="endpointUrl" required="true">
+        <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.required">Please provide the provider URL.</div>
+        <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.url">Please provide a valid URL.</div>
+        {call aui.message.info}
+            {param extraClasses: 'hint hidden'/}
+            {param content}
+                <span class="hint-text"></span>
+            {/param}
+        {/call}
+    {/param}
+{/call}
+<fieldset class="group">
+    <legend><span>Provider Type</span></legend>
+    <div class="radio">
+        <input id="openid1" class="radio" type="radio" name="providerType" value="openid1" ng-model="providerType">
+        <label for="openid1">OpenID 1.0</label>
+    </div>
+    <div class="radio">
+        <input id="oauth2" class="radio" type="radio" name="providerType" value="oauth2" ng-model="providerType">
+        <label for="oauth2">OpenID Connect/OAuth 2.0</label>
+    </div>
+</fieldset>
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType=='openid1'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param isRequired: true/}
+            {param forField: 'extensionNamespace'/}
+            {param content: 'Alias'/}
+        {/call}
+        <input id="extensionNamespace" class="text" type="text" name="extensionNamespace" ng-model="extensionNamespace" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Probably you should use 'ext1'{/param}
+        {/call}
+        <div data-field="extensionNamespace" class="error" ng-if="providerForm.extensionNamespace.$error.required">Please provide the alias.</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType=='oauth2'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'callbackUrl'/}
+            {param content: 'Callback URL'/}
+        {/call}
+        <input id="callbackId" type="hidden" name="callbackId" ng-model="callbackId">
+        <span id="callbackUrl">{lb}{lb}callbackUrl{rb}{rb}</span>
+        {call aui.form.fieldDescription}
+            {param message}You need to submit it to your authentication provider.{/param}
+        {/call}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType=='oauth2'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientId'/}
+            {param content: 'Client ID'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="clientId" class="text" type="text" name="clientId" ng-model="clientId" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Client ID that was established at the provider's site{/param}
+        {/call}
+        <div data-field="clientId" class="error" ng-if="providerForm.clientId.$error.required">Please provide the client ID.</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType=='oauth2'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientSecret'/}
+            {param content: 'Client Secret'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="clientSecret" class="text" type="text" name="clientSecret" ng-model="clientSecret" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Client Secret that was established at the provider's site{/param}
+        {/call}
+        <div data-field="clientSecret" class="error" ng-if="providerForm.clientSecret.$error.required">Please provide the client secret.</div>
+    {/param}
+{/call}
+{call aui.form.textField}
+    {param id: 'allowedDomains'/}
+    {param labelContent: 'Allowed Domains'/}
+    {param descriptionText: 'Limit access to users having emails from given domains.'/}
+    {param value}{lb}{lb}allowedDomains{rb}{rb}{/param}
+{/call}
+{/template}
+
+/**
+ * Create provider form.
+ */
+{template .createProvider}
+    {call aui.page.pageHeader}
+        {param content}
+            {call aui.page.pageHeaderMain}
+                {param content}
+                    <h2>Add Authentication Provider</h2>
+                    <p class="description">You can add any OpenID/OAuth 2.0 provider that returns e-mail and full name of the user.</p>
+                {/param}
+            {/call}
+        {/param}
+    {/call}
+    {call aui.form.form}
+        {param action: ''/}
+        {param id: 'createProvider'/}
+        {param extraAttributes}ng-submit="createProvider()" name="providerForm"{/param}
+        {param content}
+            {call aui.form.fieldset}
+                {param legendContent: 'Add Provider'/}
+                {param content}
+                    {call .providerDetails}
+                    {/call}
+                {/param}
+            {/call}
+
+            {call aui.form.buttons}
+                {param content}
+                    {call aui.form.submit}
+                        {param text: 'Add Provider'/}
+                        {param id: 'saveProvider'/}
+                    {/call}
+                    {call aui.form.linkButton}
+                        {param text: 'Cancel'/}
+                        {param id: 'cancel'/}
+                        {param url}#/{/param}
+                    {/call}
+                {/param}
+            {/call}
+        {/param}
+    {/call}
+{/template}

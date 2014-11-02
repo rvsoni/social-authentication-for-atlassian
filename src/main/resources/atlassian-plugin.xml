@@ -30,6 +30,7 @@
         <resource type="download" name="openid.js" location="views/openid.soy"/>
         <resource type="download" name="openid-configuration-container.js" location="views/openid/configuration/container.soy"/>
         <resource type="download" name="openid-configuration-providers.js" location="views/openid/configuration/providers.soy"/>
+        <resource type="download" name="openid-configuration-create-provider.js" location="views/openid/configuration/create-provider.soy"/>
     </web-resource>
 
     <!-- add our web resources -->

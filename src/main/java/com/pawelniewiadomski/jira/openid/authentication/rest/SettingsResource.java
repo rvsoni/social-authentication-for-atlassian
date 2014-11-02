@@ -1,6 +1,5 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.atlassian.gzipfilter.org.apache.commons.lang.StringUtils;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;

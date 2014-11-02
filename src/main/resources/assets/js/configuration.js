@@ -1,5 +1,6 @@
 angular.module("openid.configuration", ['ngRoute'])
     .constant('contextPath', contextPath)
+    .constant('baseUrl', angular.element('meta[name="ajs-base-url"]').attr('content'))
     .constant('restPath', contextPath + "/rest/jira-openid-authentication/1.0")
     .factory('externalUserManagement', function() {
         return angular.element('div[ng-app="openid.configuration"]').data('external-user-management');
@@ -20,7 +21,7 @@ angular.module("openid.configuration", ['ngRoute'])
                 controller: 'EditProviderCtrl',
                 templateUrl: restPath + '/templates/OpenId.Templates.Configuration.editProvider'
             })
-            .when('/new', {
+            .when('/create', {
                 controller: 'CreateProviderCtrl',
                 templateUrl: restPath + '/templates/OpenId.Templates.Configuration.createProvider'
             })
@@ -58,8 +59,13 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', [function () {
-
+    .controller('CreateProviderCtrl', ['$scope', 'baseUrl', function ($scope, baseUrl) {
+        $scope.providerType = "oauth2";
+        $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+        $scope.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.callbackId;
     }])
     .controller('EditProviderCtrl', [function () {
 
