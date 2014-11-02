@@ -58,5 +58,17 @@ public class TemplateHelper
         }
     }
 
+    public String render(final HttpServletRequest request,
+                         String template, Map<String, Object> map) throws ServletException, IOException
+    {
+        final Map<String, Object> params = Maps.newHashMap(map);
+        params.put("baseUrl", getBaseUrl(request));
+
+        try {
+            return soyTemplateRenderer.render(SOY_TEMPLATES, template, params);
+        } catch (SoyException e) {
+            throw new ServletException(e);
+        }
+    }
 
 }

@@ -26,17 +26,11 @@ import java.util.List;
 
 @Path("openIdProviders")
 @Produces({MediaType.APPLICATION_JSON})
-public class OpenIdProvidersResource {
+public class OpenIdProvidersResource extends OpenIdResource {
     private static final Logger log = Logger.getLogger(OpenIdProvidersResource.class);
 
     @Autowired
     OpenIdDao openIdDao;
-
-    @Autowired
-    JiraAuthenticationContext authenticationContext;
-
-    @Autowired
-    PermissionManager permissionManager;
 
     @GET
     @AnonymousAllowed
@@ -148,18 +142,4 @@ public class OpenIdProvidersResource {
             }
         });
     }
-
-    protected Option<Response> permissionDeniedIfNotAdmin() {
-        if (permissionManager.hasPermission(Permissions.ADMINISTER, authenticationContext.getUser())) {
-            return Option.none();
-        }
-        return Option.some(Response.status(Response.Status.FORBIDDEN).build());
-    }
-
-    public static CacheControl never() {
-        final CacheControl cc = new CacheControl();
-        cc.setNoCache(true);
-        return cc;
-    }
-
 }
