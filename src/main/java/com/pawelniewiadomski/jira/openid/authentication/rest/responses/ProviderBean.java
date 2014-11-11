@@ -45,6 +45,12 @@ public class ProviderBean extends BasicProviderBean {
     public ProviderBean(OpenIdProvider provider) {
         this(provider.getID(), provider.getName(), provider.isEnabled(), provider.getOrdering(),
                 provider.getAllowedDomains(), provider.getProviderType());
+
+        this.endpointUrl = provider.getEndpointUrl();
+        this.extensionNamespace = provider.getExtensionNamespace();
+        this.callbackId = provider.getCallbackId();
+        this.clientId = provider.getClientId();
+        this.clientSecret = provider.getClientSecret();
     }
 
     public String getClientId() {

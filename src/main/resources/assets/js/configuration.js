@@ -78,7 +78,7 @@ angular.module("openid.configuration", ['ngRoute'])
     }])
     .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl',
         function ($scope, $location, $http, restPath, baseUrl) {
-        $scope.provider = { providerType: "oauth2" };
+        $scope.provider = { providerType: "oauth2", extensionNamespace: 'ext1' };
         $scope.provider.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
@@ -91,9 +91,20 @@ angular.module("openid.configuration", ['ngRoute'])
             });
         }
     }])
-    .controller('EditProviderCtrl', ['$routeParams', '$scope', 'providers', function ($routeParams, $scope, providers) {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
+        function($routeParams, $scope, $location, $http, providers, restPath) {
         var providerId = $routeParams.providerId;
         $scope.provider = providers.getProviderById(providerId);
+
+        if ($scope.provider == undefined) {
+            $location.path('/');
+        }
+
+        $scope.updateProvider = function() {
+            $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function() {
+                $location.path('/');
+            });
+        };
     }])
     .controller('DeleteProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
         function($routeParams, $scope, $location, $http, providers, restPath) {

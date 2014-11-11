@@ -103,11 +103,17 @@
         <div data-field="clientSecret" class="error" ng-if="providerForm.clientSecret.$error.required">Please provide the client secret.</div>
     {/param}
 {/call}
-{call aui.form.textField}
-    {param id: 'allowedDomains'/}
-    {param labelContent: 'Allowed Domains'/}
-    {param descriptionText: 'Limit access to users having emails from given domains.'/}
-    {param value}{lb}{lb}allowedDomains{rb}{rb}{/param}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'allowedDomains'/}
+            {param content: 'Allowed Domains'/}
+        {/call}
+        <input id="allowedDomains" class="text" type="text" name="allowedDomains" ng-model="provider.allowedDomains">
+        {call aui.form.fieldDescription}
+            {param message}Comma separated list of domains. If given only users having emails from allowed domains will be allowed.{/param}
+        {/call}
+    {/param}
 {/call}
 {/template}
 
