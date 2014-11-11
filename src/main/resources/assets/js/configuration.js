@@ -11,6 +11,14 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('creatingUsers', function() {
         return angular.element('div[ng-app="openid.configuration"]').data('creating-users');
     })
+    .factory('providers', function() {
+        var providers = [];
+        return {
+            getProviders: function() { return providers; },
+            setProviders: function(newProviders) { providers = newProviders; },
+            getProviderById: function(providerId) { return _.find(providers, function(p) { return p.id == providerId; } )}
+        }
+    })
     .config(['$routeProvider', 'restPath', function ($routeProvider, restPath) {
         $routeProvider
             .when('/', {
@@ -21,6 +29,10 @@ angular.module("openid.configuration", ['ngRoute'])
                 controller: 'EditProviderCtrl',
                 templateUrl: restPath + '/templates/OpenId.Templates.Configuration.editProvider'
             })
+            .when('/delete/:providerId', {
+                controller: 'DeleteProviderCtrl',
+                templateUrl: restPath + '/templates/OpenId.Templates.Configuration.deleteProvider'
+            })
             .when('/create', {
                 controller: 'CreateProviderCtrl',
                 templateUrl: restPath + '/templates/OpenId.Templates.Configuration.createProvider'
@@ -28,12 +40,13 @@ angular.module("openid.configuration", ['ngRoute'])
             .otherwise({ redirectTo: '/' });
     }])
     .controller('ProvidersCtrl', ['$scope', '$http', 'restPath', 'externalUserManagement',
-            'publicMode', 'creatingUsers', function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers) {
+            'publicMode', 'creatingUsers', 'providers', function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers) {
         $scope.isPublicMode = publicMode;
         $scope.isExternalUserManagement = externalUserManagement;
         $scope.isCreatingUsers = creatingUsers;
 
         var setProviders = function (data) {
+            providers.setProviders(data);
             $scope.providers = data;
             $scope.loaded = true;
             $scope.error = false;
@@ -78,8 +91,24 @@ angular.module("openid.configuration", ['ngRoute'])
             });
         }
     }])
-    .controller('EditProviderCtrl', [function () {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', 'providers', function ($routeParams, $scope, providers) {
+        var providerId = $routeParams.providerId;
+        $scope.provider = providers.getProviderById(providerId);
+    }])
+    .controller('DeleteProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
+        function($routeParams, $scope, $location, $http, providers, restPath) {
+        var providerId = $routeParams.providerId;
+        $scope.provider = providers.getProviderById(providerId);
 
+        if ($scope.provider == undefined) {
+            $location.path('/');
+        }
+
+        $scope.deleteProvider = function() {
+            $http['delete'](restPath + '/providers/' + providerId).success(function() {
+                $location.path('/');
+            });
+        };
     }]);
 
 //(function($) {

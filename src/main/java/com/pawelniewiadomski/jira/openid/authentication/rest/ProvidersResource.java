@@ -121,12 +121,13 @@ public class ProvidersResource extends OpenIdResource {
     }
 
     @DELETE
-    public Response deleteProvider(final Integer pid) {
+    @Path("/{providerId}")
+    public Response deleteProvider(@PathParam("providerId") final int providerId) {
         return permissionDeniedIfNotAdmin().getOrElse(new Supplier<javax.ws.rs.core.Response>() {
             @Override
             public Response get() {
                 try {
-                    openIdDao.deleteProvider(pid);
+                    openIdDao.deleteProvider(providerId);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
