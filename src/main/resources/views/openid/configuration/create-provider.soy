@@ -13,6 +13,7 @@
         {/call}
         <input id="name" class="text" type="text" name="name" ng-model="provider.name" required="true">
         <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
+        <div data-field="name" class="error" ng-if="errors.name">{lb}{lb}errors.name{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}
@@ -25,6 +26,7 @@
         <input id="endpointUrl" class="text" type="url" name="endpointUrl" ng-model="provider.endpointUrl" required="true">
         <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.required">Please provide the provider URL.</div>
         <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.url">Please provide a valid URL.</div>
+        <div data-field="endpointUrl" class="error" ng-if="errors.endpointUrl">{lb}{lb}errors.endpointUrl{rb}{rb}</div>
         {call aui.message.info}
             {param extraClasses: 'hint hidden'/}
             {param content}
@@ -57,6 +59,7 @@
             {param message}Probably you should use 'ext1'{/param}
         {/call}
         <div data-field="extensionNamespace" class="error" ng-if="providerForm.extensionNamespace.$error.required">Please provide the alias.</div>
+        <div data-field="extensionNamespace" class="error" ng-if="errors.extensionNamespace">{lb}{lb}errors.extensionNamespace{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}
@@ -86,6 +89,7 @@
             {param message}Client ID that was established at the provider's site{/param}
         {/call}
         <div data-field="clientId" class="error" ng-if="providerForm.clientId.$error.required">Please provide the client ID.</div>
+        <div data-field="clientId" class="error" ng-if="errors.clientId">{lb}{lb}errors.clientId{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}
@@ -101,6 +105,7 @@
             {param message}Client Secret that was established at the provider's site{/param}
         {/call}
         <div data-field="clientSecret" class="error" ng-if="providerForm.clientSecret.$error.required">Please provide the client secret.</div>
+        <div data-field="clientSecret" class="error" ng-if="errors.clientSecret">{lb}{lb}errors.clientSecret{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}
@@ -113,6 +118,7 @@
         {call aui.form.fieldDescription}
             {param message}Comma separated list of domains. If given only users having emails from allowed domains will be allowed.{/param}
         {/call}
+        <div data-field="allowedDomains" class="error" ng-if="errors.allowedDomains">{lb}{lb}errors.allowedDomains{rb}{rb}</div>
     {/param}
 {/call}
 {/template}
@@ -134,7 +140,7 @@
     {call aui.form.form}
         {param action: ''/}
         {param id: 'createProvider'/}
-        {param extraAttributes}ng-submit="createProvider()" name="providerForm"{/param}
+        {param extraAttributes}ng-submit="createProvider(providerForm)" name="providerForm"{/param}
         {param content}
             {call aui.form.fieldset}
                 {param legendContent: 'Add Provider'/}

@@ -1,6 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.atlassian.jira.util.ErrorCollection;
+import com.atlassian.jira.rest.api.util.ErrorCollection;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -46,7 +46,7 @@ public class ProvidersResource extends OpenIdResource {
                 new Supplier<javax.ws.rs.core.Response>() {
                     @Override
                     public javax.ws.rs.core.Response get() {
-                        ErrorCollection errors = validator.validateCreate(providerBean);
+                        ErrorCollection errors = ErrorCollection.of(validator.validateCreate(providerBean));
 
                         if (errors.hasAnyErrors()) {
                             return Response.ok(errors).build();
@@ -88,7 +88,7 @@ public class ProvidersResource extends OpenIdResource {
                     public javax.ws.rs.core.Response get() {
                         try {
                             final OpenIdProvider provider = openIdDao.findProvider(providerId);
-                            final ErrorCollection errors = validator.validateUpdate(provider, providerBean);
+                            final ErrorCollection errors = ErrorCollection.of(validator.validateUpdate(provider, providerBean));
 
                             if (errors.hasAnyErrors()) {
                                 return Response.ok(errors).build();

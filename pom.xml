@@ -32,6 +32,12 @@
         </dependency>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-rest-api</artifactId>
+            <version>${jira.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-core</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>

@@ -86,8 +86,14 @@ angular.module("openid.configuration", ['ngRoute'])
         $scope.provider.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.callbackId;
 
         $scope.createProvider = function() {
-            $http.post(restPath + '/providers', $scope.provider).success(function() {
-                $location.path('/');
+            $scope.errors = {};
+
+            $http.post(restPath + '/providers', $scope.provider).success(function(response) {
+                if (response.errorMessages == undefined && response.errors == undefined) {
+                    $location.path('/');
+                } else {
+                    $scope.errors = response.errors;
+                }
             });
         }
     }])
@@ -101,8 +107,14 @@ angular.module("openid.configuration", ['ngRoute'])
         }
 
         $scope.updateProvider = function() {
-            $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function() {
-                $location.path('/');
+            $scope.errors = {};
+
+            $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function(response) {
+                if (response.errorMessages == undefined && response.errors == undefined) {
+                    $location.path('/');
+                } else {
+                    $scope.errors = response.errors;
+                }
             });
         };
     }])
@@ -116,7 +128,7 @@ angular.module("openid.configuration", ['ngRoute'])
         }
 
         $scope.deleteProvider = function() {
-            $http['delete'](restPath + '/providers/' + providerId).success(function() {
+            $http['delete'](restPath + '/providers/' + providerId).success(function(response) {
                 $location.path('/');
             });
         };
