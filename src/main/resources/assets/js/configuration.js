@@ -11,14 +11,27 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('creatingUsers', function() {
         return angular.element('div[ng-app="openid.configuration"]').data('creating-users');
     })
-    .factory('providers', function() {
+    .factory('providers', ['$q', '$http', '$log', 'restPath', function($q, $http, $log, restPath) {
         var providers = [];
         return {
-            getProviders: function() { return providers; },
-            setProviders: function(newProviders) { providers = newProviders; },
+            getProviders: function() {
+                var deferred = $q.defer();
+                if (providers == undefined || !providers.length) {
+                    $http.get(restPath + "/providers").success(function(response) {
+                        providers = response;
+                        deferred.resolve(response);
+                    }).error(function(msg, code) {
+                        deferred.reject(msg);
+                        $log.error(msg, code);
+                    });
+                } else {
+                    deferred.resolve(providers);
+                }
+                return deferred.promise;
+            },
             getProviderById: function(providerId) { return _.find(providers, function(p) { return p.id == providerId; } )}
         }
-    })
+    }])
     .config(['$routeProvider', 'restPath', function ($routeProvider, restPath) {
         $routeProvider
             .when('/', {
@@ -46,7 +59,6 @@ angular.module("openid.configuration", ['ngRoute'])
         $scope.isCreatingUsers = creatingUsers;
 
         var setProviders = function (data) {
-            providers.setProviders(data);
             $scope.providers = data;
             $scope.loaded = true;
             $scope.error = false;
@@ -72,7 +84,7 @@ angular.module("openid.configuration", ['ngRoute'])
             $http.post(restPath + "/providers/" + providerId + "/state", { enabled: enabled }).success(setProviders);
         };
 
-        $http.get(restPath + "/providers").success(setProviders).error(function (data) {
+        providers.getProviders().then(setProviders, function (data) {
             $scope.error = true;
         });
     }])
@@ -100,11 +112,14 @@ angular.module("openid.configuration", ['ngRoute'])
     .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
         function($routeParams, $scope, $location, $http, providers, restPath) {
         var providerId = $routeParams.providerId;
-        $scope.provider = providers.getProviderById(providerId);
 
-        if ($scope.provider == undefined) {
-            $location.path('/');
-        }
+        providers.getProviders().then(function() {
+            $scope.provider = providers.getProviderById(providerId);
+
+            if ($scope.provider == undefined) {
+                $location.path('/');
+            }
+        });
 
         $scope.updateProvider = function() {
             $scope.errors = {};
@@ -121,14 +136,17 @@ angular.module("openid.configuration", ['ngRoute'])
     .controller('DeleteProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
         function($routeParams, $scope, $location, $http, providers, restPath) {
         var providerId = $routeParams.providerId;
-        $scope.provider = providers.getProviderById(providerId);
 
-        if ($scope.provider == undefined) {
-            $location.path('/');
-        }
+        providers.getProviders().then(function() {
+            $scope.provider = providers.getProviderById(providerId);
+
+            if ($scope.provider == undefined) {
+                $location.path('/');
+            }
+        });
 
         $scope.deleteProvider = function() {
-            $http['delete'](restPath + '/providers/' + providerId).success(function(response) {
+            $http['delete'](restPath + '/providers/' + providerId).success(function() {
                 $location.path('/');
             });
         };
