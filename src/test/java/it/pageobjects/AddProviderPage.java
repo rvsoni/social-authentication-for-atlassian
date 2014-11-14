@@ -154,7 +154,8 @@ public class AddProviderPage extends AbstractJiraPage {
     }
 
     public AddProviderPage setCallbackId(String id) {
-        driver.executeScript("AJS.$('#callbackId').val(arguments[0])", id);
+        driver.executeScript("var cid = arguments[0]; angular.element('form[name=\"providerForm\"]').scope().$apply(" +
+                "function($scope) { $scope.provider.callbackId = cid; });", id);
         return this;
     }
 

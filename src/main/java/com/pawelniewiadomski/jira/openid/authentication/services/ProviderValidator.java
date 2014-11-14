@@ -71,6 +71,9 @@ public class ProviderValidator {
             if (isEmpty(providerBean.getClientSecret())) {
                 errors.addError("clientSecret", i18nResolver.getText("configuration.clientSecret.empty"));
             }
+            if (isEmpty(providerBean.getCallbackId())) {
+                errors.addErrorMessage(i18nResolver.getText("configuration.callbackId.empty"));
+            }
         } else {
             if (isEmpty(providerBean.getExtensionNamespace())) {
                 errors.addError("extensionNamespace", i18nResolver.getText("configuration.extensionNamespace.empty"));

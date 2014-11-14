@@ -62,6 +62,7 @@ public class ProvidersResource extends OpenIdResource {
                                 if (provider.getProviderType().equals(OpenIdProvider.OAUTH2_TYPE)) {
                                     provider.setClientId(providerBean.getClientId());
                                     provider.setClientSecret(providerBean.getClientSecret());
+                                    provider.setCallbackId(providerBean.getCallbackId());
                                 } else {
                                     provider.setExtensionNamespace(providerBean.getExtensionNamespace());
                                 }
