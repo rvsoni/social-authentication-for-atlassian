@@ -49,7 +49,6 @@ public class TestEditProvider extends BaseJiraWebTest {
         editPage.setName("");
         editPage.setEndpointUrl("");
         editPage.setExtensionNamespace("");
-        editPage.save();
 
         assertThat(editPage.getFormError("name"), hasErrorMessage("Please provide the name."));
         assertThat(editPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));
