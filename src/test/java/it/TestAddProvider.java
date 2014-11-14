@@ -1,19 +1,19 @@
 package it;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
-import com.atlassian.jira.pageobjects.config.LoginAs;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import it.pageobjects.AddProviderPage;
 import it.pageobjects.ConfigurationPage;
 import it.pageobjects.EditProviderPage;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
+import static it.pageobjects.AddProviderPage.hasErrorMessage;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 
 public class TestAddProvider extends BaseJiraWebTest {
@@ -31,27 +31,26 @@ public class TestAddProvider extends BaseJiraWebTest {
     @Test
     public void testAddOAuthErrors() {
         addPage.setProviderType(OpenIdProvider.OAUTH2_TYPE);
-        addPage = addPage.saveWithErrors();
 
-        assertThat(addPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
-        assertThat(addPage.getFormErrors(), hasEntry("endpointUrl", "Provider URL must not be empty."));
-        assertThat(addPage.getFormErrors(), hasEntry("clientId", "Client ID must not be empty."));
-        assertThat(addPage.getFormErrors(), hasEntry("clientSecret", "Client Secret must not be empty."));
+        assertThat(addPage.getFormError("name"), hasErrorMessage("Please provide the name."));
+        assertThat(addPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));
+        assertThat(addPage.getFormError("clientId"), hasErrorMessage("Please provide the client ID."));
+        assertThat(addPage.getFormError("clientSecret"), hasErrorMessage("Please provide the client secret."));
 
         addPage.setEndpointUrl("https://accounts.google.com");
-        addPage = addPage.saveWithErrors();
 
-        assertThat(addPage.getFormErrors().size(), Matchers.equalTo(3));
-        assertThat(addPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
-        assertThat(addPage.getFormErrors(), hasEntry("clientId", "Client ID must not be empty."));
-        assertThat(addPage.getFormErrors(), hasEntry("clientSecret", "Client Secret must not be empty."));
+        waitUntil(addPage.getFormErrors(), IsIterableWithSize.<AddProviderPage.AuiErrorMessage>iterableWithSize(3));
+        assertThat(addPage.getFormError("name"), hasErrorMessage("Please provide the name."));
+        assertThat(addPage.getFormError("clientId"), hasErrorMessage("Please provide the client ID."));
+        assertThat(addPage.getFormError("clientSecret"), hasErrorMessage("Please provide the client secret."));
 
         addPage.setEndpointUrl("https://wp.pl");
         addPage.setName("Testing").setClientId("XXX").setClientSecret("XXX");
-        addPage = addPage.saveWithErrors();
 
-        assertThat(addPage.getFormErrors().size(), Matchers.equalTo(1));
-        assertThat(addPage.getFormErrors(), hasEntry("endpointUrl", "OpenId Connect discovery document at https://wp.pl/.well-known/openid-configuration is invalid or missing."));
+        addPage = addPage.saveWithErrors();
+        Poller.waitUntilTrue(addPage.hasErrors());
+        waitUntil(addPage.getFormErrors(), IsIterableWithSize.<AddProviderPage.AuiErrorMessage>iterableWithSize(1));
+        assertThat(addPage.getFormError("endpointUrl"), hasErrorMessage("OpenId Connect discovery document at https://wp.pl/.well-known/openid-configuration is invalid or missing."));
     }
 
     @Test
@@ -61,19 +60,21 @@ public class TestAddProvider extends BaseJiraWebTest {
 
         addPage.setName(name);
         addPage.setEndpointUrl(endpointUrl);
-        addPage.setExtensionNamespace("ext1");
+        addPage.setProviderType(OpenIdProvider.OPENID_TYPE);
+
+        waitUntil(addPage.getExtensionNamespace(), (Matcher<String>) equalTo("ext1"));
 
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("Testing");
-        Poller.waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
-        Poller.waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
+        waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
+        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
 
         editPage.setName("");
         editPage.setEndpointUrl("");
-        editPage = editPage.saveWithErrors();
 
-        assertThat(editPage.getFormErrors(), hasEntry("name", "Name must not be empty."));
-        assertThat(editPage.getFormErrors(), hasEntry("endpointUrl", "Provider URL must not be empty."));
+        Poller.waitUntilTrue(editPage.hasErrors());
+        assertThat(editPage.getFormError("name"), hasErrorMessage("Please provide the name."));
+        assertThat(editPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));
     }
 }

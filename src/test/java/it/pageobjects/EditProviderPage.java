@@ -14,7 +14,7 @@ public class EditProviderPage extends AddProviderPage {
 
     @Override
     public String getUrl() {
-        return "/plugins/servlet/openid-configuration?op=edit&pid=" + pid;
+        return "/plugins/servlet/openid-configuration#/edit/" + pid;
     }
 
     public EditProviderPage saveWithErrors() {
