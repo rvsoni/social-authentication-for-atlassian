@@ -44,26 +44,6 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     @Autowired
     TemplateHelper templateHelper;
 
-    @Autowired
-    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
-
-    private Map<String, String> providerValuesMap(String name, String endpointUrl, String extensionNamespace, String allowedDomains,
-                                                  String providerType, String clientId, String clientSecret) {
-        final Map<String, String> results = Maps.newHashMap();
-        results.put("name", name);
-        results.put("endpointUrl", endpointUrl);
-        results.put("allowedDomains", allowedDomains);
-        results.put("providerType", providerType);
-
-        if (providerType.equals(OpenIdProvider.OPENID_TYPE)) {
-            results.put("extensionNamespace", extensionNamespace);
-        } else {
-            results.put("clientId", clientId);
-            results.put("clientSecret", clientSecret);
-        }
-        return results;
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
