@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -40,6 +41,13 @@ public class TemplateHelper
         {
             return "text/html; charset=UTF-8";
         }
+    }
+
+    public void render(final HttpServletRequest request,
+                       final HttpServletResponse response,
+                       final String template) throws ServletException, IOException
+    {
+        render(request, response, template, Collections.<String, Object>emptyMap());
     }
 
     public void render(final HttpServletRequest request,

@@ -21,7 +21,7 @@ import java.util.List;
 
 @Path("openIdProviders")
 @Produces({MediaType.APPLICATION_JSON})
-public class OpenIdProvidersResource extends OpenIdResource {
+public class LoginResource extends OpenIdResource {
 
     @Autowired
     OpenIdDao openIdDao;

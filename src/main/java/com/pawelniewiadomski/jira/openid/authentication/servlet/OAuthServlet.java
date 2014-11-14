@@ -47,7 +47,7 @@ public class OAuthServlet extends AbstractOpenIdServlet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!licenseProvider.isValidLicense()) {
-            templateHelper.render(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.invalidLicense");
             return;
         }
 
@@ -89,5 +89,5 @@ public class OAuthServlet extends AbstractOpenIdServlet
             log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
         }
 
-        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());    }
+        templateHelper.render(request, response, "OpenId.Templates.error");    }
 }

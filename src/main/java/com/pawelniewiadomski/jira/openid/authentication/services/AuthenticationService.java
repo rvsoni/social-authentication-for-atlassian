@@ -62,7 +62,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
                             final OpenIdProvider provider, String identity, String email) throws IOException, ServletException
     {
         if (StringUtils.isBlank(email)) {
-            templateHelper.render(request, response, "OpenId.Templates.emptyEmail", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
         }
 
@@ -77,7 +77,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
                 }
             }
             if (!matchingDomain) {
-                templateHelper.render(request, response, "OpenId.Templates.domainMismatch", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.domainMismatch");
                 return;
             }
         }
@@ -93,11 +93,11 @@ public class AuthenticationService extends AbstractOpenIdServlet
                         email, identity);
             } catch (PermissionException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             } catch (CreateException e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
-                templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             }
         }
@@ -117,7 +117,7 @@ public class AuthenticationService extends AbstractOpenIdServlet
                 response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
             }
         } else {
-            templateHelper.render(request, response, "OpenId.Templates.noUserMatched", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }
     }
 }

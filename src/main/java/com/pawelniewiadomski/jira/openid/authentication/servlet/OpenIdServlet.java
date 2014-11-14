@@ -105,7 +105,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!licenseProvider.isValidLicense()) {
-            templateHelper.render(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.invalidLicense");
             return;
         }
 
@@ -142,7 +142,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
                         return;
                     } catch (OpenIdException e) {
                         log.error("OpenID verification failed", e);
-                        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                        templateHelper.render(request, response, "OpenId.Templates.error");
                         return;
                     }
                 } else {
@@ -169,7 +169,7 @@ public class OpenIdServlet extends AbstractOpenIdServlet {
             log.error("OpenID Authentication failed, there was an error: " + e.getMessage());
         }
 
-        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+        templateHelper.render(request, response, "OpenId.Templates.error");
     }
 
     void checkNonce(String nonce) {

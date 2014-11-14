@@ -79,7 +79,7 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!licenseProvider.isValidLicense()) {
-            templateHelper.render(request, response, "OpenId.Templates.invalidLicense", Collections.<String, Object>emptyMap());
+            templateHelper.render(request, response, "OpenId.Templates.invalidLicense");
             return;
         }
 
@@ -139,12 +139,12 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
                             ImmutableMap.<String, Object>of("providerName", provider.getName()));
                 } else {
                     log.error("OpenID verification failed", e);
-                    templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+                    templateHelper.render(request, response, "OpenId.Templates.error");
                 }
                 return;
             }
         }
 
-        templateHelper.render(request, response, "OpenId.Templates.error", Collections.<String, Object>emptyMap());
+        templateHelper.render(request, response, "OpenId.Templates.error");
     }
 }
