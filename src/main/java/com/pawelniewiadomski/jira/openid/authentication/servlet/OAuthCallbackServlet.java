@@ -3,7 +3,6 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -15,7 +14,7 @@ import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.user.util.UserUtil;
 
 import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;

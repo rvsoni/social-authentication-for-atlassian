@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +23,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;

@@ -2,7 +2,7 @@ package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.GET;

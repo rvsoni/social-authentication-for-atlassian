@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -25,7 +24,6 @@ import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 
 import com.google.common.collect.Iterables;
-import com.pawelniewiadomski.jira.openid.authentication.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.AbstractOpenIdServlet;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;

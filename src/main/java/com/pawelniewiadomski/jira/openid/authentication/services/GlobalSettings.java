@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
