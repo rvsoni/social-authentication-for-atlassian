@@ -4,6 +4,11 @@
  * Common provider details.
  */
 {template .providerDetails}
+{call aui.message.error}
+    {param extraAttributes}ng-if="errorMessages"{/param}
+    {param isCloseable: false/}
+    {param content}{lb}{lb}errorMessages[0]{rb}{rb}{/param}
+{/call}
 {call aui.form.fieldGroup}
     {param content}
         {call aui.form.label}

@@ -99,12 +99,14 @@ angular.module("openid.configuration", ['ngRoute'])
 
         $scope.createProvider = function() {
             $scope.errors = {};
+            $scope.errorMessages = [];
 
             $http.post(restPath + '/providers', $scope.provider).success(function(response) {
                 if (response.errorMessages == undefined && response.errors == undefined) {
                     $location.path('/');
                 } else {
                     $scope.errors = response.errors;
+                    $scope.errorMessages = response.errorMessages;
                 }
             });
         }
@@ -123,12 +125,14 @@ angular.module("openid.configuration", ['ngRoute'])
 
         $scope.updateProvider = function() {
             $scope.errors = {};
+            $scope.errorMessages = [];
 
             $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function(response) {
                 if (response.errorMessages == undefined && response.errors == undefined) {
                     $location.path('/');
                 } else {
                     $scope.errors = response.errors;
+                    $scope.errorMessages = response.errorMessages;
                 }
             });
         };
