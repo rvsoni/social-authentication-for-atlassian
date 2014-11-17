@@ -11,6 +11,15 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('creatingUsers', function() {
         return angular.element('div[ng-app="openid.configuration"]').data('creating-users');
     })
+    .factory('errorHandler', ['$window', function($window) {
+        return {
+            handleError: function(data, status) {
+                if (status == 401) {
+                    $window.location.replace(contextPath + '/login.jsp?permissionViolation=true&os_destination=' + encodeURIComponent($window.location.href));
+                }
+            }
+        }
+    }])
     .factory('providers', ['$q', '$http', '$log', 'restPath', function($q, $http, $log, restPath) {
         var providers = [];
         return {
@@ -88,8 +97,8 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl',
-        function ($scope, $location, $http, restPath, baseUrl) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl', 'errorHandler',
+        function ($scope, $location, $http, restPath, baseUrl, errorHandler) {
         $scope.provider = { providerType: "oauth2", extensionNamespace: 'ext1' };
         $scope.provider.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -108,11 +117,11 @@ angular.module("openid.configuration", ['ngRoute'])
                     $scope.errors = response.errors;
                     $scope.errorMessages = response.errorMessages;
                 }
-            });
+            }).error(errorHandler.handleError);
         }
     }])
-    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
-        function($routeParams, $scope, $location, $http, providers, restPath) {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler',
+        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler) {
         var providerId = $routeParams.providerId;
 
         providers.getProviders().then(function() {
@@ -134,7 +143,7 @@ angular.module("openid.configuration", ['ngRoute'])
                     $scope.errors = response.errors;
                     $scope.errorMessages = response.errorMessages;
                 }
-            });
+            }).error(errorHandler.handleError);
         };
     }])
     .controller('DeleteProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath',
@@ -155,42 +164,3 @@ angular.module("openid.configuration", ['ngRoute'])
             });
         };
     }]);
-
-//(function($) {
-//    $(function () {
-//        var showOrHide = function () {
-//            if ($('#openid1').attr('checked')) {
-//                $('.oauth2').hide();
-//                $('.openid1').show();
-//            } else {
-//                $('.oauth2').show();
-//                $('.openid1').hide();
-//            }
-//        };
-//
-//        $('input[name=providerType]').click(showOrHide);
-//        showOrHide();
-//
-//        $('.preset').click(function() {
-//            var $this = $(this);
-//
-//            $('input[name=name]').val($this.data("name"));
-//            $('input[name=endpointUrl]').val($this.data("endpointurl"));
-//
-//            if ($this.data("hint")) {
-//                $('.hint > .hint-text').html($this.data("hint"));
-//                $('.hint').removeClass('hidden');
-//            } else {
-//                $('.hint').addClass('hidden');
-//            }
-//
-//            if ($this.data("providertype") == "oauth2") {
-//                $('#oauth2').attr('checked', true);
-//            } else {
-//                $('#openid1').attr('checked', true);
-//                $('input[name=extensionNamespace]').val($this.data("extensionnamespace"));
-//            }
-//            showOrHide();
-//        });
-//    });
-//}(AJS.$));
