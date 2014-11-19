@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
+import com.atlassian.webresource.api.assembler.WebResourceAssembler;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 
@@ -30,14 +31,15 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
 
-        pageBuilderService.assembler().resources().requireContext("jira-openid-configuration");
+        final WebResourceAssembler assembler = pageBuilderService.assembler();
 
-        templateHelper.render(req, resp, "OpenId.Templates.Configuration.container",
-                ImmutableMap.<String, Object>builder()
-                        .put("publicMode", JiraUtils.isPublicMode())
-                        .put("creatingUsers", globalSettings.isCreatingUsers())
-                        .put("externalUserManagement", isExternalUserManagement())
-                        .build());
+        assembler.resources().requireContext("jira-openid-configuration");
+        assembler.data()
+                .requireData("openid.publicMode", JiraUtils.isPublicMode())
+                .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
+                .requireData("openid.externalUserManagement", isExternalUserManagement());
+
+        templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
     }
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {

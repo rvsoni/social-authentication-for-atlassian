@@ -3,13 +3,13 @@ angular.module("openid.configuration", ['ngRoute'])
     .constant('baseUrl', angular.element('meta[name="ajs-base-url"]').attr('content'))
     .constant('restPath', contextPath + "/rest/jira-openid-authentication/1.0")
     .factory('externalUserManagement', function() {
-        return angular.element('div[ng-app="openid.configuration"]').data('external-user-management');
+        return WRM.data.claim('openid.externalUserManagement');
     })
     .factory('publicMode', function() {
-        return angular.element('div[ng-app="openid.configuration"]').data('public-mode');
+        return WRM.data.claim('openid.publicMode');
     })
     .factory('creatingUsers', function() {
-        return angular.element('div[ng-app="openid.configuration"]').data('creating-users');
+        return WRM.data.claim('openid.creatingUsers');
     })
     .factory('errorHandler', ['$window', function($window) {
         return {
