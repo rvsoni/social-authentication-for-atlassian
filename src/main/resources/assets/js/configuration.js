@@ -1,7 +1,9 @@
 angular.module("openid.configuration", ['ngRoute'])
     .constant('contextPath', contextPath)
-    .constant('baseUrl', angular.element('meta[name="ajs-base-url"]').attr('content'))
     .constant('restPath', contextPath + "/rest/jira-openid-authentication/1.0")
+    .factory('baseUrl', function() {
+        return WRM.data.claim('openid.baseUrl');
+    })
     .factory('externalUserManagement', function() {
         return WRM.data.claim('openid.externalUserManagement');
     })
@@ -104,7 +106,7 @@ angular.module("openid.configuration", ['ngRoute'])
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
         });
-        $scope.provider.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.callbackId;
+        $scope.provider.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.provider.callbackId;
 
         $scope.createProvider = function() {
             $scope.errors = {};

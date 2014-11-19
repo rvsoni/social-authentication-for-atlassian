@@ -2,9 +2,6 @@
 
 /**
  * Container page for all other sub-views
- * @param publicMode
- * @param externalUserManagement
- * @param creatingUsers
  */
 {template .container}
 {call aui.page.document}
@@ -16,8 +13,7 @@
         <meta name="admin.active.tab" content="openid"/>
     {/param}
     {param content}
-        <div ng-app="openid.configuration" data-public-mode="{$publicMode}"
-            data-external-user-management="{$externalUserManagement}" data-creating-users="{$creatingUsers}">
+        <div ng-app="openid.configuration">
             <div ng-view></div>
         </div>
     {/param}

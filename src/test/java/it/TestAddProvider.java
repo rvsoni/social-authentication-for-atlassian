@@ -12,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
+import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
 import static it.pageobjects.AddProviderPage.hasErrorMessage;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class TestAddProvider extends BaseJiraWebTest {
@@ -31,6 +33,8 @@ public class TestAddProvider extends BaseJiraWebTest {
     @Test
     public void testAddOAuthErrors() {
         addPage.setProviderType(OpenIdProvider.OAUTH2_TYPE);
+
+        waitUntil(addPage.getCallbackUrl(), startsWith("http://localhost"));
 
         assertThat(addPage.getFormError("name"), hasErrorMessage("Please provide the name."));
         assertThat(addPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));

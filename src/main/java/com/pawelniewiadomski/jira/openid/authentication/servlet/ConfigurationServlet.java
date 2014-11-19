@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
@@ -37,7 +38,8 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
         assembler.data()
                 .requireData("openid.publicMode", JiraUtils.isPublicMode())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
-                .requireData("openid.externalUserManagement", isExternalUserManagement());
+                .requireData("openid.externalUserManagement", isExternalUserManagement())
+                .requireData("openid.baseUrl", applicationProperties.getString(APKeys.JIRA_BASEURL));
 
         templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
     }

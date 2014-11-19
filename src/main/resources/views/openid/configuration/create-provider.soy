@@ -75,7 +75,7 @@
             {param content: 'Callback URL'/}
         {/call}
         <input id="callbackId" type="hidden" name="callbackId" ng-model="provider.callbackId">
-        <span id="callbackUrl">{lb}{lb}callbackUrl{rb}{rb}</span>
+        <span id="callbackUrl">{lb}{lb}provider.callbackUrl{rb}{rb}</span>
         {call aui.form.fieldDescription}
             {param message}You need to submit it to your authentication provider.{/param}
         {/call}

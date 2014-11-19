@@ -64,6 +64,9 @@ public class AddProviderPage extends AbstractJiraPage {
     @ElementBy(id = "callbackId")
     WebDriverElement callbackId;
 
+    @ElementBy(id = "callbackUrl")
+    PageElement callbackUrl;
+
     @Override
     public TimedCondition isAt() {
         return allowedDomains.timed().isVisible();
@@ -141,6 +144,10 @@ public class AddProviderPage extends AbstractJiraPage {
 
     public TimedCondition hasErrors() {
         return elementFinder.find(By.cssSelector("div.error")).timed().isPresent();
+    }
+
+    public TimedQuery<String> getCallbackUrl() {
+        return callbackUrl.timed().getText();
     }
 
     public AddProviderPage setClientId(String clientId) {
