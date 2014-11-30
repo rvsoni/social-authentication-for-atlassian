@@ -32,7 +32,7 @@ public class TestAddProvider extends BaseJiraWebTest {
 
     @Test
     public void testAddOAuthErrors() {
-        addPage.setProviderType(OpenIdProvider.OAUTH2_TYPE);
+        addPage.setProviderType("OpenID Connect/OAuth 2.0");
 
         waitUntil(addPage.getCallbackUrl(), startsWith("http://localhost"));
 
@@ -62,9 +62,9 @@ public class TestAddProvider extends BaseJiraWebTest {
         final String name = "Testing";
         final String endpointUrl = "http://asdkasjdkald.pl";
 
+        addPage.setProviderType("OpenID 1.0");
         addPage.setName(name);
         addPage.setEndpointUrl(endpointUrl);
-        addPage.setProviderType(OpenIdProvider.OPENID_TYPE);
 
         waitUntil(addPage.getExtensionNamespace(), (Matcher<String>) equalTo("ext1"));
 

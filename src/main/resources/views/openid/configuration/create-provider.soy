@@ -10,18 +10,32 @@
     {param content}{lb}{lb}errorMessages[0]{rb}{rb}{/param}
 {/call}
 {call aui.form.fieldGroup}
+    {param extraAttributes}ng-show="providerTypes"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'providerType'/}
+            {param isRequired: true/}
+            {param content: 'Select provider'/}
+        {/call}
+        <select id="providerType" name="providerType" ng-model="providerType"
+           ng-required="true" ng-options="pt.name for pt in providerTypes"></select>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
     {param content}
         {call aui.form.label}
             {param forField: 'name'/}
             {param isRequired: true/}
             {param content: 'Name'/}
         {/call}
-        <input id="name" class="text" type="text" name="name" ng-model="provider.name" required="true">
+        <input id="name" class="text" type="text" name="name" ng-if="!providerType.createdProviderName" ng-model="provider.name" required="true">
+        <span>{lb}{lb}providerType.createdProviderName{rb}{rb}</span>
         <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
         <div data-field="name" class="error" ng-if="errors.name">{lb}{lb}errors.name{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="!providerType.skipUrl"{/param}
     {param content}
         {call aui.form.label}
             {param forField: 'endpointUrl'/}
@@ -40,19 +54,8 @@
         {/call}
     {/param}
 {/call}
-<fieldset class="group">
-    <legend><span>Provider Type</span></legend>
-    <div class="radio">
-        <input id="openid1" class="radio" type="radio" name="providerType" value="openid1" ng-model="provider.providerType">
-        <label for="openid1">OpenID 1.0</label>
-    </div>
-    <div class="radio">
-        <input id="oauth2" class="radio" type="radio" name="providerType" value="oauth2" ng-model="provider.providerType">
-        <label for="oauth2">OpenID Connect/OAuth 2.0</label>
-    </div>
-</fieldset>
 {call aui.form.fieldGroup}
-    {param extraAttributes}ng-if="provider.providerType=='openid1'"{/param}
+    {param extraAttributes}ng-if="providerType.id=='openid1'"{/param}
     {param content}
         {call aui.form.label}
             {param isRequired: true/}
@@ -68,21 +71,21 @@
     {/param}
 {/call}
 {call aui.form.fieldGroup}
-    {param extraAttributes}ng-if="provider.providerType=='oauth2'"{/param}
+    {param extraAttributes}ng-if="!providerType.skipCallback"{/param}
     {param content}
         {call aui.form.label}
             {param forField: 'callbackUrl'/}
             {param content: 'Callback URL'/}
         {/call}
         <input id="callbackId" type="hidden" name="callbackId" ng-model="provider.callbackId">
-        <span id="callbackUrl">{lb}{lb}provider.callbackUrl{rb}{rb}</span>
+        <span id="callbackUrl">{lb}{lb}baseUrl + "/openid/oauth2-callback/" + provider.callbackId{rb}{rb}</span>
         {call aui.form.fieldDescription}
             {param message}You need to submit it to your authentication provider.{/param}
         {/call}
     {/param}
 {/call}
 {call aui.form.fieldGroup}
-    {param extraAttributes}ng-if="provider.providerType=='oauth2'"{/param}
+    {param extraAttributes}ng-if="!providerType.skipClientInfo"{/param}
     {param content}
         {call aui.form.label}
             {param forField: 'clientId'/}
@@ -98,7 +101,7 @@
     {/param}
 {/call}
 {call aui.form.fieldGroup}
-    {param extraAttributes}ng-if="provider.providerType=='oauth2'"{/param}
+    {param extraAttributes}ng-if="!providerType.skipClientInfo"{/param}
     {param content}
         {call aui.form.label}
             {param forField: 'clientSecret'/}

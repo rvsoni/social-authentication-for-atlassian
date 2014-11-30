@@ -64,6 +64,9 @@ public class AddProviderPage extends AbstractJiraPage {
     @ElementBy(id = "callbackId")
     WebDriverElement callbackId;
 
+    @ElementBy(id = "providerType")
+    SelectElement providerType;
+
     @ElementBy(id = "callbackUrl")
     PageElement callbackUrl;
 
@@ -167,7 +170,7 @@ public class AddProviderPage extends AbstractJiraPage {
     }
 
     public AddProviderPage setProviderType(String providerType) {
-        elementFinder.find(By.id(providerType), CheckboxElement.class).check();
+        this.providerType.select(Options.text(providerType));
         return this;
     }
 

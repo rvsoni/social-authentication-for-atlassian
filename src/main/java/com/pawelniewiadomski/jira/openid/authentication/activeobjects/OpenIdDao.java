@@ -1,6 +1,9 @@
 package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.jira.util.collect.MapBuilder;
+import com.google.common.collect.ImmutableMap;
+import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 import net.java.ao.DBParam;
 import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class OpenIdDao {
@@ -59,17 +63,12 @@ public class OpenIdDao {
         return null;
     }
 
-    public OpenIdProvider createProvider(String name, String url, String namespace) throws SQLException {
-        return createProvider(name, url, namespace, false);
-    }
-
-    public OpenIdProvider createProvider(String name, String url, String namespace, boolean internal) throws SQLException {
+    public OpenIdProvider createProvider(@Nonnull Map<String, Object> params) throws SQLException {
         return activeObjects.create(OpenIdProvider.class,
-                new DBParam(OpenIdProvider.NAME, name),
-                new DBParam(OpenIdProvider.ENDPOINT_URL, url),
-                new DBParam(OpenIdProvider.ENABLED, true),
-                new DBParam(OpenIdProvider.EXTENSION_NAMESPACE, namespace),
-                new DBParam(OpenIdProvider.ORDERING, getNextOrdering()));
+                MapBuilder.<String, Object>newBuilder()
+                        .addAll(params)
+                        .add(OpenIdProvider.ORDERING, getNextOrdering())
+                        .add(OpenIdProvider.ENABLED, true).toMap());
     }
 
     public void deleteProvider(Integer id) throws SQLException {

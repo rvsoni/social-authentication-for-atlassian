@@ -13,6 +13,9 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('creatingUsers', function() {
         return WRM.data.claim('openid.creatingUsers');
     })
+    .factory('providerTypes', function() {
+        return WRM.data.claim('openid.providerTypes');
+    })
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
@@ -99,20 +102,32 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl', 'errorHandler',
-        function ($scope, $location, $http, restPath, baseUrl, errorHandler) {
-        $scope.provider = { providerType: "oauth2", extensionNamespace: 'ext1' };
-        $scope.provider.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes',
+        function ($scope, $location, $http, restPath, baseUrl, errorHandler, providerTypes) {
+
+        $scope.baseUrl = baseUrl;
+        $scope.providerTypes = providerTypes;
+
+        $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
         });
-        $scope.provider.callbackUrl = baseUrl + "/openid/oauth2-callback/" + $scope.provider.callbackId;
+
+        $scope.$watch("providerType", function(newValue, oldValue) {
+            $scope.provider.callbackId = newValue.id == 'google' ? 'google' : $scope.callbackId;
+        });
+
+        $scope.providerType = $scope.providerTypes[0];
+
+        $scope.provider = { extensionNamespace: 'ext1' };
+        $scope.provider.callbackId = $scope.callbackId;
 
         $scope.createProvider = function() {
             $scope.errors = {};
             $scope.errorMessages = [];
 
-            $http.post(restPath + '/providers', $scope.provider).success(function(response) {
+            var newProvider = angular.extend({}, $scope.provider, {providerType: $scope.providerType.id});
+            $http.post(restPath + '/providers', newProvider).success(function(response) {
                 if (response.errorMessages == undefined && response.errors == undefined) {
                     $location.path('/');
                 } else {
@@ -122,15 +137,19 @@ angular.module("openid.configuration", ['ngRoute'])
             }).error(errorHandler.handleError);
         }
     }])
-    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler',
-        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler) {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler', 'baseUrl', 'providerTypes',
+        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler, baseUrl, providerTypes) {
         var providerId = $routeParams.providerId;
+
+        $scope.baseUrl = baseUrl;
 
         providers.getProviders().then(function() {
             $scope.provider = providers.getProviderById(providerId);
 
             if ($scope.provider == undefined) {
                 $location.path('/');
+            } else {
+                $scope.providerType = _.find(providerTypes, function(pt) { return pt.id == $scope.provider.providerType; });
             }
         });
 

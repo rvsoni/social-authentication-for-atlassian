@@ -9,6 +9,7 @@ import net.java.ao.schema.*;
 @Preload
 public interface OpenIdProvider extends Entity {
 
+    public static final String GOOGLE_TYPE = "google";
     public static final String OPENID_TYPE = "openid1";
     public static final String OAUTH2_TYPE = "oauth2";
 
@@ -22,6 +23,8 @@ public interface OpenIdProvider extends Entity {
     public static final String ORDERING = "ORDERING";
     public static final String PROVIDER_TYPE = "PROVIDER_TYPE";
     public static final String CALLBACK_ID = "CALLBACK_ID";
+    public static final String CLIENT_ID = "CLIENT_ID";
+    public static final String CLIENT_SECRET = "CLIENT_SECRET";
 
     @NotNull
     @Unique

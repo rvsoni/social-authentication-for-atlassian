@@ -35,7 +35,7 @@ public class TestEditProvider extends BaseJiraWebTest {
 
         AddProviderPage addPage = jira.visit(AddProviderPage.class);
 
-        addPage.setProviderType(OpenIdProvider.OPENID_TYPE);
+        addPage.setProviderType("OpenID 1.0");
         addPage.setName(name);
         addPage.setEndpointUrl(endpointUrl);
         addPage.setExtensionNamespace("ext1");

@@ -37,7 +37,7 @@ public class TestOpenIdAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType(OpenIdProvider.OAUTH2_TYPE)
+        addProvider.setProviderType("OpenID Connect/OAuth 2.0")
                 .setName("Google")
                 .setEndpointUrl("https://accounts.google.com")
                 .setCallbackId((String) getProperty(passwords, "google.callbackId"))
