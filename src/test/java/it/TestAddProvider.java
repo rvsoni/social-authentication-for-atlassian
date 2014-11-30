@@ -71,6 +71,7 @@ public class TestAddProvider extends BaseJiraWebTest {
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("Testing");
+        waitUntilFalse(editPage.isSelectProviderTypeVisible());
         waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
         waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
 

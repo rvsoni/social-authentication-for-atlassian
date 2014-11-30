@@ -188,6 +188,22 @@ public class AddProviderPage extends AbstractJiraPage {
         return this;
     }
 
+    public TimedQuery<Boolean> isSelectProviderTypeVisible() {
+        return providerType.timed().isVisible();
+    }
+
+    public TimedQuery<String> getClientSecret() {
+        return clientSecret.timed().getValue();
+    }
+
+    public TimedQuery<String> getClientId() {
+        return clientId.timed().getValue();
+    }
+
+    public TimedQuery<String> getAllowedDomains() {
+        return allowedDomains.timed().getValue();
+    }
+
     public static class AuiErrorMessage
     {
         protected final PageElement errorMessage;
