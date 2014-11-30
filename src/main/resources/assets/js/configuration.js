@@ -28,6 +28,9 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('providers', ['$q', '$http', '$log', 'restPath', function($q, $http, $log, restPath) {
         var providers = [];
         return {
+            resetProviders: function() {
+                providers = undefined;
+            },
             getProviders: function() {
                 var deferred = $q.defer();
                 if (providers == undefined || !providers.length) {
@@ -181,6 +184,7 @@ angular.module("openid.configuration", ['ngRoute'])
 
         $scope.deleteProvider = function() {
             $http['delete'](restPath + '/providers/' + providerId).success(function() {
+                providers.resetProviders();
                 $location.path('/');
             });
         };

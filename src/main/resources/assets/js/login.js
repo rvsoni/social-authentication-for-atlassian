@@ -21,7 +21,7 @@ AJS.$(function() {
 
                 AJS.$(data).each(function(idx, obj) {
                     var authenticationUrl;
-                    if (obj.providerType == 'oauth2') {
+                    if (obj.providerType == 'oauth2' || obj.providerType == 'google') {
                         authenticationUrl = contextPath + '/plugins/servlet/openid-connect?pid=' + obj.id;
                     } else {
                         authenticationUrl = contextPath + '/plugins/servlet/openid-authentication?pid=' + obj.id;

@@ -14,7 +14,6 @@
     {param content}
         {call aui.form.label}
             {param forField: 'providerType'/}
-            {param isRequired: true/}
             {param content: 'Select provider'/}
         {/call}
         <select id="providerType" name="providerType" ng-model="providerType"
@@ -171,6 +170,27 @@
                     {/call}
                 {/param}
             {/call}
+
+            <div ng-if="providerType.id=='google'">
+                <hr>
+                <p>To configure Google authentication you need to follow these steps:</p>
+                <ol>
+                    <li><a href="https://console.developers.google.com" target="_blank">Log in to Google Developer Console</a></li>
+                    <li>Create a new project</li>
+                    <li>After the project is created select <em>APIs & Auth &rarr; APIs</em> in the menu on the left</li>
+                    <li>Enable <em>Google+ API</em> (click <em>OFF</em>)</li>
+                    <li>Open <em>APIs & Auth &rarr; Credentials</em></li>
+                    <li>Click <em>Create new Client ID</em> under <em>OAuth</em></li>
+                    <li>Click <em>Configure consent screen</em></li>
+                    <li>Fill in <em>Product name</em> and any additional fields you want</li>
+                    <li>Click <em>Save</em></li>
+                    <li>Fill in <em>Authorized JavaScript Origins</em> with you JIRA base URL</li>
+                    <li>Fill in <em>Authorized Redirect URIs</em> with the callback URL above</li>
+                    <li>Click <em>Create Client ID</em></li>
+                    <li>Copy <em>Client ID</em> and <em>Client Secret</em> to the form above</li>
+                    <li>Save the form and you're done</li>
+                </ol>
+            </div>
         {/param}
     {/call}
 {/template}

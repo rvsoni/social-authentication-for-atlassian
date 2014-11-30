@@ -5,6 +5,7 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 
@@ -20,13 +21,17 @@ public abstract class AbstractProviderType implements ProviderType {
         this.openIdDao = openIdDao;
     }
 
-    protected void validateName(OpenIdProvider provider, ProviderBean providerBean, com.atlassian.jira.util.ErrorCollection errors) {
-        if (isEmpty(providerBean.getName())) {
+    protected void validateName(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean, @Nonnull com.atlassian.jira.util.ErrorCollection errors) {
+        validateName(provider, providerBean.getName(), errors);
+    }
+
+    protected void validateName(@Nonnull OpenIdProvider provider, @Nullable String name, @Nonnull com.atlassian.jira.util.ErrorCollection errors) {
+        if (isEmpty(name)) {
             errors.addError("name", i18nResolver.getText("configuration.name.empty"));
         } else {
             final OpenIdProvider providerByName;
             try {
-                providerByName = openIdDao.findByName(providerBean.getName());
+                providerByName = openIdDao.findByName(name);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

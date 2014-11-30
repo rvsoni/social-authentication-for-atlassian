@@ -42,8 +42,8 @@ public class ProviderValidator {
         } else {
             try {
                 return Either.right(openIdDao.createProvider(errorsOrProvider.right().get()));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                return Either.left(ErrorCollection.of("Error when saving the provider: " + e.getMessage()));
             }
         }
     }

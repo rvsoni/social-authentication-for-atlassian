@@ -5,7 +5,7 @@ import com.atlassian.jira.rest.api.util.ErrorCollection;
 import com.atlassian.jira.util.SimpleErrorCollection;
 import com.atlassian.jira.util.collect.MapBuilder;
 import com.atlassian.sal.api.message.I18nResolver;
-import com.google.common.collect.ImmutableMap;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 
@@ -15,11 +15,12 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-public class GoogleProviderType implements ProviderType {
-    private final I18nResolver i18nResolver;
+public class GoogleProviderType extends AbstractProviderType {
 
-    public GoogleProviderType(I18nResolver i18nResolver) {
-        this.i18nResolver = i18nResolver;
+    public static final String GOOGLE = "Google";
+
+    public GoogleProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+        super(i18nResolver, openIdDao);
     }
 
     @Nonnull
@@ -41,7 +42,7 @@ public class GoogleProviderType implements ProviderType {
 
     @Override
     public boolean isSkipCallback() {
-        return true;
+        return false;
     }
 
     @Override
@@ -64,6 +65,8 @@ public class GoogleProviderType implements ProviderType {
     public Either<ErrorCollection, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
         com.atlassian.jira.util.ErrorCollection errors = new SimpleErrorCollection();
 
+        validateName(provider, GOOGLE, errors);
+
         if (isEmpty(providerBean.getClientId())) {
             errors.addError("clientId", i18nResolver.getText("configuration.clientId.empty"));
         }
@@ -75,7 +78,7 @@ public class GoogleProviderType implements ProviderType {
             return Either.left(ErrorCollection.of(errors));
         } else {
             return Either.right(MapBuilder.<String, Object>newBuilder()
-                    .add(OpenIdProvider.NAME, "Google")
+                    .add(OpenIdProvider.NAME, GOOGLE)
                     .add(OpenIdProvider.ENDPOINT_URL, "https://accounts.google.com")
                     .add(OpenIdProvider.CALLBACK_ID, "google")
                     .add(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains())

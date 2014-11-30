@@ -45,7 +45,7 @@ public class ProviderTypeFactory {
         @Override
         public Map<String, ProviderType> get() {
             return ImmutableMap.<String, ProviderType>builder()
-                    .put(OpenIdProvider.GOOGLE_TYPE, new GoogleProviderType(i18nResolver))
+                    .put(OpenIdProvider.GOOGLE_TYPE, new GoogleProviderType(i18nResolver, openIdDao))
                     .put(OpenIdProvider.OPENID_TYPE, new OpenIdProviderType(i18nResolver, openIdDao))
                     .put(OpenIdProvider.OAUTH2_TYPE, new Oauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider)).build();
         }
