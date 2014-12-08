@@ -67,14 +67,9 @@
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
     <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
 
-    <servlet name="OpenId 1.0 Servlet" key="openid-1.0-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OpenIdServlet">
-        <url-pattern>/openid-authentication</url-pattern>
-    </servlet>
-
-    <servlet name="OpenId Connect Servlet" key="openid-connect-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OAuthServlet">
-        <url-pattern>/openid-connect</url-pattern>
+    <servlet name="OpenId Login Servlet" key="openid-login-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.LoginServlet">
+        <url-pattern>/openid-login</url-pattern>
     </servlet>
 
     <servlet name="OAuth2 Callback Servlet" key="oauth2-callback-servlet"
