@@ -8,39 +8,33 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class GoogleProviderType extends AbstractOAuth2ProviderType {
+public class FacebookProviderType extends AbstractOAuth2ProviderType {
 
-    public GoogleProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    public FacebookProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
         super(i18nResolver, openIdDao);
     }
 
     @Nonnull
     @Override
-    public String getId() {
-        return OpenIdProvider.GOOGLE_TYPE;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return i18nResolver.getText("openid.provider.type.google");
-    }
-
-    @Nonnull
-    @Override
     public String getAuthorizationUrl() {
-        return OAuthProviderType.GOOGLE.getAuthzEndpoint();
+        return OAuthProviderType.FACEBOOK.getAuthzEndpoint();
     }
 
     @Nonnull
     @Override
     public String getCallbackId() {
-        return "google";
+        return "facebook";
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getCreatedProviderName() {
-        return "Google";
+    public String getId() {
+        return OpenIdProvider.FACEBOOK_TYPE;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return i18nResolver.getText("openid.provider.type.facebook");
     }
 }

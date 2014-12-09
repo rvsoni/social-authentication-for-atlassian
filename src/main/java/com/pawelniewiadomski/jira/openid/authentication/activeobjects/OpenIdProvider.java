@@ -12,6 +12,9 @@ public interface OpenIdProvider extends Entity {
     public static final String GOOGLE_TYPE = "google";
     public static final String OPENID_TYPE = "openid1";
     public static final String OAUTH2_TYPE = "oauth2";
+    public static final String FACEBOOK_TYPE = "facebook";
+    public static final String LINKED_IN_TYPE = "linkedin";
+    public static final String GITHUB_TYPE = "github";
 
     public static final String ID = "ID";
     public static final String NAME = "NAME";

@@ -1,19 +1,19 @@
 package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.providers.GoogleProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.providers.Oauth2ProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.providers.OpenIdProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
+import com.pawelniewiadomski.jira.openid.authentication.providers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 @Service
@@ -44,10 +44,20 @@ public class ProviderTypeFactory {
     private final Supplier<Map<String, ProviderType>> ID_MAP = Suppliers.memoize(new Supplier<Map<String, ProviderType>>() {
         @Override
         public Map<String, ProviderType> get() {
-            return ImmutableMap.<String, ProviderType>builder()
-                    .put(OpenIdProvider.GOOGLE_TYPE, new GoogleProviderType(i18nResolver, openIdDao))
-                    .put(OpenIdProvider.OPENID_TYPE, new OpenIdProviderType(i18nResolver, openIdDao))
-                    .put(OpenIdProvider.OAUTH2_TYPE, new Oauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider)).build();
+            final ImmutableList<ProviderType> providerTypes = ImmutableList.<ProviderType>of(
+                    new GoogleProviderType(i18nResolver, openIdDao),
+                    new FacebookProviderType(i18nResolver, openIdDao),
+                    new LinkedInProviderType(i18nResolver, openIdDao),
+                    new GithubProviderType(i18nResolver, openIdDao),
+                    new OpenIdProviderType(i18nResolver, openIdDao),
+                    new Oauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider));
+
+            return ImmutableMap.<String, ProviderType>builder().putAll(Maps.uniqueIndex(providerTypes, new Function<ProviderType, String>() {
+                @Override
+                public String apply(@Nullable ProviderType abstractProviderType) {
+                    return abstractProviderType.getId();
+                }
+            })).build();
         }
     });
 }
