@@ -273,7 +273,6 @@
                 <version>2.5</version>
                 <configuration>
                     <preparationGoals>clean test</preparationGoals>
-                    <releaseProfiles>releaseProfile</releaseProfiles>
                     <!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
                 </configuration>
             </plugin>
@@ -339,15 +338,6 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>releaseProfile</id>
-            <properties>
-                <maven.test.unit.skip>true</maven.test.unit.skip>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-    </profiles>
     <properties>
         <jira.version>6.3</jira.version>
         <amps.version>5.0.3</amps.version>
