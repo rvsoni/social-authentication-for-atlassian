@@ -53,8 +53,8 @@
 
         <resource type="download" name="webjars/" location="META-INF/resources/webjars"/>
 
-        <resource type="download" name="webjars/angularjs/angular.min.js" location="META-INF/resources/webjars/angularjs/1.2.19/angular.min.js"/>
-        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="META-INF/resources/webjars/angularjs/1.2.19/angular-route.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular.min.js" location="META-INF/resources/webjars/angularjs/1.3.0/angular.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="META-INF/resources/webjars/angularjs/1.3.0/angular-route.min.js"/>
 
         <resource type="download" name="jira-openid-configuration.css" location="assets/css/openid.less"/>
         <resource type="download" name="configuration.js" location="assets/js/configuration.js"/>
