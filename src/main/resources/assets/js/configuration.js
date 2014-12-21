@@ -117,7 +117,7 @@ angular.module("openid.configuration", ['ngRoute'])
         });
 
         $scope.$watch("providerType", function(newValue, oldValue) {
-            $scope.provider.callbackId = newValue.id == 'google' ? 'google' : $scope.callbackId;
+            $scope.provider.callbackId = newValue.id != 'oauth2' ? newValue.id : $scope.callbackId;
         });
 
         $scope.providerType = $scope.providerTypes[0];
@@ -125,7 +125,8 @@ angular.module("openid.configuration", ['ngRoute'])
         $scope.provider = { extensionNamespace: 'ext1' };
         $scope.provider.callbackId = $scope.callbackId;
 
-        $scope.createProvider = function() {
+        $scope.createProvider = function($event) {
+            $event.preventDefault();
             $scope.errors = {};
             $scope.errorMessages = [];
 
@@ -156,7 +157,8 @@ angular.module("openid.configuration", ['ngRoute'])
             }
         });
 
-        $scope.updateProvider = function() {
+        $scope.updateProvider = function($event) {
+            $event.preventDefault();
             $scope.errors = {};
             $scope.errorMessages = [];
 

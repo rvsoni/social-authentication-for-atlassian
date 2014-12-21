@@ -2,10 +2,10 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
-import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider;
+import com.pawelniewiadomski.jira.openid.authentication.providers.AbstractOAuth2ProviderType;
+import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
+import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
-import org.apache.log4j.Logger;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class OAuthAuthenticationHandler implements AuthenticationHandler
     TemplateHelper templateHelper;
 
     @Autowired
-    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    ProviderTypeFactory providerTypeFactory;
 
     @Override
     public boolean doAuthenticationDance(OpenIdProvider provider, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -37,18 +37,9 @@ public class OAuthAuthenticationHandler implements AuthenticationHandler
 
         request.getSession().setAttribute(AuthenticationService.STATE_IN_SESSION, state);
 
-        final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
-                discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
+        final ProviderType providerType = providerTypeFactory.getProviderTypeById(provider.getProviderType());
 
-        final OAuthClientRequest oauthRequest = OAuthClientRequest
-                .authorizationLocation(discoveryDocument.getAuthorizationUrl())
-                .setClientId(provider.getClientId())
-                .setResponseType(ResponseType.CODE.toString())
-                .setState(state)
-                .setScope("openid email profile")
-                .setParameter("prompt", "select_account")
-                .setRedirectURI(getReturnTo(provider, request))
-                .buildQueryMessage();
+        final OAuthClientRequest oauthRequest = ((OAuth2ProviderType) providerType).createOAuthRequest(provider, state, request);
 
         response.sendRedirect(oauthRequest.getLocationUri());
 

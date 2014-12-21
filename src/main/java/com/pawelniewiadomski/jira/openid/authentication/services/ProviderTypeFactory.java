@@ -50,7 +50,7 @@ public class ProviderTypeFactory {
                     new LinkedInProviderType(i18nResolver, openIdDao),
                     new GithubProviderType(i18nResolver, openIdDao),
                     new OpenIdProviderType(i18nResolver, openIdDao),
-                    new Oauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider));
+                    new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider));
 
             return ImmutableMap.<String, ProviderType>builder().putAll(Maps.uniqueIndex(providerTypes, new Function<ProviderType, String>() {
                 @Override

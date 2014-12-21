@@ -26,7 +26,7 @@ import java.util.Map;
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class TestOpenIdAuthentication extends BaseJiraWebTest {
+public class TestGoogleAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 

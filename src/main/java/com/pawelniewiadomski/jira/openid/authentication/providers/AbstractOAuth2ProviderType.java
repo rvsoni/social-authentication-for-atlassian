@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-public abstract class AbstractOAuth2ProviderType extends AbstractProviderType {
+public abstract class AbstractOAuth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     public AbstractOAuth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
         super(i18nResolver, openIdDao);
     }

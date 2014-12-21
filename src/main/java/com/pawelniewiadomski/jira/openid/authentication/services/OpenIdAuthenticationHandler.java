@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.net.ssl.SSLException;
@@ -31,6 +32,7 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHe
 /**
  * Handling OpenID 1.0 authentications.
  */
+@Service
 public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Logger log = Logger.getLogger(this.getClass());

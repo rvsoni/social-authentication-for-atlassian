@@ -1,45 +1,29 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Map;
+import com.atlassian.crowd.embedded.api.CrowdService;
+import com.atlassian.jira.config.util.JiraHome;
+import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.util.lang.Pair;
+import com.google.common.collect.ImmutableMap;
+import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.atlassian.crowd.embedded.api.CrowdService;
-import com.atlassian.jira.config.util.JiraHome;
-import com.atlassian.jira.user.util.UserUtil;
-
-import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
-import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
-import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
-import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
-import org.apache.oltu.oauth2.common.utils.JSONUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static com.atlassian.jira.util.dbc.Assertions.notNull;
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Handling OpenID Connect authentications.
@@ -73,7 +57,7 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
     OpenIdDao openIdDao;
 
     @Autowired
-    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    ProviderTypeFactory providerTypeFactory;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -101,41 +85,17 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
                     return;
                 }
 
-                final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
-                        discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
+                final OAuth2ProviderType providerType = (OAuth2ProviderType) providerTypeFactory.getProviderTypeById(provider.getProviderType());
+                final Pair<String, String> usernameAndEmail = providerType.getUsernameAndEmail(oar.getCode(), provider, request);
 
-                final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-                final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(discoveryDocument.getTokenUrl())
-                        .setGrantType(GrantType.AUTHORIZATION_CODE)
-                        .setClientId(provider.getClientId())
-                        .setClientSecret(provider.getClientSecret())
-                        .setRedirectURI(getReturnTo(provider, request))
-                        .setCode(oar.getCode())
-                        .buildBodyMessage();
-
-                final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
-                final String accessToken = token.getAccessToken();
-                final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
-                String username = email;
-
-                final String userInfoUrl = discoveryDocument.getUserinfoUrl();
-                if (isNotEmpty(userInfoUrl))
-                {
-                    OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
-                            .setAccessToken(accessToken)
-                            .buildQueryMessage();
-
-                    OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
-                    Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
-                    username = defaultIfEmpty((String) userInfo.get("name"), email);
-                }
-
-                authenticationService.showAuthentication(request, response, provider, username, email);
+                authenticationService.showAuthentication(request, response, provider, usernameAndEmail.first(), usernameAndEmail.second());
                 return;
             } catch (Exception e) {
                 if (e instanceof OAuthProblemException) {
-                    templateHelper.render(request, response, "OpenId.Templates.invalidClient",
-                            ImmutableMap.<String, Object>of("providerName", provider.getName()));
+                    templateHelper.render(request, response, "OpenId.Templates.oauthError",
+                            ImmutableMap.<String, Object>of(
+                                    "providerName", provider.getName(),
+                                    "errorMessage", e.getMessage()));
                 } else {
                     log.error("OpenID verification failed", e);
                     templateHelper.render(request, response, "OpenId.Templates.error");

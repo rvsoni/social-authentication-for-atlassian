@@ -5,7 +5,7 @@
  */
 {template .providerDetails}
 {call aui.message.error}
-    {param extraAttributes}ng-if="errorMessages"{/param}
+    {param extraAttributes}ng-if="errorMessages && errorMessages.length > 0"{/param}
     {param isCloseable: false/}
     {param content}{lb}{lb}errorMessages[0]{rb}{rb}{/param}
 {/call}
@@ -116,6 +116,7 @@
     {/param}
 {/call}
 {call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.id=='openid1' || providerType.id=='oauth2' || providerType.id=='google'"{/param}
     {param content}
         {call aui.form.label}
             {param forField: 'allowedDomains'/}
@@ -147,7 +148,7 @@
     {call aui.form.form}
         {param action: ''/}
         {param id: 'createProvider'/}
-        {param extraAttributes}ng-submit="createProvider(providerForm)" name="providerForm"{/param}
+        {param extraAttributes}ng-submit="createProvider($event)" name="providerForm"{/param}
         {param content}
             {call aui.form.fieldset}
                 {param legendContent: 'Add Provider'/}

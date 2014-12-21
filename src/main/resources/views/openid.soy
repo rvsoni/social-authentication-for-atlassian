@@ -78,11 +78,12 @@
 /**
  * @param baseUrl base URL
  * @param providerName name of the provider
+ * @param errorMessage error message
  */
-{template .invalidClient}
+{template .oauthError}
 {call .errorWrapper}
     {param content}
-        {$providerName} returned 'invalid_client' which suggests an invalid configuration, please check if Client ID and Client Secret match with those offered by {$providerName}.
+        {$providerName} returned '{$errorMessage}' which suggests an invalid configuration, please check if Client ID and Client Secret match with those offered by {$providerName}.
     {/param}
     {param baseUrl: $baseUrl/}
 {/call}
