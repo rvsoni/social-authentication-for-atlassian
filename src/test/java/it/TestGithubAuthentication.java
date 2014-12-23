@@ -11,9 +11,7 @@ import com.google.common.base.Preconditions;
 import it.pageobjects.AddProviderPage;
 import it.pageobjects.ErrorPage;
 import it.pageobjects.OpenIdLoginPage;
-import it.pageobjects.google.GoogleAccountChooserPage;
-import it.pageobjects.google.GoogleApprovePage;
-import it.pageobjects.google.GoogleLoginPage;
+import it.pageobjects.google.*;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +23,7 @@ import java.util.Map;
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class TestGoogleAuthentication extends BaseJiraWebTest {
+public class TestGithubAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -36,11 +34,10 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("Google")
-                .setCallbackId((String) getProperty(passwords, "google.callbackId"))
-                .setClientId((String) getProperty(passwords, "google.clientId"))
-                .setClientSecret((String) getProperty(passwords, "google.clientSecret"))
-                .setAllowedDomains("test.pl, teamstatus.tv, abc.pl").save();
+        addProvider.setProviderType("Github")
+                .setClientId((String) getProperty(passwords, "github.clientId"))
+                .setClientSecret((String) getProperty(passwords, "github.clientSecret"))
+                .save();
 
         jira.getTester().getDriver().manage().deleteAllCookies();
     }
@@ -48,17 +45,16 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
     @After
     public void tearDown() {
         jira.getTester().getDriver().manage().deleteAllCookies();
-        jira.getTester().getDriver().navigate().to("https://accounts.google.com/Logout?hl=en&continue=https://www.google.pl/");
     }
 
     @Test
     @LoginAs(anonymous = true)
-    public void testLogInWithinAllowedDomainsWork() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void testLogInWorks() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         OpenIdLoginPage loginPage = jira.visit(OpenIdLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        loginDance((String) getProperty(passwords, "github.user"), (String) getProperty(passwords, "github.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }
@@ -69,39 +65,16 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         Preconditions.checkNotNull(email);
         Preconditions.checkNotNull(password);
 
-        GoogleLoginPage googleLoginPage;
+        GithubLoginPage loginPage = jira.getPageBinder().bind(GithubLoginPage.class);
 
-        DelayedBinder<GoogleLoginPage> delayedLoginPage = jira.getPageBinder().delayedBind(GoogleLoginPage.class);
-        if (delayedLoginPage.canBind()) {
-            googleLoginPage = delayedLoginPage.bind();
-            if (!googleLoginPage.isEmailVisible()) {
-                googleLoginPage = googleLoginPage.selectDifferentAccount().addAccount();
-            }
-        } else {
-            googleLoginPage = jira.getPageBinder().bind(GoogleAccountChooserPage.class).addAccount();
-        }
+        loginPage.setEmail(email);
+        loginPage.setPassword(password);
 
-        googleLoginPage.setEmail(email);
-        googleLoginPage.setPassword(password);
-
-        Poller.waitUntilTrue(googleLoginPage.isSignInEnabled());
-        DelayedBinder<GoogleApprovePage> approvePage = googleLoginPage.signIn();
+        Poller.waitUntilTrue(loginPage.isSignInEnabled());
+        DelayedBinder<GithubApprovePage> approvePage = loginPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }
-    }
-
-    @Test
-    @LoginAs(anonymous = true)
-    public void testLogInOutsideAllowedDomainsIsProhibited() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        OpenIdLoginPage loginPage = jira.visit(OpenIdLoginPage.class);
-        Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
-        loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
-
-        loginDance((String) getProperty(passwords, "gmail.user"), (String) getProperty(passwords, "gmail.password"));
-
-        ErrorPage errorPage = jira.getPageBinder().bind(ErrorPage.class);
-        Poller.waitUntil(errorPage.getErrorMessage(), containsString("allowed domains"));
     }
 
     @Test
@@ -113,7 +86,7 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        loginDance((String) getProperty(passwords, "github.user"), (String) getProperty(passwords, "github.password"));
 
         jira.getPageBinder().bind(ViewProfilePage.class);
     }

@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class TestGoogleAuthentication extends BaseJiraWebTest {
+public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -36,7 +36,9 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("Google")
+        addProvider.setProviderType("OpenID Connect/OAuth 2.0")
+                .setName("Google")
+                .setEndpointUrl("https://accounts.google.com")
                 .setCallbackId((String) getProperty(passwords, "google.callbackId"))
                 .setClientId((String) getProperty(passwords, "google.clientId"))
                 .setClientSecret((String) getProperty(passwords, "google.clientSecret"))
@@ -58,12 +60,12 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        googleDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }
 
-    protected void loginDance(String email, String password)
+    protected void googleDance(String email, String password)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         Preconditions.checkNotNull(email);
@@ -98,7 +100,7 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "gmail.user"), (String) getProperty(passwords, "gmail.password"));
+        googleDance((String) getProperty(passwords, "gmail.user"), (String) getProperty(passwords, "gmail.password"));
 
         ErrorPage errorPage = jira.getPageBinder().bind(ErrorPage.class);
         Poller.waitUntil(errorPage.getErrorMessage(), containsString("allowed domains"));
@@ -113,7 +115,7 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        googleDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
 
         jira.getPageBinder().bind(ViewProfilePage.class);
     }
