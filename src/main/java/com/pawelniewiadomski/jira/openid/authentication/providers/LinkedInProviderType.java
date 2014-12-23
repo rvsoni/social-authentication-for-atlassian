@@ -9,6 +9,7 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
@@ -80,16 +81,16 @@ public class LinkedInProviderType extends AbstractOAuth2ProviderType {
                 .setCode(code)
                 .buildBodyMessage();
 
-        final GitHubTokenResponse token = oAuthClient.accessToken(oAuthRequest, GitHubTokenResponse.class);
+        final OAuthJSONAccessTokenResponse token = oAuthClient.accessToken(oAuthRequest, OAuthJSONAccessTokenResponse.class);
         final String accessToken = token.getAccessToken();
 
         final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name)?format=json")
                 .setAccessToken(accessToken)
-                .buildQueryMessage();
+                .buildHeaderMessage();
 
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
 
-        return Pair.of(userInfo.get("first-name") + " " + userInfo.get("last-name"), (String) userInfo.get("email"));
+        return Pair.of(userInfo.get("firstName") + " " + userInfo.get("lastName"), (String) userInfo.get("emailAddress"));
     }
 }
