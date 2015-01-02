@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>jira-openid-authentication-plugin</artifactId>
@@ -11,15 +12,22 @@
     </organization>
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org/pawelniewiadomski/openid-authentication-for-jira.git</connection>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/pawelniewiadomski/openid-authentication-for-jira.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <developerConnection>scm:git:ssh://git@bitbucket.org/pawelniewiadomski/openid-authentication-for-jira.git
+        </developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <distributionManagement>
         <repository>
             <id>dropbox</id>
             <url>file:///Users/pawel/Dropbox/Public/repo</url>
         </repository>
     </distributionManagement>
+    <repositories>
+        <repository>
+            <id>Dropbox</id>
+            <url>https://www.dropbox.com/sh/njbkc87u42o73xl/AABEKRAhlUoGFH6kCeTqQEVia?dl=0</url>
+        </repository>
+    </repositories>
     <name>OpenID Authentication for JIRA</name>
     <description>This plugins lets you setup OpenID authentication for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
@@ -89,12 +97,12 @@
             <artifactId>gson</artifactId>
             <version>2.2.2-atlassian-1</version>
         </dependency>
-		<dependency>
-			<groupId>com.atlassian.jira.tests</groupId>
-			<artifactId>jira-testkit-client</artifactId>
-			<version>${testkit.version}</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.atlassian.jira.tests</groupId>
+            <artifactId>jira-testkit-client</artifactId>
+            <version>${testkit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.atlassian.upm</groupId>
             <artifactId>plugin-license-storage-lib</artifactId>
@@ -286,13 +294,13 @@
                     <productDataVersion>${jira.version}</productDataVersion>
                     <jvmArgs>-Xmx768m -XX:MaxPermSize=300m</jvmArgs>
                     <!-- Uncomment to install TestKit backdoor in JIRA. -->
-					<pluginArtifacts>
-						<pluginArtifact>
-							<groupId>com.atlassian.jira.tests</groupId>
-							<artifactId>jira-testkit-plugin</artifactId>
-							<version>${testkit.version}</version>
-						</pluginArtifact>
-					</pluginArtifacts>
+                    <pluginArtifacts>
+                        <pluginArtifact>
+                            <groupId>com.atlassian.jira.tests</groupId>
+                            <artifactId>jira-testkit-plugin</artifactId>
+                            <version>${testkit.version}</version>
+                        </pluginArtifact>
+                    </pluginArtifacts>
                     <instructions>
                         <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
                     </instructions>
