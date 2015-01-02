@@ -24,8 +24,8 @@
     </distributionManagement>
     <repositories>
         <repository>
-            <id>Dropbox</id>
-            <url>https://www.dropbox.com/sh/njbkc87u42o73xl/AABEKRAhlUoGFH6kCeTqQEVia?dl=0</url>
+            <id>dropbox</id>
+            <url>https://dl.dropboxusercontent.com/u/2052049/repo/</url>
         </repository>
     </repositories>
     <name>OpenID Authentication for JIRA</name>
