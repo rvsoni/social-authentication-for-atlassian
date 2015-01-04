@@ -3,9 +3,7 @@ build:
 	steps:
 		- script:
 			name: Setup it.json
-			code: |-
-				cat $IT_JSON > it.json
+			code: cat $IT_JSON > it.json
 		- script:
 			name: Build
-			code: |-
-				atlas-mvn clean integration-test
+			code: atlas-mvn clean integration-test
