@@ -293,6 +293,9 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.version}</productDataVersion>
                     <jvmArgs>-Xmx768m -XX:MaxPermSize=300m</jvmArgs>
+                    <systemPropertyVariables>
+                    	<xvfb.enable>${xvfb.enable}</xvfb.enable>
+                    </systemPropertyVariables>
                     <!-- Uncomment to install TestKit backdoor in JIRA. -->
                     <pluginArtifacts>
                         <pluginArtifact>
@@ -359,5 +362,6 @@
         <rest.version>2.7.1</rest.version>
         <jackson.version>2.0.1</jackson.version>
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
+        <xvfb.enable>true</xvfb.enable>
     </properties>
 </project>
