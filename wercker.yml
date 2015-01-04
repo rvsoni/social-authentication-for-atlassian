@@ -4,7 +4,7 @@ build:
         - script:
             name: Setup it.json
             code: |-
-                cat $IT_JSON > it.json
+                echo "$IT_JSON" > it.json
         - script:
             name: Build
             code: |-
