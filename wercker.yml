@@ -1,9 +1,11 @@
 box: rafaelhofmann/java-atlassian@0.2.0
 build:
-	steps:
-		- script:
-			name: Setup it.json
-			code: cat $IT_JSON > it.json
-		- script:
-			name: Build
-			code: atlas-mvn clean integration-test
+    steps:
+        - script:
+            name: Setup it.json
+            code: |-
+                cat $IT_JSON > it.json
+        - script:
+            name: Build
+            code: |-
+                atlas-mvn clean integration-test
