@@ -92,7 +92,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
 
         final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/plus/v1/people/me/openIdConnect")
                 .setAccessToken(accessToken)
-                .buildQueryMessage();
+                .buildHeaderMessage();
 
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());

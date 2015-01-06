@@ -148,7 +148,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
         {
             OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
                     .setAccessToken(accessToken)
-                    .buildQueryMessage();
+                    .buildHeaderMessage();
 
             OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
             Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
