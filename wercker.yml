@@ -8,4 +8,5 @@ build:
         - script:
             name: Build
             code: |-
-                atlas-mvn clean integration-test
+                atlas-clean
+                atlas-integration-test --server localhost
