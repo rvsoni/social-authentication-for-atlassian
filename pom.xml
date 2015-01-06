@@ -350,6 +350,7 @@
         </plugins>
     </build>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.3</jira.version>
         <amps.version>5.0.3</amps.version>
         <prettyurls.version>1.8</prettyurls.version>

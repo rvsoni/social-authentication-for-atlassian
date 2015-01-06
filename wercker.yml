@@ -9,4 +9,11 @@ build:
             name: Build
             code: |-
                 atlas-clean
+                for p in {1..5}; do
+                	echo "Packaging $p time"
+                	atlas-package > /dev/null 2>&1
+                	if [ $? = 0 ]; then
+                		break
+                	fi
+                done
                 atlas-integration-test --server localhost
