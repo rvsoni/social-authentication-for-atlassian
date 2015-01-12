@@ -78,7 +78,7 @@ public class GithubProviderType extends AbstractOAuth2ProviderType {
                 .setClientSecret(provider.getClientSecret())
                 .setRedirectURI(getReturnTo(provider, request))
                 .setCode(authorizationCode)
-                .buildBodyMessage();
+                .buildHeaderMessage();
 
         final GitHubTokenResponse token = oAuthClient.accessToken(oAuthRequest, GitHubTokenResponse.class);
         final String accessToken = token.getAccessToken();
