@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
-    <file url="file://$PROJECT_DIR$/../jira-7.0/jira-components/jira-core/src/main/java/com/atlassian/jira/jql/validator/DateValueValidator.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../jira-7.0/jira-components/jira-core/src/main/java/com/atlassian/jira/jql/validator/PositiveDurationValueValidator.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../jira-7.0/jira-components/jira-core/src/main/java/com/atlassian/jira/web/action/admin/customfields/CreateCustomField.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
   </component>
 </project>
+
