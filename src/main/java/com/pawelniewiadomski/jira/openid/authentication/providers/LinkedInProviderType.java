@@ -79,7 +79,7 @@ public class LinkedInProviderType extends AbstractOAuth2ProviderType {
                 .setClientSecret(provider.getClientSecret())
                 .setRedirectURI(getReturnTo(provider, request))
                 .setCode(code)
-                .buildHeaderMessage();
+                .buildQueryMessage();
 
         final OAuthJSONAccessTokenResponse token = oAuthClient.accessToken(oAuthRequest, OAuthJSONAccessTokenResponse.class);
         final String accessToken = token.getAccessToken();
