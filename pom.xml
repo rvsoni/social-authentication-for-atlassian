@@ -11,8 +11,8 @@
         <url>http://pawelniewiadomski.com/</url>
     </organization>
     <scm>
-        <connection>scm:git:ssh://git@github.com:pawelniewie/social-authentication-for-atlassian.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:pawelniewie/social-authentication-for-atlassian.git
+        <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git
         </developerConnection>
         <tag>HEAD</tag>
     </scm>
