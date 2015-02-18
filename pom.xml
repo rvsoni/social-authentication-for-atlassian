@@ -365,4 +365,12 @@
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
         <xvfb.enable>true</xvfb.enable>
     </properties>
+    <profiles>
+        <profile>
+            <id>releaseProfile</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+    </profiles>
 </project>
