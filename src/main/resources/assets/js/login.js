@@ -1,5 +1,6 @@
 AJS.$(function() {
-    if (AJS.$("#login-form").length) {
+    var $login = AJS.$("#login-form");
+    if ($login.length && (!$login.attr('action') || $login.attr('action').indexOf('WebSudo') == -1)) {
         var buttons = [];
 
         buttons.push('<button id="openid-button" class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
