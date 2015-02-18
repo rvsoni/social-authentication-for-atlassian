@@ -281,6 +281,7 @@
                 <version>2.5.1</version>
                 <configuration>
                     <preparationGoals>clean test</preparationGoals>
+                    <releaseProfiles>release</releaseProfiles>
                     <!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
                 </configuration>
             </plugin>
