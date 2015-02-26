@@ -24,6 +24,8 @@ import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -59,6 +61,25 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
         return validateUpdate(null, providerBean);
     }
 
+    @Nullable
+    protected String getSslRelatedError(@Nonnull Exception e) {
+        for(Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof SSLException) {
+                return t.getMessage();
+            }
+        }
+        return null;
+    }
+
+    private boolean isCertificateKeyTooLong(Exception e) {
+        for(Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof SSLException) {
+                return t.getMessage().contains("Could not generate DH keypair");
+            }
+        }
+        return false;
+    }
+
     @Override
     public Either<ErrorCollection, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
         com.atlassian.jira.util.ErrorCollection errors = new SimpleErrorCollection();
@@ -71,7 +92,14 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             try {
                 discoveryDocumentProvider.getDiscoveryDocument(providerBean.getEndpointUrl());
             } catch (Exception e) {
-                errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", providerBean.getEndpointUrl()));
+                String sslError = getSslRelatedError(e);
+                if (isCertificateKeyTooLong(e)) {
+                    errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.ssl.key.too.long"));
+                } else if (sslError != null) {
+                    errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.ssl.error", sslError));
+                } else {
+                    errors.addError("endpointUrl", i18nResolver.getText("configuration.endpointUrl.discovery.missing", providerBean.getEndpointUrl()));
+                }
             }
         }
 
