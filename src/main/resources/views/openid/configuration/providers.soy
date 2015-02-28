@@ -14,12 +14,23 @@
             {/call}
             {call aui.page.pageHeaderActions}
                 {param content}
-                    {call aui.buttons.button}
-                        {param id: 'addProvider'/}
-                        {param text}Add Provider{/param}
-                        {param tagName: 'a'/}
-                        {param extraAttributes}href="#/create"{/param}
+                    {call aui.buttons.buttons}
+                        {param content}
+                            {call aui.buttons.button}
+                                {param id: 'addProvider'/}
+                                {param text}Add Provider{/param}
+                                {param tagName: 'a'/}
+                                {param extraAttributes}href="#/create"{/param}
+                            {/call}
+                        {/param}
                     {/call}
+                    <a class="help-lnk" href="http://pawelniewiadomski.com/atlassian/google-apps-authentication-for-jira/" title="Get online help" target="_jirahelp">
+                        {call aui.icons.icon}
+                            {param useIconFont: true /}
+                            {param size: 'small' /}
+                            {param icon: 'help' /}
+                        {/call}
+                    </a>
                 {/param}
             {/call}
         {/param}
