@@ -14,11 +14,7 @@
             {param text}{$provider.name}{/param}
             {param tagName: 'a'/}
             {param extraAttributes}
-                {if $provider.providerType == 'oauth2'}
-                    href="{$baseUrl}/plugins/servlet/openid-connect?pid={$provider.id}"
-                {else}
-                    href="{$baseUrl}/plugins/servlet/openid-authentication?pid={$provider.id}"
-                {/if}
+                href="{$baseUrl}/plugins/servlet/openid-login?pid={$provider.id}"
             {/param}
         {/call}
     {/foreach}
