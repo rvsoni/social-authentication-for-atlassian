@@ -1,5 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
+import com.atlassian.fugue.Either;
 import com.atlassian.jira.util.lang.Pair;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -13,5 +14,5 @@ public interface OAuth2ProviderType extends ProviderType {
                                           @Nonnull String state,
                                           @Nonnull HttpServletRequest request) throws Exception;
 
-    Pair<String,String> getUsernameAndEmail(@Nonnull String code, @Nonnull OpenIdProvider provider, HttpServletRequest request) throws Exception;
+    Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, HttpServletRequest request) throws Exception;
 }

@@ -1,10 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
+import com.atlassian.fugue.Either;
 import com.atlassian.jira.util.lang.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
+import org.apache.log4j.Logger;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -12,6 +14,7 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
@@ -25,6 +28,8 @@ import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectRetu
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 
 public class GoogleProviderType extends AbstractOAuth2ProviderType {
+
+    final Logger log = Logger.getLogger(this.getClass());
 
     public GoogleProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
         super(i18nResolver, openIdDao);
@@ -76,7 +81,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
-    public Pair<String, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.GOOGLE.getTokenEndpoint())
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -94,10 +99,19 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
                 .setAccessToken(accessToken)
                 .buildHeaderMessage();
 
-        final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
-        final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
-        final String username = defaultIfEmpty((String) userInfo.get("name"), email);
+        try {
+            final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+            final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
+            final String username = defaultIfEmpty((String) userInfo.get("name"), email);
 
-        return Pair.of(username, email);
+            return Either.left(Pair.of(username, email));
+        } catch(OAuthSystemException e) {
+            if (e.getMessage().contains("https://www.googleapis.com/plus/v1/people/me/openIdConnect")) {
+                log.error("OpenID verification failed", e);
+                return Either.right(i18nResolver.getText("google.plus.api.error"));
+            } else {
+                throw e;
+            }
+        }
     }
 }

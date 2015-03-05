@@ -2,6 +2,7 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 
 import com.atlassian.crowd.embedded.api.CrowdService;
+import com.atlassian.fugue.Either;
 import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.lang.Pair;
@@ -86,9 +87,16 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
                 }
 
                 final OAuth2ProviderType providerType = (OAuth2ProviderType) providerTypeFactory.getProviderTypeById(provider.getProviderType());
-                final Pair<String, String> usernameAndEmail = providerType.getUsernameAndEmail(oar.getCode(), provider, request);
+                final Either<Pair<String, String>, String> userOrError = providerType.getUsernameAndEmail(oar.getCode(), provider, request);
 
-                authenticationService.showAuthentication(request, response, provider, usernameAndEmail.first(), usernameAndEmail.second());
+                if (userOrError.isLeft()) {
+                    Pair<String, String> usernameAndEmail = userOrError.left().get();
+                    authenticationService.showAuthentication(request, response, provider, usernameAndEmail.first(), usernameAndEmail.second());
+                } else {
+                    templateHelper.render(request, response, "OpenId.Templates.errorWrapper",
+                            ImmutableMap.<String, Object>of(
+                                    "content", userOrError.right().get()));
+                }
                 return;
             } catch (Exception e) {
                 if (e instanceof OAuthProblemException) {

@@ -1,10 +1,10 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
+import com.atlassian.fugue.Either;
 import com.atlassian.jira.util.lang.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -18,13 +18,11 @@ import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 
 public class FacebookProviderType extends AbstractOAuth2ProviderType {
 
@@ -71,7 +69,7 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
-    public Pair<String, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.FACEBOOK.getTokenEndpoint())
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -91,6 +89,6 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
 
-        return Pair.of((String) userInfo.get("name"), (String) userInfo.get("email"));
+        return Either.left(Pair.of((String) userInfo.get("name"), (String) userInfo.get("email")));
     }
 }

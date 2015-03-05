@@ -6,7 +6,6 @@ import com.atlassian.jira.util.SimpleErrorCollection;
 import com.atlassian.jira.util.collect.MapBuilder;
 import com.atlassian.jira.util.lang.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
-import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
@@ -18,7 +17,6 @@ import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
@@ -28,7 +26,6 @@ import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import static com.atlassian.jira.util.dbc.Assertions.notNull;
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
@@ -156,7 +153,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     }
 
     @Override
-    public Pair<String, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(getTokenUrl(provider))
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -182,6 +179,6 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
             username = defaultIfEmpty((String) userInfo.get("name"), email);
         }
-        return Pair.of(username, email);
+        return Either.left(Pair.of(username, email));
     }
 }
