@@ -49,6 +49,7 @@ public class ProviderTypeFactory {
                     new FacebookProviderType(i18nResolver, openIdDao),
                     new LinkedInProviderType(i18nResolver, openIdDao),
                     new GithubProviderType(i18nResolver, openIdDao),
+                    new VkProviderType(i18nResolver, openIdDao),
                     new OpenIdProviderType(i18nResolver, openIdDao),
                     new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider));
 
