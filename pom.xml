@@ -290,44 +290,82 @@
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.version}</productDataVersion>
-                    <jvmArgs>-Xmx768m -XX:MaxPermSize=300m</jvmArgs>
-                    <systemPropertyVariables>
-                    	<xvfb.enable>${xvfb.enable}</xvfb.enable>
-                    </systemPropertyVariables>
-                    <!-- Uncomment to install TestKit backdoor in JIRA. -->
-                    <pluginArtifacts>
-                        <pluginArtifact>
-                            <groupId>com.atlassian.jira.tests</groupId>
-                            <artifactId>jira-testkit-plugin</artifactId>
-                            <version>${testkit.version}</version>
-                        </pluginArtifact>
-                    </pluginArtifacts>
-                    <instructions>
-                        <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
-                    </instructions>
-                    <bundledArtifacts>
-                        <bundledArtifact>
-                            <groupId>com.atlassian.upm</groupId>
-                            <artifactId>plugin-license-storage-plugin</artifactId>
-                            <version>${upm.license.compatibility.version}</version>
-                        </bundledArtifact>
-                    </bundledArtifacts>
+                    <extractDependencies>false</extractDependencies>
+
+                    <products>
+                        <product>
+                            <id>jira</id>
+                            <version>${jira.version}</version>
+                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
+                            <pluginArtifacts>
+                                <pluginArtifact>
+                                    <groupId>com.atlassian.jira.tests</groupId>
+                                    <artifactId>jira-testkit-plugin</artifactId>
+                                    <version>${testkit.version}</version>
+                                </pluginArtifact>
+                            </pluginArtifacts>
+                            <bundledArtifacts>
+                                <bundledArtifact>
+                                    <groupId>com.atlassian.upm</groupId>
+                                    <artifactId>plugin-license-storage-plugin</artifactId>
+                                    <version>${upm.license.compatibility.version}</version>
+                                </bundledArtifact>
+                            </bundledArtifacts>
+                        </product>
+                        <product>
+                            <id>confluence</id>
+                            <version>${confluence.version}</version>
+                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
+                            <bundledArtifacts>
+                                <bundledArtifact>
+                                    <groupId>com.atlassian.upm</groupId>
+                                    <artifactId>plugin-license-storage-plugin</artifactId>
+                                    <version>${upm.license.compatibility.version}</version>
+                                </bundledArtifact>
+                            </bundledArtifacts>
+                        </product>
+                    </products>
                     <pluginDependencies>
                         <pluginDependency>
                             <groupId>com.atlassian.upm</groupId>
                             <artifactId>plugin-license-storage-plugin</artifactId>
                         </pluginDependency>
                     </pluginDependencies>
+                    <jvmArgs>-Xmx768m -XX:MaxPermSize=300m</jvmArgs>
+                    <systemPropertyVariables>
+                    	<xvfb.enable>${xvfb.enable}</xvfb.enable>
+                    </systemPropertyVariables>
+                    <instructions>
+                        <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
+                    </instructions>
+                    <testGroups>
+                        <testGroup>
+                            <id>jira-integration</id>
+                            <productIds>
+                                <productId>jira</productId>
+                            </productIds>
+                            <includes>
+                                <include>it/**/jira/*Test.java</include>
+                            </includes>
+                        </testGroup>
+                        <testGroup>
+                            <id>confluence-integration</id>
+                            <productIds>
+                                <productId>confluence</productId>
+                            </productIds>
+                            <includes>
+                                <include>it/**/confluence/*Test.java</include>
+                            </includes>
+                        </testGroup>
+                    </testGroups>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -352,7 +390,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.3</jira.version>
-        <amps.version>5.0.3</amps.version>
+        <amps.version>5.0.16</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>
@@ -364,12 +402,20 @@
         <jackson.version>2.0.1</jackson.version>
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
         <xvfb.enable>true</xvfb.enable>
+
+        <confluence.version>5.8.4</confluence.version>
     </properties>
     <profiles>
         <profile>
             <id>releaseProfile</id>
             <properties>
                 <skipTests>true</skipTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.4</id>
+            <properties>
+                <jira.version>6.4.1</jira.version>
             </properties>
         </profile>
     </profiles>

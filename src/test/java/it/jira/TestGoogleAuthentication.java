@@ -1,4 +1,4 @@
-package it;
+package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -8,12 +8,12 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
-import it.pageobjects.AddProviderPage;
-import it.pageobjects.ErrorPage;
-import it.pageobjects.OpenIdLoginPage;
-import it.pageobjects.google.GoogleAccountChooserPage;
-import it.pageobjects.google.GoogleApprovePage;
-import it.pageobjects.google.GoogleLoginPage;
+import it.jira.pageobjects.AddProviderPage;
+import it.jira.pageobjects.ErrorPage;
+import it.jira.pageobjects.OpenIdLoginPage;
+import it.jira.pageobjects.google.GoogleAccountChooserPage;
+import it.jira.pageobjects.google.GoogleApprovePage;
+import it.jira.pageobjects.google.GoogleLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
+public class TestGoogleAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -36,9 +36,7 @@ public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("OpenID Connect/OAuth 2.0")
-                .setName("Google")
-                .setEndpointUrl("https://accounts.google.com")
+        addProvider.setProviderType("Google")
                 .setCallbackId((String) getProperty(passwords, "google.callbackId"))
                 .setClientId((String) getProperty(passwords, "google.clientId"))
                 .setClientSecret((String) getProperty(passwords, "google.clientSecret"))
@@ -60,12 +58,12 @@ public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        googleDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }
 
-    protected void googleDance(String email, String password)
+    protected void loginDance(String email, String password)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         Preconditions.checkNotNull(email);
@@ -100,7 +98,7 @@ public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        googleDance((String) getProperty(passwords, "gmail.user"), (String) getProperty(passwords, "gmail.password"));
+        loginDance((String) getProperty(passwords, "gmail.user"), (String) getProperty(passwords, "gmail.password"));
 
         ErrorPage errorPage = jira.getPageBinder().bind(ErrorPage.class);
         Poller.waitUntil(errorPage.getErrorMessage(), containsString("allowed domains"));
@@ -115,7 +113,7 @@ public class TestGoogleDiscoverableAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        googleDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
+        loginDance((String) getProperty(passwords, "teamstatus.user"), (String) getProperty(passwords, "teamstatus.password"));
 
         jira.getPageBinder().bind(ViewProfilePage.class);
     }

@@ -3,9 +3,9 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.fugue.Either;
+import com.atlassian.fugue.Pair;
 import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.user.util.UserUtil;
-import com.atlassian.jira.util.lang.Pair;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
@@ -91,7 +91,7 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
 
                 if (userOrError.isLeft()) {
                     Pair<String, String> usernameAndEmail = userOrError.left().get();
-                    authenticationService.showAuthentication(request, response, provider, usernameAndEmail.first(), usernameAndEmail.second());
+                    authenticationService.showAuthentication(request, response, provider, usernameAndEmail.left(), usernameAndEmail.right());
                 } else {
                     templateHelper.render(request, response, "OpenId.Templates.errorWrapper",
                             ImmutableMap.<String, Object>of(

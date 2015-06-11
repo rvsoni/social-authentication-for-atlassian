@@ -1,9 +1,6 @@
-package it.pageobjects;
-
-import java.util.Map;
+package it.jira.pageobjects;
 
 import com.atlassian.jira.functest.framework.matchers.IterableMatchers;
-import com.atlassian.jira.pageobjects.components.IssuePickerPopup;
 import com.atlassian.jira.pageobjects.framework.elements.ExtendedElementFinder;
 import com.atlassian.jira.pageobjects.framework.elements.PageElements;
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
@@ -13,17 +10,14 @@ import com.atlassian.pageobjects.elements.*;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 import com.atlassian.pageobjects.elements.query.TimedQuery;
-import com.atlassian.webdriver.utils.by.ByDataAttribute;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.By;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import static com.atlassian.jira.pageobjects.components.fields.IssuePickerRowMatchers.hasIssueKey;
 import static com.atlassian.jira.pageobjects.framework.elements.PageElements.transformTimed;
 import static com.atlassian.pageobjects.elements.query.Conditions.forMatcher;
 

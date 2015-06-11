@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.util.lang.Pair;
+import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -104,7 +104,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
             final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
             final String username = defaultIfEmpty((String) userInfo.get("name"), email);
 
-            return Either.left(Pair.of(username, email));
+            return Either.left(Pair.pair(username, email));
         } catch(OAuthSystemException e) {
             if (e.getMessage().contains("https://www.googleapis.com/plus/v1/people/me/openIdConnect")) {
                 log.error("OpenID verification failed", e);

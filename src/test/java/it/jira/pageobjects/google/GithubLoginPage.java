@@ -1,23 +1,19 @@
-package it.pageobjects.google;
+package it.jira.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
-import com.atlassian.pageobjects.elements.CheckboxElement;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class GoogleLoginPage extends AbstractJiraPage {
-    @ElementBy(id = "Email")
+public class GithubLoginPage extends AbstractJiraPage {
+    @ElementBy(id = "login_field")
     PageElement email;
 
-    @ElementBy(id = "Passwd")
+    @ElementBy(id = "password")
     PageElement password;
 
-    @ElementBy(id = "signIn")
+    @ElementBy(name = "commit")
     PageElement signInButton;
-
-    @ElementBy(id = "account-chooser-link")
-    PageElement accountChooserLink;
 
     @Override
     public TimedCondition isAt() {
@@ -33,13 +29,13 @@ public class GoogleLoginPage extends AbstractJiraPage {
         return this.email.isVisible();
     }
 
-    public GoogleLoginPage setEmail(String email) {
+    public GithubLoginPage setEmail(String email) {
         this.email.clear();
         this.email.type(email);
         return this;
     }
 
-    public GoogleLoginPage setPassword(String password) {
+    public GithubLoginPage setPassword(String password) {
         this.password.clear();
         this.password.type(password);
         return this;
@@ -50,13 +46,8 @@ public class GoogleLoginPage extends AbstractJiraPage {
         return signInButton.timed().isEnabled();
     }
 
-    public com.atlassian.pageobjects.DelayedBinder<GoogleApprovePage> signIn() {
+    public com.atlassian.pageobjects.DelayedBinder<GithubApprovePage> signIn() {
         this.signInButton.click();
-        return pageBinder.delayedBind(GoogleApprovePage.class);
-    }
-
-    public GoogleAccountChooserPage selectDifferentAccount() {
-        accountChooserLink.click();
-        return pageBinder.bind(GoogleAccountChooserPage.class);
+        return pageBinder.delayedBind(GithubApprovePage.class);
     }
 }

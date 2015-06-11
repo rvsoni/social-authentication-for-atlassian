@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.util.lang.Pair;
+import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -90,6 +90,6 @@ public class LinkedInProviderType extends AbstractOAuth2ProviderType {
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
 
-        return Either.left(Pair.of(userInfo.get("firstName") + " " + userInfo.get("lastName"), (String) userInfo.get("emailAddress")));
+        return Either.left(Pair.pair(userInfo.get("firstName") + " " + userInfo.get("lastName"), (String) userInfo.get("emailAddress")));
     }
 }

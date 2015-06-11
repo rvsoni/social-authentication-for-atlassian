@@ -1,11 +1,10 @@
-package it;
+package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.pageobjects.elements.query.Poller;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import it.pageobjects.AddProviderPage;
-import it.pageobjects.ConfigurationPage;
-import it.pageobjects.EditProviderPage;
+import it.jira.pageobjects.AddProviderPage;
+import it.jira.pageobjects.ConfigurationPage;
+import it.jira.pageobjects.EditProviderPage;
 import org.hamcrest.Matcher;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Before;
@@ -13,7 +12,7 @@ import org.junit.Test;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
-import static it.pageobjects.AddProviderPage.hasErrorMessage;
+import static it.jira.pageobjects.AddProviderPage.hasErrorMessage;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;

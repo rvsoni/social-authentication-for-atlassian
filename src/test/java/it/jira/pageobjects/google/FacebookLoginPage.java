@@ -1,4 +1,4 @@
-package it.pageobjects.google;
+package it.jira.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.ElementBy;

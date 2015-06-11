@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.util.lang.Pair;
+import com.atlassian.fugue.Pair;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 

@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.util.lang.Pair;
+import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -90,7 +90,7 @@ public class VkProviderType extends AbstractOAuth2ProviderType {
 
         final Object[] response = (Object[]) userInfo.get("response");
         final JSONObject profile = (JSONObject) response[0];
-        return Either.left(Pair.of(profile.get("first_name") + " " + profile.get("last_name"), token.getEmail()));
+        return Either.left(Pair.pair(profile.get("first_name") + " " + profile.get("last_name"), token.getEmail()));
     }
 
 }

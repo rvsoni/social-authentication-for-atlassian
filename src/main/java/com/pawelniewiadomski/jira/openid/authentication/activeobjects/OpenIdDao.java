@@ -1,10 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.jira.util.collect.MapBuilder;
 import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
-import net.java.ao.DBParam;
 import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,10 +62,10 @@ public class OpenIdDao {
 
     public OpenIdProvider createProvider(@Nonnull Map<String, Object> params) throws SQLException {
         return activeObjects.create(OpenIdProvider.class,
-                MapBuilder.<String, Object>newBuilder()
-                        .addAll(params)
-                        .add(OpenIdProvider.ORDERING, getNextOrdering())
-                        .add(OpenIdProvider.ENABLED, true).toMap());
+                ImmutableMap.<String, Object>builder()
+                        .putAll(params)
+                        .put(OpenIdProvider.ORDERING, getNextOrdering())
+                        .put(OpenIdProvider.ENABLED, true).build());
     }
 
     public void deleteProvider(Integer id) throws SQLException {

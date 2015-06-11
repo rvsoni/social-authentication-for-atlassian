@@ -1,18 +1,18 @@
-package it.pageobjects.google;
+package it.jira.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class GithubLoginPage extends AbstractJiraPage {
-    @ElementBy(id = "login_field")
+public class LinkedInLoginPage extends AbstractJiraPage {
+    @ElementBy(name = "session_key")
     PageElement email;
 
-    @ElementBy(id = "password")
+    @ElementBy(name = "session_password")
     PageElement password;
 
-    @ElementBy(name = "commit")
+    @ElementBy(name = "authorize")
     PageElement signInButton;
 
     @Override
@@ -29,13 +29,13 @@ public class GithubLoginPage extends AbstractJiraPage {
         return this.email.isVisible();
     }
 
-    public GithubLoginPage setEmail(String email) {
+    public LinkedInLoginPage setEmail(String email) {
         this.email.clear();
         this.email.type(email);
         return this;
     }
 
-    public GithubLoginPage setPassword(String password) {
+    public LinkedInLoginPage setPassword(String password) {
         this.password.clear();
         this.password.type(password);
         return this;
@@ -46,8 +46,8 @@ public class GithubLoginPage extends AbstractJiraPage {
         return signInButton.timed().isEnabled();
     }
 
-    public com.atlassian.pageobjects.DelayedBinder<GithubApprovePage> signIn() {
+    public com.atlassian.pageobjects.DelayedBinder<LinkedInApprovePage> signIn() {
         this.signInButton.click();
-        return pageBinder.delayedBind(GithubApprovePage.class);
+        return pageBinder.delayedBind(LinkedInApprovePage.class);
     }
 }

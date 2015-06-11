@@ -1,4 +1,4 @@
-package it;
+package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -8,10 +8,10 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
-import it.pageobjects.AddProviderPage;
-import it.pageobjects.ErrorPage;
-import it.pageobjects.OpenIdLoginPage;
-import it.pageobjects.google.*;
+import it.jira.pageobjects.AddProviderPage;
+import it.jira.pageobjects.OpenIdLoginPage;
+import it.jira.pageobjects.google.GithubApprovePage;
+import it.jira.pageobjects.google.GithubLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,9 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
-import static org.hamcrest.CoreMatchers.containsString;
 
-public class TestGithubAuthentication extends BaseJiraWebTest {
+public class TestVkAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -34,9 +33,9 @@ public class TestGithubAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("Github")
-                .setClientId((String) getProperty(passwords, "github.clientId"))
-                .setClientSecret((String) getProperty(passwords, "github.clientSecret"))
+        addProvider.setProviderType("VK")
+                .setClientId((String) getProperty(passwords, "vk.clientId"))
+                .setClientSecret((String) getProperty(passwords, "vk.clientSecret"))
                 .save();
 
         jira.getTester().getDriver().manage().deleteAllCookies();
@@ -45,7 +44,7 @@ public class TestGithubAuthentication extends BaseJiraWebTest {
     @After
     public void tearDown() {
         jira.getTester().getDriver().manage().deleteAllCookies();
-        jira.getTester().getDriver().navigate().to("https://github.com");
+        jira.getTester().getDriver().navigate().to("https://vk.com");
         jira.getTester().getDriver().manage().deleteAllCookies();
     }
 
@@ -56,7 +55,7 @@ public class TestGithubAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "github.user"), (String) getProperty(passwords, "github.password"));
+        loginDance((String) getProperty(passwords, "vk.user"), (String) getProperty(passwords, "vk.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }

@@ -1,4 +1,4 @@
-package it;
+package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -8,10 +8,10 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
-import it.pageobjects.AddProviderPage;
-import it.pageobjects.OpenIdLoginPage;
-import it.pageobjects.google.GithubApprovePage;
-import it.pageobjects.google.GithubLoginPage;
+import it.jira.pageobjects.AddProviderPage;
+import it.jira.pageobjects.OpenIdLoginPage;
+import it.jira.pageobjects.google.LinkedInApprovePage;
+import it.jira.pageobjects.google.LinkedInLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 
-public class TestVkAuthentication extends BaseJiraWebTest {
+public class TestLinkedInAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -33,9 +33,9 @@ public class TestVkAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("VK")
-                .setClientId((String) getProperty(passwords, "vk.clientId"))
-                .setClientSecret((String) getProperty(passwords, "vk.clientSecret"))
+        addProvider.setProviderType("LinkedIn")
+                .setClientId((String) getProperty(passwords, "linkedin.clientId"))
+                .setClientSecret((String) getProperty(passwords, "linkedin.clientSecret"))
                 .save();
 
         jira.getTester().getDriver().manage().deleteAllCookies();
@@ -43,8 +43,6 @@ public class TestVkAuthentication extends BaseJiraWebTest {
 
     @After
     public void tearDown() {
-        jira.getTester().getDriver().manage().deleteAllCookies();
-        jira.getTester().getDriver().navigate().to("https://vk.com");
         jira.getTester().getDriver().manage().deleteAllCookies();
     }
 
@@ -55,7 +53,7 @@ public class TestVkAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "vk.user"), (String) getProperty(passwords, "vk.password"));
+        loginDance((String) getProperty(passwords, "linkedin.user"), (String) getProperty(passwords, "linkedin.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }
@@ -66,13 +64,13 @@ public class TestVkAuthentication extends BaseJiraWebTest {
         Preconditions.checkNotNull(email);
         Preconditions.checkNotNull(password);
 
-        GithubLoginPage loginPage = jira.getPageBinder().bind(GithubLoginPage.class);
+        LinkedInLoginPage loginPage = jira.getPageBinder().bind(LinkedInLoginPage.class);
 
         loginPage.setEmail(email);
         loginPage.setPassword(password);
 
         Poller.waitUntilTrue(loginPage.isSignInEnabled());
-        DelayedBinder<GithubApprovePage> approvePage = loginPage.signIn();
+        DelayedBinder<LinkedInApprovePage> approvePage = loginPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }
@@ -87,7 +85,7 @@ public class TestVkAuthentication extends BaseJiraWebTest {
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
         loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
 
-        loginDance((String) getProperty(passwords, "github.user"), (String) getProperty(passwords, "github.password"));
+        loginDance((String) getProperty(passwords, "linkedin.user"), (String) getProperty(passwords, "linkedin.password"));
 
         jira.getPageBinder().bind(ViewProfilePage.class);
     }

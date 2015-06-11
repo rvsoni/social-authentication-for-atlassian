@@ -1,4 +1,4 @@
-package it;
+package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -8,10 +8,10 @@ import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
-import it.pageobjects.AddProviderPage;
-import it.pageobjects.ErrorPage;
-import it.pageobjects.OpenIdLoginPage;
-import it.pageobjects.google.*;
+import it.jira.pageobjects.AddProviderPage;
+import it.jira.pageobjects.ErrorPage;
+import it.jira.pageobjects.OpenIdLoginPage;
+import it.jira.pageobjects.google.*;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
-import static org.hamcrest.CoreMatchers.containsString;
 
 public class TestFacebookAuthentication extends BaseJiraWebTest {
 

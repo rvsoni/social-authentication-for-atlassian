@@ -1,19 +1,22 @@
-package it.pageobjects.google;
+package it.jira.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class LinkedInLoginPage extends AbstractJiraPage {
-    @ElementBy(name = "session_key")
+public class GoogleLoginPage extends AbstractJiraPage {
+    @ElementBy(id = "Email")
     PageElement email;
 
-    @ElementBy(name = "session_password")
+    @ElementBy(id = "Passwd")
     PageElement password;
 
-    @ElementBy(name = "authorize")
+    @ElementBy(id = "signIn")
     PageElement signInButton;
+
+    @ElementBy(id = "account-chooser-link")
+    PageElement accountChooserLink;
 
     @Override
     public TimedCondition isAt() {
@@ -29,13 +32,13 @@ public class LinkedInLoginPage extends AbstractJiraPage {
         return this.email.isVisible();
     }
 
-    public LinkedInLoginPage setEmail(String email) {
+    public GoogleLoginPage setEmail(String email) {
         this.email.clear();
         this.email.type(email);
         return this;
     }
 
-    public LinkedInLoginPage setPassword(String password) {
+    public GoogleLoginPage setPassword(String password) {
         this.password.clear();
         this.password.type(password);
         return this;
@@ -46,8 +49,13 @@ public class LinkedInLoginPage extends AbstractJiraPage {
         return signInButton.timed().isEnabled();
     }
 
-    public com.atlassian.pageobjects.DelayedBinder<LinkedInApprovePage> signIn() {
+    public com.atlassian.pageobjects.DelayedBinder<GoogleApprovePage> signIn() {
         this.signInButton.click();
-        return pageBinder.delayedBind(LinkedInApprovePage.class);
+        return pageBinder.delayedBind(GoogleApprovePage.class);
+    }
+
+    public GoogleAccountChooserPage selectDifferentAccount() {
+        accountChooserLink.click();
+        return pageBinder.bind(GoogleAccountChooserPage.class);
     }
 }

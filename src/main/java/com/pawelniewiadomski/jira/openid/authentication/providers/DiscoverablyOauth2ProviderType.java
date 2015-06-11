@@ -1,10 +1,10 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
+import com.atlassian.fugue.Pair;
 import com.atlassian.jira.rest.api.util.ErrorCollection;
 import com.atlassian.jira.util.SimpleErrorCollection;
 import com.atlassian.jira.util.collect.MapBuilder;
-import com.atlassian.jira.util.lang.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -27,7 +27,7 @@ import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-import static com.atlassian.jira.util.dbc.Assertions.notNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -128,8 +128,9 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     public OAuthClientRequest createOAuthRequest(@Nonnull OpenIdProvider provider,
                                                  @Nonnull String state,
                                                  @Nonnull HttpServletRequest request) throws Exception {
-        final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = notNull("OpenId Discovery Document must not be null",
-                discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()));
+        final OpenIdDiscoveryDocumentProvider.OpenIdDiscoveryDocument discoveryDocument = checkNotNull(
+                discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()),
+                "OpenId Discovery Document must not be null");
 
         return OAuthClientRequest
                 .authorizationLocation(discoveryDocument.getAuthorizationUrl())
@@ -179,6 +180,6 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
             username = defaultIfEmpty((String) userInfo.get("name"), email);
         }
-        return Either.left(Pair.of(username, email));
+        return Either.left(Pair.pair(username, email));
     }
 }

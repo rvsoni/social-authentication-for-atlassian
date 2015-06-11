@@ -1,10 +1,9 @@
-package it.pageobjects;
+package it.jira.pageobjects;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraAdminPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
-import com.atlassian.pageobjects.elements.query.TimedQuery;
 import org.openqa.selenium.By;
 
 public class ConfigurationPage extends AbstractJiraAdminPage {
