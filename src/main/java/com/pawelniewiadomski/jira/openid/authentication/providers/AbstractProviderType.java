@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.sal.api.message.I18nResolver;
+import com.pawelniewiadomski.jira.openid.authentication.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
@@ -21,11 +22,11 @@ public abstract class AbstractProviderType implements ProviderType {
         this.openIdDao = openIdDao;
     }
 
-    protected void validateName(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean, @Nonnull com.atlassian.jira.util.ErrorCollection errors) {
+    protected void validateName(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean, @Nonnull Errors errors) {
         validateName(provider, providerBean.getName(), errors);
     }
 
-    protected void validateName(@Nonnull OpenIdProvider provider, @Nullable String name, @Nonnull com.atlassian.jira.util.ErrorCollection errors) {
+    protected void validateName(@Nonnull OpenIdProvider provider, @Nullable String name, @Nonnull Errors errors) {
         if (isEmpty(name)) {
             errors.addError("name", i18nResolver.getText("configuration.name.empty"));
         } else {

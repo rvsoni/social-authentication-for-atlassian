@@ -2,10 +2,9 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
-import com.atlassian.jira.rest.api.util.ErrorCollection;
-import com.atlassian.jira.util.SimpleErrorCollection;
-import com.atlassian.jira.util.collect.MapBuilder;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.collect.ImmutableMap;
+import com.pawelniewiadomski.jira.openid.authentication.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
@@ -29,9 +28,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class DiscoverablyOauth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
@@ -54,7 +51,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     }
 
     @Override
-    public Either<ErrorCollection, Map<String, Object>> validateCreate(ProviderBean providerBean) {
+    public Either<Errors, Map<String, Object>> validateCreate(ProviderBean providerBean) {
         return validateUpdate(null, providerBean);
     }
 
@@ -78,8 +75,8 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     }
 
     @Override
-    public Either<ErrorCollection, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
-        com.atlassian.jira.util.ErrorCollection errors = new SimpleErrorCollection();
+    public Either<Errors, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
+        Errors errors = new Errors();
 
         validateName(provider, providerBean, errors);
 
@@ -111,16 +108,16 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
         }
 
         if (errors.hasAnyErrors()) {
-            return Either.left(ErrorCollection.of(errors));
+            return Either.left(errors);
         } else {
-            return Either.right(MapBuilder.<String, Object>newBuilder()
-                    .add(OpenIdProvider.NAME, providerBean.getName())
-                    .add(OpenIdProvider.ENDPOINT_URL, providerBean.getEndpointUrl())
-                    .add(OpenIdProvider.PROVIDER_TYPE, "oauth2")
-                    .add(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
-                    .add(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
-                    .add(OpenIdProvider.CALLBACK_ID, providerBean.getCallbackId())
-                    .add(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains()).toMap());
+            return Either.right(ImmutableMap.<String, Object>builder()
+                    .put(OpenIdProvider.NAME, providerBean.getName())
+                    .put(OpenIdProvider.ENDPOINT_URL, providerBean.getEndpointUrl())
+                    .put(OpenIdProvider.PROVIDER_TYPE, "oauth2")
+                    .put(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
+                    .put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
+                    .put(OpenIdProvider.CALLBACK_ID, providerBean.getCallbackId())
+                    .put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains()).build());
         }
     }
 

@@ -21,25 +21,17 @@ public class SettingsResource extends OpenIdResource {
 
     @PUT
     public Response setSettings(final Map<String, Object> params) {
-        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
-            @Override
-            public Response get() {
-                final Object creatingUsers = params.get("creatingUsers");
-                if (creatingUsers != null) {
-                    globalSettings.setCreatingUsers(Boolean.valueOf(creatingUsers.toString()));
-                }
-                return getSettings();
+        return permissionDeniedIfNotAdmin().orElseGet(() -> {
+            final Object creatingUsers = params.get("creatingUsers");
+            if (creatingUsers != null) {
+                globalSettings.setCreatingUsers(Boolean.valueOf(creatingUsers.toString()));
             }
+            return getSettings();
         });
     }
 
     @GET
     public Response getSettings() {
-        return permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
-            @Override
-            public Response get() {
-                return Response.ok(ImmutableMap.of("creatingUsers", globalSettings.isCreatingUsers())).build();
-            }
-        });
+        return permissionDeniedIfNotAdmin().orElseGet(() -> Response.ok(ImmutableMap.of("creatingUsers", globalSettings.isCreatingUsers())).build());
     }
 }

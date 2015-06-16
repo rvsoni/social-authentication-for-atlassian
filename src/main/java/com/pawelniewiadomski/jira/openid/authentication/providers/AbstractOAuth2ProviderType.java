@@ -1,14 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.rest.api.util.ErrorCollection;
-import com.atlassian.jira.util.SimpleErrorCollection;
-import com.atlassian.jira.util.collect.MapBuilder;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.collect.ImmutableMap;
+import com.pawelniewiadomski.jira.openid.authentication.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
-import org.apache.oltu.oauth2.common.OAuthProviderType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,13 +47,13 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
     }
 
     @Override
-    public Either<ErrorCollection, Map<String, Object>> validateCreate(ProviderBean providerBean) {
+    public Either<Errors, Map<String, Object>> validateCreate(ProviderBean providerBean) {
         return validateUpdate(null, providerBean);
     }
 
     @Override
-    public Either<ErrorCollection, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
-        com.atlassian.jira.util.ErrorCollection errors = new SimpleErrorCollection();
+    public Either<Errors, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
+        Errors errors = new Errors();
 
         validateName(provider, getCreatedProviderName(), errors);
 
@@ -67,17 +65,17 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
         }
 
         if (errors.hasAnyErrors()) {
-            return Either.left(ErrorCollection.of(errors));
+            return Either.left(errors);
         } else {
-            return Either.right(MapBuilder.<String, Object>newBuilder()
-                    .add(OpenIdProvider.NAME, getCreatedProviderName())
-                    .add(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl())
-                    .add(OpenIdProvider.CALLBACK_ID, getCallbackId()) // changing the id will break all existing urls
-                    .add(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains())
-                    .add(OpenIdProvider.PROVIDER_TYPE, getId())
-                    .add(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
-                    .add(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
-                    .toMap());
+            return Either.right(ImmutableMap.<String, Object>builder()
+                    .put(OpenIdProvider.NAME, getCreatedProviderName())
+                    .put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl())
+                    .put(OpenIdProvider.CALLBACK_ID, getCallbackId()) // changing the id will break all existing urls
+                    .put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains())
+                    .put(OpenIdProvider.PROVIDER_TYPE, getId())
+                    .put(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
+                    .put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
+                    .build());
         }
     }
 }

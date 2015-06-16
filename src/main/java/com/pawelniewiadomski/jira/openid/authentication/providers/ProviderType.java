@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.jira.rest.api.util.ErrorCollection;
+import com.pawelniewiadomski.jira.openid.authentication.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 
@@ -27,8 +27,8 @@ public interface ProviderType {
     String getCreatedProviderName();
 
     @Nonnull
-    Either<ErrorCollection, Map<String, Object>> validateCreate(@Nonnull ProviderBean providerBean);
+    Either<Errors, Map<String, Object>> validateCreate(@Nonnull ProviderBean providerBean);
 
     @Nonnull
-    Either<ErrorCollection, Map<String, Object>> validateUpdate(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean);
+    Either<Errors, Map<String, Object>> validateUpdate(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean);
 }

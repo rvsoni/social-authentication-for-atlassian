@@ -1,6 +1,5 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.atlassian.fugue.Option;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 public class OpenIdResource {
 
@@ -17,11 +17,11 @@ public class OpenIdResource {
     @Autowired
     PermissionManager permissionManager;
 
-    protected Option<Response> permissionDeniedIfNotAdmin() {
+    protected Optional<Response> permissionDeniedIfNotAdmin() {
         if (permissionManager.hasPermission(Permissions.ADMINISTER, authenticationContext.getUser())) {
-            return Option.none();
+            return Optional.empty();
         }
-        return Option.some(Response.status(Response.Status.FORBIDDEN).build());
+        return Optional.of(Response.status(Response.Status.FORBIDDEN).build());
     }
 
     public static CacheControl never() {
