@@ -1,14 +1,11 @@
 package com.pawelniewiadomski.jira.openid.authentication.services;
 
 
-import com.atlassian.crowd.embedded.api.CrowdService;
-import com.atlassian.jira.user.util.UserUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
 import org.apache.commons.lang.StringUtils;
@@ -43,18 +40,6 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
     static final String ATTR_ALIAS = "openid_alias";
 
     final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
-
-    @Autowired
-    GlobalSettings globalSettings;
-
-	@Autowired
-    CrowdService crowdService;
-
-	@Autowired
-    UserUtil userUtil;
-
-	@Autowired
-    LicenseProvider licenseProvider;
 
     @Autowired
     AuthenticationService authenticationService;

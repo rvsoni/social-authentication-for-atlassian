@@ -4,8 +4,6 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
-import com.atlassian.jira.config.util.JiraHome;
-import com.atlassian.jira.user.util.UserUtil;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
@@ -40,13 +38,7 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
     CrowdService crowdService;
 
 	@Autowired
-    UserUtil userUtil;
-
-	@Autowired
     LicenseProvider licenseProvider;
-
-    @Autowired
-    JiraHome jiraHome;
 
     @Autowired
     AuthenticationService authenticationService;

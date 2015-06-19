@@ -2,29 +2,17 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
-import com.atlassian.jira.util.BaseUrl;
-import com.atlassian.jira.util.http.JiraHttpUtils;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.soy.renderer.SoyException;
-import com.atlassian.soy.renderer.SoyTemplateRenderer;
-import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
-
-import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
 
 public class AbstractOpenIdServlet extends HttpServlet {
 
