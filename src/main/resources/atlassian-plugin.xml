@@ -122,11 +122,19 @@
     <sitemesh key="ad-configuration" path="/openid"/>
 
     <!-- Web items -->
-    <web-item key="openid" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
+    <web-item key="openid_jira" name="OpenId Link" section="users_groups_configuration/embedded_crowd_section"
               weight="70">
         <label key="openid.menu"/>
         <link linkId="openid">/openid/configuration</link>
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition"/>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.UserIsSysAdminCondition"/>
+        <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
+    </web-item>
+
+    <web-item key="openid_confluence" name="OpenId Link" section="system.admin/security"
+              weight="70">
+        <label key="openid.menu"/>
+        <link linkId="openid">/openid/configuration</link>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>
 
@@ -140,6 +148,16 @@
                class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
+
+    <component key="openIdDao" class="com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao"/>
+    <component key="globalSettings" class="com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings"/>
+    <component key="templateHelper" class="com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper"/>
+    <component key="providerTypeFactory" class="com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory"/>
+    <component key="openIdDiscoveryDocumentProvider" class="com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider"/>
+
+    <!-- JIRA -->
+    <!--<component key="authenticationService" class="com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService" application="jira"/>-->
+
 
     <!-- Gadget -->
     <gadget key="openid-login-gadget" location="openid-login-gadget.xml">

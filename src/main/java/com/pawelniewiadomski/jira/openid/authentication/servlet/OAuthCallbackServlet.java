@@ -31,26 +31,29 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
 {
     final Logger log = Logger.getLogger(this.getClass());
 
-    @Autowired
-    GlobalSettings globalSettings;
+    final GlobalSettings globalSettings;
 
-	@Autowired
-    CrowdService crowdService;
+    final CrowdService crowdService;
 
-	@Autowired
-    LicenseProvider licenseProvider;
+    final LicenseProvider licenseProvider;
 
-    @Autowired
-    AuthenticationService authenticationService;
+    final AuthenticationService authenticationService;
 
-    @Autowired
-    TemplateHelper templateHelper;
+    final TemplateHelper templateHelper;
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
 
-    @Autowired
     ProviderTypeFactory providerTypeFactory;
+
+    public OAuthCallbackServlet(GlobalSettings globalSettings, CrowdService crowdService, LicenseProvider licenseProvider, AuthenticationService authenticationService, TemplateHelper templateHelper, OpenIdDao openIdDao) {
+        super(openIdDao);
+        this.globalSettings = globalSettings;
+        this.crowdService = crowdService;
+        this.licenseProvider = licenseProvider;
+        this.authenticationService = authenticationService;
+        this.templateHelper = templateHelper;
+        this.openIdDao = openIdDao;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

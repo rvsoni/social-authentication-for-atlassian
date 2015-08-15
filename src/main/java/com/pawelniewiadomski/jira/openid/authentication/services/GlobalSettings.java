@@ -2,24 +2,27 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v5.2
- */
-@Service
 public class GlobalSettings {
 
     public static final String SHOULD_CREATE_USERS = "should.create.users";
 
-    @Autowired
-    PluginSettingsFactory pluginSettingsFactory;
+    final PluginSettingsFactory pluginSettingsFactory;
+
+    public GlobalSettings(PluginSettingsFactory pluginSettingsFactory) {
+        this.pluginSettingsFactory = pluginSettingsFactory;
+    }
 
     public boolean isCreatingUsers() {
-        return JiraUtils.isPublicMode() || Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get(SHOULD_CREATE_USERS));
+        return isJiraPublicMode() || Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get(SHOULD_CREATE_USERS));
+    }
+
+    private boolean isJiraPublicMode() {
+        try {
+            return JiraUtils.isPublicMode();
+        } catch(Exception e) {
+            return false;
+        }
     }
 
     public void setCreatingUsers(boolean createUsers) {

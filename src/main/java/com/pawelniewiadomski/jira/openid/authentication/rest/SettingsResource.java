@@ -1,6 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.google.common.base.Supplier;
+import com.atlassian.sal.api.user.UserManager;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,12 @@ import java.util.Map;
 @Path("settings")
 @Produces({MediaType.APPLICATION_JSON})
 public class SettingsResource extends OpenIdResource {
-    @Autowired
-    GlobalSettings globalSettings;
+    final GlobalSettings globalSettings;
+
+    public SettingsResource(GlobalSettings globalSettings, UserManager userManager) {
+        super(userManager);
+        this.globalSettings = globalSettings;
+    }
 
     @PUT
     public Response setSettings(final Map<String, Object> params) {

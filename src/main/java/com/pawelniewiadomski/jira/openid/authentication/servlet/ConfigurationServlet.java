@@ -1,43 +1,40 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Map;
+import com.atlassian.jira.util.JiraUtils;
+import com.atlassian.json.marshal.Jsonable;
+import com.atlassian.webresource.api.assembler.PageBuilderService;
+import com.atlassian.webresource.api.assembler.WebResourceAssembler;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
 
-import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.jira.util.JiraUtils;
-import com.atlassian.json.marshal.Jsonable;
-import com.atlassian.webresource.api.assembler.PageBuilderService;
-
-import com.atlassian.webresource.api.assembler.WebResourceAssembler;
-import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-
-import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
 public class ConfigurationServlet extends AbstractOpenIdServlet {
-    @Autowired
-    PageBuilderService pageBuilderService;
+    final PageBuilderService pageBuilderService;
 
-    @Autowired
-    GlobalSettings globalSettings;
+    final GlobalSettings globalSettings;
 
-    @Autowired
-    TemplateHelper templateHelper;
+    final TemplateHelper templateHelper;
 
-    @Autowired
-    ProviderTypeFactory providerTypeFactory;
+    final ProviderTypeFactory providerTypeFactory;
+
+    public ConfigurationServlet(PageBuilderService pageBuilderService, GlobalSettings globalSettings,
+                                TemplateHelper templateHelper, ProviderTypeFactory providerTypeFactory,
+                                OpenIdDao openIdDao) {
+        super(openIdDao);
+        this.pageBuilderService = pageBuilderService;
+        this.globalSettings = globalSettings;
+        this.templateHelper = templateHelper;
+        this.providerTypeFactory = providerTypeFactory;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -50,7 +47,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
                 .requireData("openid.publicMode", JiraUtils.isPublicMode())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
                 .requireData("openid.externalUserManagement", isExternalUserManagement())
-                .requireData("openid.baseUrl", applicationProperties.getString(APKeys.JIRA_BASEURL))
+                .requireData("openid.baseUrl", applicationProperties.getBaseUrl())
                 .requireData("openid.providerTypes", getProviderTypes());
 
         templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
@@ -70,12 +67,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
     public Jsonable getProviderTypes() {
         final Collection<ProviderType> providers = providerTypeFactory.getAllProviderTypes().values();
 
-        return new Jsonable() {
-            @Override
-            public void write(Writer writer) throws IOException {
-                ObjectMapper om = new ObjectMapper();
-                writer.write(om.writeValueAsString(providers));
-            }
+        return writer -> {
+            ObjectMapper om = new ObjectMapper();
+            writer.write(om.writeValueAsString(providers));
         };
     }
 }

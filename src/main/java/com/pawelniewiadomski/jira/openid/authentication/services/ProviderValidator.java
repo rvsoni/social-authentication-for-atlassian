@@ -8,28 +8,28 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 import org.apache.commons.beanutils.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-@Service
 public class ProviderValidator {
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
 
-    @Autowired
-    I18nResolver i18nResolver;
+    final I18nResolver i18nResolver;
 
-    @Autowired
-    OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
-    @Autowired
-    ProviderTypeFactory providerTypeFactory;
+    final ProviderTypeFactory providerTypeFactory;
+
+    public ProviderValidator(OpenIdDao openIdDao, I18nResolver i18nResolver, OpenIdDiscoveryDocumentProvider discoveryDocumentProvider, ProviderTypeFactory providerTypeFactory) {
+        this.openIdDao = openIdDao;
+        this.i18nResolver = i18nResolver;
+        this.discoveryDocumentProvider = discoveryDocumentProvider;
+        this.providerTypeFactory = providerTypeFactory;
+    }
 
     @Nonnull
     public Either<Errors, OpenIdProvider> validateCreate(ProviderBean providerBean) {

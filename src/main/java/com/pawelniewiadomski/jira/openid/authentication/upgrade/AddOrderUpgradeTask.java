@@ -12,8 +12,11 @@ import java.util.Collections;
 
 public class AddOrderUpgradeTask implements PluginUpgradeTask {
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
+
+    public AddOrderUpgradeTask(OpenIdDao openIdDao) {
+        this.openIdDao = openIdDao;
+    }
 
     @Override
     public int getBuildNumber() {

@@ -1,23 +1,19 @@
 package com.pawelniewiadomski.jira.openid.authentication.services;
 
-import java.util.concurrent.ExecutionException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdDiscoveryResponse;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.springframework.stereotype.Service;
 
-@Service
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.concurrent.ExecutionException;
+
 public class OpenIdDiscoveryDocumentProvider
 {
     @JsonAutoDetect

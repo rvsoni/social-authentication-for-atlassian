@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationHandler;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
@@ -20,17 +21,23 @@ public class LoginServlet extends AbstractOpenIdServlet {
 
     final Logger log = Logger.getLogger(this.getClass());
 
-    @Autowired
-    LicenseProvider licenseProvider;
+    final LicenseProvider licenseProvider;
 
-    @Autowired
-    TemplateHelper templateHelper;
+    final TemplateHelper templateHelper;
 
-    @Autowired
-    OAuthAuthenticationHandler oAuthAuthenticationHandler;
+    final OAuthAuthenticationHandler oAuthAuthenticationHandler;
 
-    @Autowired
-    OpenIdAuthenticationHandler openIdAuthenticationHandler;
+    final OpenIdAuthenticationHandler openIdAuthenticationHandler;
+
+    public LoginServlet(LicenseProvider licenseProvider, TemplateHelper templateHelper,
+                        OAuthAuthenticationHandler oAuthAuthenticationHandler,
+                        OpenIdAuthenticationHandler openIdAuthenticationHandler, OpenIdDao openIdDao) {
+        super(openIdDao);
+        this.licenseProvider = licenseProvider;
+        this.templateHelper = templateHelper;
+        this.oAuthAuthenticationHandler = oAuthAuthenticationHandler;
+        this.openIdAuthenticationHandler = openIdAuthenticationHandler;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

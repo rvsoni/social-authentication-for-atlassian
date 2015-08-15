@@ -6,7 +6,6 @@ package com.pawelniewiadomski.jira.openid.authentication;
  * @since v6.0
  */
 
-import com.atlassian.sal.api.ApplicationProperties;
 import com.google.common.collect.Iterables;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

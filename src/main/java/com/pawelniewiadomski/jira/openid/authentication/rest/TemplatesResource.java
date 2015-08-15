@@ -19,8 +19,11 @@ import java.util.Collections;
 @Produces({MediaType.TEXT_HTML})
 public class TemplatesResource {
 
-    @Autowired
-    TemplateHelper templateHelper;
+    final TemplateHelper templateHelper;
+
+    public TemplatesResource(TemplateHelper templateHelper) {
+        this.templateHelper = templateHelper;
+    }
 
     @GET
     @Path("{templateName}")

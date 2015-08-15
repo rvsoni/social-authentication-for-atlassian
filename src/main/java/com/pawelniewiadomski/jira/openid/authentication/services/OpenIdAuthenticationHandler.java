@@ -11,8 +11,6 @@ import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.net.ssl.SSLException;
@@ -29,7 +27,6 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHe
 /**
  * Handling OpenID 1.0 authentications.
  */
-@Service
 public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Logger log = Logger.getLogger(this.getClass());
@@ -41,11 +38,9 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
 
-    @Autowired
-    AuthenticationService authenticationService;
+    final AuthenticationService authenticationService;
 
-    @Autowired
-    TemplateHelper templateHelper;
+    final TemplateHelper templateHelper;
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)
@@ -56,6 +51,11 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
                     return key;
                 }
             });
+
+    public OpenIdAuthenticationHandler(AuthenticationService authenticationService, TemplateHelper templateHelper) {
+        this.authenticationService = authenticationService;
+        this.templateHelper = templateHelper;
+    }
 
     /*
      * We keep separate OpenIdManagers for each of providers because we want return path to be different for each of them and

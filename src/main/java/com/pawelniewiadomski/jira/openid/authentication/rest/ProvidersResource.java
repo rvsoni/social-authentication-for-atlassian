@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.atlassian.fugue.Either;
+import com.atlassian.sal.api.user.UserManager;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.Errors;
@@ -23,11 +24,15 @@ import java.util.Map;
 public class ProvidersResource extends OpenIdResource {
     private static final Logger log = Logger.getLogger(ProvidersResource.class);
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
 
-    @Autowired
-    ProviderValidator validator;
+    final ProviderValidator validator;
+
+    public ProvidersResource(OpenIdDao openIdDao, ProviderValidator validator, UserManager userManager) {
+        super(userManager);
+        this.openIdDao = openIdDao;
+        this.validator = validator;
+    }
 
     @POST
     public Response createProvider(final ProviderBean providerBean) {

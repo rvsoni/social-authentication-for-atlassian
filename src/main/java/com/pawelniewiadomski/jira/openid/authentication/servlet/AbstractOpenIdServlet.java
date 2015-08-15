@@ -1,12 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.jira.config.properties.ApplicationProperties;
+import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
+import com.atlassian.sal.api.component.ComponentLocator;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,23 +16,32 @@ import java.net.URI;
 
 public class AbstractOpenIdServlet extends HttpServlet {
 
-	@Autowired
-	OpenIdDao openIdDao;
+	final OpenIdDao openIdDao;
 
-    @Autowired
-    ApplicationProperties applicationProperties;
+    final ApplicationProperties applicationProperties;
 
-    @Autowired
-    LoginUriProvider loginUriProvider;
+    final LoginUriProvider loginUriProvider;
 
-    @Autowired
-    UserManager userManager;
+    final UserManager userManager;
 
-    @Autowired
-    I18nResolver i18nResolver;
+    final I18nResolver i18nResolver;
+
+    public AbstractOpenIdServlet(OpenIdDao openIdDao) {
+        this.openIdDao = openIdDao;
+        this.applicationProperties = ComponentLocator.getComponent(ApplicationProperties.class);
+        this.loginUriProvider = ComponentLocator.getComponent(LoginUriProvider.class);
+        this.userManager = ComponentLocator.getComponent(UserManager.class);
+        this.i18nResolver = ComponentLocator.getComponent(I18nResolver.class);
+    }
 
     protected boolean isExternalUserManagement() {
-        return applicationProperties.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
+        try {
+            com.atlassian.jira.config.properties.ApplicationProperties ap = ComponentLocator.getComponent(com.atlassian.jira.config.properties.ApplicationProperties.class);
+            return ap != null && ap.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
+        } catch (Throwable ignore) {
+            // in case running in Confluence
+            return false;
+        }
     }
 
     protected boolean hasAdminPermission()

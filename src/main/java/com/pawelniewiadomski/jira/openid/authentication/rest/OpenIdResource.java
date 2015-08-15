@@ -9,8 +9,11 @@ import java.util.Optional;
 
 public class OpenIdResource {
 
-    @Autowired
-    UserManager userManager;
+    final UserManager userManager;
+
+    public OpenIdResource(UserManager userManager) {
+        this.userManager = userManager;
+    }
 
     protected Optional<Response> permissionDeniedIfNotAdmin() {
         if (userManager.isAdmin(userManager.getRemoteUsername())) {

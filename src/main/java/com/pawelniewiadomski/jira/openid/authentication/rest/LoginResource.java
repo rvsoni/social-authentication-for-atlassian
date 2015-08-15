@@ -1,16 +1,13 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+import com.atlassian.sal.api.user.UserManager;
 import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.BasicProviderBean;
-import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.*;
@@ -23,8 +20,12 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON})
 public class LoginResource extends OpenIdResource {
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
+
+    public LoginResource(OpenIdDao openIdDao, UserManager userManager) {
+        super(userManager);
+        this.openIdDao = openIdDao;
+    }
 
     @GET
     @AnonymousAllowed
@@ -33,12 +34,7 @@ public class LoginResource extends OpenIdResource {
         try {
             final List<BasicProviderBean> loginProviders = Lists.newArrayList(
                     Iterables.transform(openIdDao.findAllEnabledProviders(),
-                    new Function<OpenIdProvider, BasicProviderBean>() {
-                        @Override
-                        public BasicProviderBean apply(@Nullable final OpenIdProvider input) {
-                            return new BasicProviderBean(input.getID(), input.getName(), input.getProviderType());
-                        }
-                    }));
+                            input -> new BasicProviderBean(input.getID(), input.getName(), input.getProviderType())));
 
             return Response.ok(loginProviders).cacheControl(never()).build();
         } catch (SQLException e) {

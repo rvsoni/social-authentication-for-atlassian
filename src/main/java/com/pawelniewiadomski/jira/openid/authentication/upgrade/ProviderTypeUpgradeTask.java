@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProviderTypeUpgradeTask implements PluginUpgradeTask {
 
-    @Autowired
-    OpenIdDao openIdDao;
+    final OpenIdDao openIdDao;
+
+    public ProviderTypeUpgradeTask(OpenIdDao openIdDao) {
+        this.openIdDao = openIdDao;
+    }
 
     @Override
     public int getBuildNumber() {

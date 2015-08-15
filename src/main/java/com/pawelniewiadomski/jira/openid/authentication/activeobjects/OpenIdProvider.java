@@ -9,26 +9,28 @@ import net.java.ao.schema.*;
 @Preload
 public interface OpenIdProvider extends Entity {
 
-    public static final String GOOGLE_TYPE = "google";
-    public static final String OPENID_TYPE = "openid1";
-    public static final String OAUTH2_TYPE = "oauth2";
-    public static final String FACEBOOK_TYPE = "facebook";
-    public static final String LINKED_IN_TYPE = "linkedin";
-    public static final String GITHUB_TYPE = "github";
-    public static final String VK_TYPE = "vk";
+    int MAX_LENGTH = 450;
 
-    public static final String ID = "ID";
-    public static final String NAME = "NAME";
-    public static final String ENDPOINT_URL = "ENDPOINT_URL";
-    public static final String EXTENSION_NAMESPACE = "EXTENSION_NAMESPACE";
-    public static final String ENABLED = "ENABLED";
-    public static final String CREATE_USERS = "CREATE_USERS";
-    public static final String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
-    public static final String ORDERING = "ORDERING";
-    public static final String PROVIDER_TYPE = "PROVIDER_TYPE";
-    public static final String CALLBACK_ID = "CALLBACK_ID";
-    public static final String CLIENT_ID = "CLIENT_ID";
-    public static final String CLIENT_SECRET = "CLIENT_SECRET";
+    String GOOGLE_TYPE = "google";
+    String OPENID_TYPE = "openid1";
+    String OAUTH2_TYPE = "oauth2";
+    String FACEBOOK_TYPE = "facebook";
+    String LINKED_IN_TYPE = "linkedin";
+    String GITHUB_TYPE = "github";
+    String VK_TYPE = "vk";
+
+    String ID = "ID";
+    String NAME = "NAME";
+    String ENDPOINT_URL = "ENDPOINT_URL";
+    String EXTENSION_NAMESPACE = "EXTENSION_NAMESPACE";
+    String ENABLED = "ENABLED";
+    String CREATE_USERS = "CREATE_USERS";
+    String ALLOWED_DOMAINS = "ALLOWED_DOMAINS";
+    String ORDERING = "ORDERING";
+    String PROVIDER_TYPE = "PROVIDER_TYPE";
+    String CALLBACK_ID = "CALLBACK_ID";
+    String CLIENT_ID = "CLIENT_ID";
+    String CLIENT_SECRET = "CLIENT_SECRET";
 
     @NotNull
     @Unique
@@ -37,7 +39,7 @@ public interface OpenIdProvider extends Entity {
     void setName(final String name);
 
     @NotNull
-    @StringLength(value = StringLength.MAX_LENGTH)
+    @StringLength(value = MAX_LENGTH)
     String getEndpointUrl();
     void setEndpointUrl(String endpointUrl);
 
@@ -58,22 +60,22 @@ public interface OpenIdProvider extends Entity {
     boolean isCreateUsers();
     void setCreateUsers(boolean createUsers);
 
-    @StringLength(StringLength.MAX_LENGTH)
+    @StringLength(MAX_LENGTH)
     String getAllowedDomains();
     void setAllowedDomains(String allowedDomains);
 
     Integer getOrdering();
     void setOrdering(Integer ordering);
 
-    @StringLength(StringLength.MAX_LENGTH)
+    @StringLength(MAX_LENGTH)
     String getProviderType();
     void setProviderType(String type);
 
-    @StringLength(StringLength.MAX_LENGTH)
+    @StringLength(MAX_LENGTH)
     String getClientId();
     void setClientId(String clientId);
 
-    @StringLength(StringLength.MAX_LENGTH)
+    @StringLength(MAX_LENGTH)
     String getClientSecret();
     void setClientSecret(String clientSecret);
 

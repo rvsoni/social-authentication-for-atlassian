@@ -3,8 +3,6 @@ package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.google.common.collect.ImmutableMap;
 import net.java.ao.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,11 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class OpenIdDao {
 
-    @Autowired
-    protected ActiveObjects activeObjects;
+    protected final ActiveObjects activeObjects;
+
+    public OpenIdDao(ActiveObjects activeObjects) {
+        this.activeObjects = activeObjects;
+    }
 
     @Nonnull
     public List<OpenIdProvider> findAllProviders() throws SQLException {

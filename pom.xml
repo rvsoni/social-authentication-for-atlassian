@@ -268,7 +268,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>1.6.0</version>
+                                    <version>1.8.0</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -315,7 +315,6 @@
                         <product>
                             <id>confluence</id>
                             <version>${confluence.version}</version>
-                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
                             <bundledArtifacts>
                                 <bundledArtifact>
                                     <groupId>com.atlassian.upm</groupId>
@@ -331,7 +330,7 @@
                             <artifactId>plugin-license-storage-plugin</artifactId>
                         </pluginDependency>
                     </pluginDependencies>
-                    <jvmArgs>-Xmx768m -XX:MaxPermSize=300m</jvmArgs>
+                    <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                     	<xvfb.enable>${xvfb.enable}</xvfb.enable>
                     </systemPropertyVariables>
@@ -389,7 +388,7 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>6.3</jira.version>
+        <jira.version>6.4.7</jira.version>
         <amps.version>5.0.16</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
