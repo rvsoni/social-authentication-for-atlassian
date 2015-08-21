@@ -1,5 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.user.UserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,6 +10,8 @@ import java.util.Optional;
 
 public class OpenIdResource {
 
+    @Autowired
+    @ComponentImport
     final UserManager userManager;
 
     public OpenIdResource(UserManager userManager) {

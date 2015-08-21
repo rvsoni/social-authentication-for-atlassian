@@ -7,19 +7,20 @@ import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationH
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 import com.pawelniewiadomski.jira.openid.authentication.services.OAuthAuthenticationHandler;
 import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdAuthenticationHandler;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class LoginServlet extends AbstractOpenIdServlet {
-
-    final Logger log = Logger.getLogger(this.getClass());
+@Slf4j
+@AllArgsConstructor
+public class LoginServlet extends HttpServlet {
 
     final LicenseProvider licenseProvider;
 
@@ -29,15 +30,7 @@ public class LoginServlet extends AbstractOpenIdServlet {
 
     final OpenIdAuthenticationHandler openIdAuthenticationHandler;
 
-    public LoginServlet(LicenseProvider licenseProvider, TemplateHelper templateHelper,
-                        OAuthAuthenticationHandler oAuthAuthenticationHandler,
-                        OpenIdAuthenticationHandler openIdAuthenticationHandler, OpenIdDao openIdDao) {
-        super(openIdDao);
-        this.licenseProvider = licenseProvider;
-        this.templateHelper = templateHelper;
-        this.oAuthAuthenticationHandler = oAuthAuthenticationHandler;
-        this.openIdAuthenticationHandler = openIdAuthenticationHandler;
-    }
+    final OpenIdDao openIdDao;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

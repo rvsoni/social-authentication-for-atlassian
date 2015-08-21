@@ -1,40 +1,37 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.config.properties.APKeys;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.component.ComponentLocator;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 
-public class AbstractOpenIdServlet extends HttpServlet {
+@Service
+@AllArgsConstructor
+public final class AbstractOpenIdServlet {
 
-	final OpenIdDao openIdDao;
-
+    @ComponentImport
     final ApplicationProperties applicationProperties;
 
+    @ComponentImport
     final LoginUriProvider loginUriProvider;
 
+    @ComponentImport
     final UserManager userManager;
 
+    @ComponentImport
     final I18nResolver i18nResolver;
 
-    public AbstractOpenIdServlet(OpenIdDao openIdDao) {
-        this.openIdDao = openIdDao;
-        this.applicationProperties = ComponentLocator.getComponent(ApplicationProperties.class);
-        this.loginUriProvider = ComponentLocator.getComponent(LoginUriProvider.class);
-        this.userManager = ComponentLocator.getComponent(UserManager.class);
-        this.i18nResolver = ComponentLocator.getComponent(I18nResolver.class);
-    }
-
-    protected boolean isExternalUserManagement() {
+    public boolean isExternalUserManagement() {
         try {
             com.atlassian.jira.config.properties.ApplicationProperties ap = ComponentLocator.getComponent(com.atlassian.jira.config.properties.ApplicationProperties.class);
             return ap != null && ap.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);

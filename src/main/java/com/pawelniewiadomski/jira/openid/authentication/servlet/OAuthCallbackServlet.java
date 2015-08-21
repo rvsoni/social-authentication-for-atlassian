@@ -4,6 +4,8 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
+import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
@@ -12,13 +14,14 @@ import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2Provider
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,15 +30,18 @@ import java.sql.SQLException;
 /**
  * Handling OpenID Connect authentications.
  */
-public class OAuthCallbackServlet extends AbstractOpenIdServlet
+@Slf4j
+@AllArgsConstructor
+public class OAuthCallbackServlet extends HttpServlet
 {
-    final Logger log = Logger.getLogger(this.getClass());
-
     final GlobalSettings globalSettings;
+    final LicenseProvider licenseProvider;
 
+    @ComponentImport
     final CrowdService crowdService;
 
-    final LicenseProvider licenseProvider;
+    @ComponentImport
+    final UserUtil userUtil;
 
     final AuthenticationService authenticationService;
 
@@ -43,17 +49,9 @@ public class OAuthCallbackServlet extends AbstractOpenIdServlet
 
     final OpenIdDao openIdDao;
 
-    ProviderTypeFactory providerTypeFactory;
+    final ProviderTypeFactory providerTypeFactory;
 
-    public OAuthCallbackServlet(GlobalSettings globalSettings, CrowdService crowdService, LicenseProvider licenseProvider, AuthenticationService authenticationService, TemplateHelper templateHelper, OpenIdDao openIdDao) {
-        super(openIdDao);
-        this.globalSettings = globalSettings;
-        this.crowdService = crowdService;
-        this.licenseProvider = licenseProvider;
-        this.authenticationService = authenticationService;
-        this.templateHelper = templateHelper;
-        this.openIdDao = openIdDao;
-    }
+    final AbstractOpenIdServlet abstractOpenIdServlet;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

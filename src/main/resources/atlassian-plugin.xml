@@ -102,13 +102,8 @@
         <description key="license-servlet.description">The License Servlet Plugin</description>
         <url-pattern>/openid-authentication-license</url-pattern>
     </servlet>
-    <component key="licenseProvider" class="com.pawelniewiadomski.jira.openid.authentication.LicenseProvider"/>
-    <component key="springContext" class="com.pawelniewiadomski.jira.openid.authentication.SpringContext"/>
 
     <!-- Active Objects -->
-
-    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
-
     <ao key="openid-active-objects">
         <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
     </ao>
@@ -137,27 +132,6 @@
         <condition class="com.pawelniewiadomski.jira.openid.authentication.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>
-
-    <!-- Upgrade tasks -->
-    <component key="addOrderUpgradeTask" name="Upgrade Task"
-               class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
-        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
-    </component>
-
-    <component key="providerTypeUpgradeTask" name="Upgrade Task"
-               class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
-        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
-    </component>
-
-    <component key="openIdDao" class="com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao"/>
-    <component key="globalSettings" class="com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings"/>
-    <component key="templateHelper" class="com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper"/>
-    <component key="providerTypeFactory" class="com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory"/>
-    <component key="openIdDiscoveryDocumentProvider" class="com.pawelniewiadomski.jira.openid.authentication.services.OpenIdDiscoveryDocumentProvider"/>
-
-    <!-- JIRA -->
-    <!--<component key="authenticationService" class="com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService" application="jira"/>-->
-
 
     <!-- Gadget -->
     <gadget key="openid-login-gadget" location="openid-login-gadget.xml">

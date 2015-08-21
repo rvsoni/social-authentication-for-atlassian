@@ -1,7 +1,9 @@
 package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
 import net.java.ao.Query;
 
 import javax.annotation.Nonnull;
@@ -12,13 +14,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 public class OpenIdDao {
 
-    protected final ActiveObjects activeObjects;
-
-    public OpenIdDao(ActiveObjects activeObjects) {
-        this.activeObjects = activeObjects;
-    }
+    @ComponentImport
+    final ActiveObjects activeObjects;
 
     @Nonnull
     public List<OpenIdProvider> findAllProviders() throws SQLException {

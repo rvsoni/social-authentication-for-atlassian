@@ -2,22 +2,28 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.json.marshal.Jsonable;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.atlassian.webresource.api.assembler.WebResourceAssembler;
-import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
-public class ConfigurationServlet extends AbstractOpenIdServlet {
+@AllArgsConstructor
+public class ConfigurationServlet extends HttpServlet {
+    @ComponentImport
     final PageBuilderService pageBuilderService;
 
     final GlobalSettings globalSettings;
@@ -26,15 +32,11 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
     final ProviderTypeFactory providerTypeFactory;
 
-    public ConfigurationServlet(PageBuilderService pageBuilderService, GlobalSettings globalSettings,
-                                TemplateHelper templateHelper, ProviderTypeFactory providerTypeFactory,
-                                OpenIdDao openIdDao) {
-        super(openIdDao);
-        this.pageBuilderService = pageBuilderService;
-        this.globalSettings = globalSettings;
-        this.templateHelper = templateHelper;
-        this.providerTypeFactory = providerTypeFactory;
-    }
+    final AbstractOpenIdServlet abstractOpenIdServlet;
+
+    final ApplicationProperties applicationProperties;
+
+    final UserManager userManager;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,7 +48,7 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
         assembler.data()
                 .requireData("openid.publicMode", JiraUtils.isPublicMode())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
-                .requireData("openid.externalUserManagement", isExternalUserManagement())
+                .requireData("openid.externalUserManagement", abstractOpenIdServlet.isExternalUserManagement())
                 .requireData("openid.baseUrl", applicationProperties.getBaseUrl())
                 .requireData("openid.providerTypes", getProviderTypes());
 
@@ -55,9 +57,9 @@ public class ConfigurationServlet extends AbstractOpenIdServlet {
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         if (userManager.getRemoteUsername() == null) {
-            redirectToLogin(req, resp);
+            abstractOpenIdServlet.redirectToLogin(req, resp);
             return true;
-        } else if (!hasAdminPermission()) {
+        } else if (!abstractOpenIdServlet.hasAdminPermission()) {
             throw new UnsupportedOperationException("you don't have permission");
         }
         return false;

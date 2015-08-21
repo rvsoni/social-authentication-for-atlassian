@@ -1,15 +1,19 @@
 package com.pawelniewiadomski.jira.openid.authentication.upgrade;
 
+import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.sal.api.message.Message;
 import com.atlassian.sal.api.upgrade.PluginUpgradeTask;
 import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@Component
+@ExportAsService
 public class AddOrderUpgradeTask implements PluginUpgradeTask {
 
     final OpenIdDao openIdDao;

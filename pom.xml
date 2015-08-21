@@ -252,6 +252,30 @@
             <artifactId>org.apache.oltu.oauth2.jwt</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-runtime</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-processor</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -290,7 +314,7 @@
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <extractDependencies>false</extractDependencies>
+                    <extractDependencies>true</extractDependencies>
 
                     <products>
                         <product>
@@ -388,7 +412,7 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>6.4.7</jira.version>
+        <jira.version>6.4.10</jira.version>
         <amps.version>5.0.16</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
@@ -401,8 +425,8 @@
         <jackson.version>2.0.1</jackson.version>
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
         <xvfb.enable>true</xvfb.enable>
-
         <confluence.version>5.8.4</confluence.version>
+        <atlassian.spring.scanner.version>1.2.9</atlassian.spring.scanner.version>
     </properties>
     <profiles>
         <profile>

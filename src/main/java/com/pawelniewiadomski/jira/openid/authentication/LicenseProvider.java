@@ -4,10 +4,12 @@ import com.atlassian.upm.api.license.entity.PluginLicense;
 import com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginUnresolvedException;
 import com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManager;
 import com.google.common.collect.Iterables;
+import org.springframework.stereotype.Component;
 
 /**
  *
  */
+@Component
 public class LicenseProvider {
 
     public boolean isValidLicense() {
