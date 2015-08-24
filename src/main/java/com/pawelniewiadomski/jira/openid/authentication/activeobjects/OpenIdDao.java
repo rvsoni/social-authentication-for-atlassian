@@ -5,6 +5,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import net.java.ao.Query;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Service
 @AllArgsConstructor
 public class OpenIdDao {
 

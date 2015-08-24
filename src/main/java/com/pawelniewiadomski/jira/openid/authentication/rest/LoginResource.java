@@ -34,7 +34,12 @@ public class LoginResource extends OpenIdResource {
         try {
             final List<BasicProviderBean> loginProviders = Lists.newArrayList(
                     Iterables.transform(openIdDao.findAllEnabledProviders(),
-                            input -> new BasicProviderBean(input.getID(), input.getName(), input.getProviderType())));
+                            new Function<OpenIdProvider, BasicProviderBean>() {
+                                @Override
+                                public BasicProviderBean apply(@Nullable OpenIdProvider input) {
+                                    return new BasicProviderBean(input.getID(), input.getName(), input.getProviderType());
+                                }
+                            }));
 
             return Response.ok(loginProviders).cacheControl(never()).build();
         } catch (SQLException e) {

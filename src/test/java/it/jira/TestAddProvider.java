@@ -65,14 +65,14 @@ public class TestAddProvider extends BaseJiraWebTest {
         addPage.setName(name);
         addPage.setEndpointUrl(endpointUrl);
 
-        waitUntil(addPage.getExtensionNamespace(), (Matcher<String>) equalTo("ext1"));
+        waitUntil(addPage.getExtensionNamespace(), equalTo("ext1"));
 
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("Testing");
         waitUntilFalse(editPage.isSelectProviderTypeVisible());
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
+        waitUntil(editPage.getName(), equalTo(name));
+        waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
 
         editPage.setName("");
         editPage.setEndpointUrl("");

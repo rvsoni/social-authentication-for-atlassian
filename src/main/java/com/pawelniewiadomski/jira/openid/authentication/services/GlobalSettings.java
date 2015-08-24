@@ -3,26 +3,23 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@AllArgsConstructor
 public class GlobalSettings {
 
     public static final String SHOULD_CREATE_USERS = "should.create.users";
 
-    @Autowired
-    @ComponentImport
-    PluginSettingsFactory pluginSettingsFactory;
+    final PluginSettingsFactory pluginSettingsFactory;
+
+    final PublicModeService publicModeService;
 
     public boolean isCreatingUsers() {
-        return isJiraPublicMode() || Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get(SHOULD_CREATE_USERS));
-    }
-
-    private boolean isJiraPublicMode() {
-        try {
-            return JiraUtils.isPublicMode();
-        } catch(Exception e) {
-            return false;
-        }
+        return publicModeService.canAnyoneSignUp()
+                || Boolean.valueOf((String) pluginSettingsFactory.createGlobalSettings().get(SHOULD_CREATE_USERS));
     }
 
     public void setCreatingUsers(boolean createUsers) {

@@ -40,8 +40,8 @@ public class TestEditProvider extends BaseJiraWebTest {
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("Testing");
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
+        waitUntil(editPage.getName(), equalTo(name));
+        waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
 
         editPage.setName("");
         editPage.setEndpointUrl("");
@@ -67,14 +67,14 @@ public class TestEditProvider extends BaseJiraWebTest {
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("Testing");
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo(name));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo(endpointUrl));
+        waitUntil(editPage.getName(), equalTo(name));
+        waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
 
         configurationPage = editPage.setName("New Name").setEndpointUrl("http://wp.pl").setExtensionNamespace("testing").save();
         editPage = configurationPage.editProvider("New Name");
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo("New Name"));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo("http://wp.pl"));
-        waitUntil(editPage.getExtensionNamespace(), (Matcher<String>) equalTo("testing"));
+        waitUntil(editPage.getName(), equalTo("New Name"));
+        waitUntil(editPage.getEndpointUrl(), equalTo("http://wp.pl"));
+        waitUntil(editPage.getExtensionNamespace(), equalTo("testing"));
     }
 
     @Test
@@ -90,20 +90,20 @@ public class TestEditProvider extends BaseJiraWebTest {
         ConfigurationPage configurationPage = addPage.save();
 
         EditProviderPage editPage = configurationPage.editProvider("OAuth");
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo("OAuth"));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo("https://accounts.google.com"));
-        waitUntil(editPage.getClientId(), (Matcher<String>) equalTo("AAA"));
-        waitUntil(editPage.getClientSecret(), (Matcher<String>) equalTo("BBB"));
+        waitUntil(editPage.getName(), equalTo("OAuth"));
+        waitUntil(editPage.getEndpointUrl(), equalTo("https://accounts.google.com"));
+        waitUntil(editPage.getClientId(), equalTo("AAA"));
+        waitUntil(editPage.getClientSecret(), equalTo("BBB"));
 
         configurationPage = editPage.setName("New Name")
                 .setClientId("NNN")
                 .setClientSecret("GGG")
                 .save();
         editPage = configurationPage.editProvider("New Name");
-        waitUntil(editPage.getName(), (Matcher<String>) equalTo("New Name"));
-        waitUntil(editPage.getEndpointUrl(), (Matcher<String>) equalTo("https://accounts.google.com"));
-        waitUntil(editPage.getClientId(), (Matcher<String>) equalTo("NNN"));
-        waitUntil(editPage.getClientSecret(), (Matcher<String>) equalTo("GGG"));
+        waitUntil(editPage.getName(), equalTo("New Name"));
+        waitUntil(editPage.getEndpointUrl(), equalTo("https://accounts.google.com"));
+        waitUntil(editPage.getClientId(), equalTo("NNN"));
+        waitUntil(editPage.getClientSecret(), equalTo("GGG"));
     }
 
     @Test
@@ -119,8 +119,8 @@ public class TestEditProvider extends BaseJiraWebTest {
         EditProviderPage editPage = configurationPage.editProvider("Google");
         waitUntilFalse(editPage.isEndpointUrlVisible());
         waitUntilTrue(editPage.isAllowedDomainsVisible());
-        waitUntil(editPage.getClientId(), (Matcher<String>) equalTo("AAA"));
-        waitUntil(editPage.getClientSecret(), (Matcher<String>) equalTo("BBB"));
+        waitUntil(editPage.getClientId(), equalTo("AAA"));
+        waitUntil(editPage.getClientSecret(), equalTo("BBB"));
 
         configurationPage = editPage
                 .setClientId("NNN")
@@ -129,8 +129,8 @@ public class TestEditProvider extends BaseJiraWebTest {
                 .save();
 
         editPage = configurationPage.editProvider("Google");
-        waitUntil(editPage.getClientId(), (Matcher<String>) equalTo("NNN"));
-        waitUntil(editPage.getClientSecret(), (Matcher<String>) equalTo("GGG"));
-        waitUntil(editPage.getAllowedDomains(), (Matcher<String>) equalTo("test.pl"));
+        waitUntil(editPage.getClientId(), equalTo("NNN"));
+        waitUntil(editPage.getClientSecret(), equalTo("GGG"));
+        waitUntil(editPage.getAllowedDomains(), equalTo("test.pl"));
     }
 }

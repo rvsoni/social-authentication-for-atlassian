@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Path("settings")
 @Produces({MediaType.APPLICATION_JSON})
@@ -25,17 +26,25 @@ public class SettingsResource extends OpenIdResource {
 
     @PUT
     public Response setSettings(final Map<String, Object> params) {
-        return permissionDeniedIfNotAdmin().orElseGet(() -> {
-            final Object creatingUsers = params.get("creatingUsers");
-            if (creatingUsers != null) {
-                globalSettings.setCreatingUsers(Boolean.valueOf(creatingUsers.toString()));
+        return permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+            @Override
+            public Response get() {
+                final Object creatingUsers = params.get("creatingUsers");
+                if (creatingUsers != null) {
+                    globalSettings.setCreatingUsers(Boolean.valueOf(creatingUsers.toString()));
+                }
+                return SettingsResource.this.getSettings();
             }
-            return getSettings();
         });
     }
 
     @GET
     public Response getSettings() {
-        return permissionDeniedIfNotAdmin().orElseGet(() -> Response.ok(ImmutableMap.of("creatingUsers", globalSettings.isCreatingUsers())).build());
+        return permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+            @Override
+            public Response get() {
+                return Response.ok(ImmutableMap.of("creatingUsers", globalSettings.isCreatingUsers())).build();
+            }
+        });
     }
 }

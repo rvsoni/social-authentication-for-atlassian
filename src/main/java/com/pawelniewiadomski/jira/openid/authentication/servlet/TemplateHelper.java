@@ -4,6 +4,8 @@ import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,8 @@ import java.util.Map;
 import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
 import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachingUtils.setNoCacheHeaders;
 
+@Service
+@AllArgsConstructor
 public class TemplateHelper
 {
     public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
@@ -22,11 +26,6 @@ public class TemplateHelper
     final SoyTemplateRenderer soyTemplateRenderer;
 
     final ApplicationProperties applicationProperties;
-
-    public TemplateHelper(SoyTemplateRenderer soyTemplateRenderer, ApplicationProperties applicationProperties) {
-        this.soyTemplateRenderer = soyTemplateRenderer;
-        this.applicationProperties = applicationProperties;
-    }
 
     public void render(final HttpServletRequest request,
                        final HttpServletResponse response,

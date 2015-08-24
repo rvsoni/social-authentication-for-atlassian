@@ -11,8 +11,7 @@
     </organization>
     <scm>
         <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git
-        </developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
@@ -315,7 +314,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <extractDependencies>true</extractDependencies>
-
                     <products>
                         <product>
                             <id>jira</id>
@@ -356,7 +354,7 @@
                     </pluginDependencies>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
-                    	<xvfb.enable>${xvfb.enable}</xvfb.enable>
+                        <xvfb.enable>${xvfb.enable}</xvfb.enable>
                     </systemPropertyVariables>
                     <instructions>
                         <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
@@ -413,7 +411,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.4.10</jira.version>
-        <amps.version>5.0.16</amps.version>
+        <amps.version>5.1.11</amps.version>
         <prettyurls.version>1.8</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>

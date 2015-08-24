@@ -9,23 +9,21 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.providers.*;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
+@Service
+@AllArgsConstructor
 public class ProviderTypeFactory {
     private final I18nResolver i18nResolver;
 
     private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
     private final OpenIdDao openIdDao;
-
-    public ProviderTypeFactory(I18nResolver i18nResolver, OpenIdDiscoveryDocumentProvider discoveryDocumentProvider, OpenIdDao openIdDao) {
-        this.i18nResolver = i18nResolver;
-        this.discoveryDocumentProvider = discoveryDocumentProvider;
-        this.openIdDao = openIdDao;
-    }
 
     @Nonnull
     public ProviderType getProviderTypeById(@Nonnull String id) throws IllegalArgumentException {

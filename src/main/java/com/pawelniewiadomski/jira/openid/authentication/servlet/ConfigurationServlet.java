@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 
 @AllArgsConstructor
@@ -46,7 +47,7 @@ public class ConfigurationServlet extends HttpServlet {
 
         assembler.resources().requireContext("jira-openid-configuration");
         assembler.data()
-                .requireData("openid.publicMode", JiraUtils.isPublicMode())
+                .requireData("openid.publicMode", globalSettings.isJiraPublicMode())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
                 .requireData("openid.externalUserManagement", abstractOpenIdServlet.isExternalUserManagement())
                 .requireData("openid.baseUrl", applicationProperties.getBaseUrl())
@@ -69,9 +70,12 @@ public class ConfigurationServlet extends HttpServlet {
     public Jsonable getProviderTypes() {
         final Collection<ProviderType> providers = providerTypeFactory.getAllProviderTypes().values();
 
-        return writer -> {
-            ObjectMapper om = new ObjectMapper();
-            writer.write(om.writeValueAsString(providers));
+        return new Jsonable() {
+            @Override
+            public void write(Writer writer) throws IOException {
+                ObjectMapper om = new ObjectMapper();
+                writer.write(om.writeValueAsString(providers));
+            }
         };
     }
 }

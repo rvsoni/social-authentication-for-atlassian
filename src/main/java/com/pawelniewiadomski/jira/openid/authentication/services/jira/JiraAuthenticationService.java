@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services;
+package com.pawelniewiadomski.jira.openid.authentication.services.jira;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.crowd.search.query.entity.UserQuery;
@@ -18,6 +18,8 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.AbstractOpenIdServlet;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
 import lombok.AllArgsConstructor;
@@ -36,8 +38,7 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHe
 @Slf4j
 @JiraComponent
 @AllArgsConstructor
-public class JiraAuthenticationService implements AuthenticationService
-{
+public class JiraAuthenticationService implements AuthenticationService {
     @ComponentImport
     final UserUtil userUtil;
 
@@ -51,8 +52,7 @@ public class JiraAuthenticationService implements AuthenticationService
     final AbstractOpenIdServlet abstractOpenIdServlet;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
-                            final OpenIdProvider provider, String identity, String email) throws IOException, ServletException
-    {
+                                   final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
         if (StringUtils.isBlank(email)) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
@@ -62,7 +62,7 @@ public class JiraAuthenticationService implements AuthenticationService
             final String[] allowedDomains = StringUtils.split(provider.getAllowedDomains(), ',');
             final String domain = StringUtils.substringAfter(email, "@");
             boolean matchingDomain = false;
-            for(final String allowedDomain : allowedDomains) {
+            for (final String allowedDomain : allowedDomains) {
                 if (StringUtils.equals(StringUtils.trim(allowedDomain), domain)) {
                     matchingDomain = true;
                     break;
@@ -78,8 +78,7 @@ public class JiraAuthenticationService implements AuthenticationService
                 com.atlassian.crowd.embedded.api.User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && !abstractOpenIdServlet.isExternalUserManagement()
-                && (JiraUtils.isPublicMode() || globalSettings.isCreatingUsers())) {
+        if (user == null && !abstractOpenIdServlet.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);

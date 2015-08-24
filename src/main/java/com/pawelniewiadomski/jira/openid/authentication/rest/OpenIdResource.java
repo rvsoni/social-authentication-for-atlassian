@@ -1,22 +1,18 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.user.UserManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
 
+@Service
+@AllArgsConstructor
 public class OpenIdResource {
 
-    @Autowired
-    @ComponentImport
     final UserManager userManager;
-
-    public OpenIdResource(UserManager userManager) {
-        this.userManager = userManager;
-    }
 
     protected Optional<Response> permissionDeniedIfNotAdmin() {
         if (userManager.isAdmin(userManager.getRemoteUsername())) {
