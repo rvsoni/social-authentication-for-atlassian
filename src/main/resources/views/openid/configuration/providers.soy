@@ -102,16 +102,15 @@
         <span ng-hide="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
     </h3>
 
-
     <div ng-show="!isPublicMode">
         <div ng-show="!isCreatingUsers">
-            <p>JIRA Public Mode is disabled, only already existing users will be able to log in using OpenID authentication.</p>
+            <p>Public sign ups are disabled, only already existing users will be able to log in using OpenID authentication.</p>
             <p>Users will be matched by e-mail only.</p>
             <p>Should users be automatically created when logging in by OpenID authentication?</p>
             <p><a id="switchCreatingUsers" data-disable="false" ng-click="creatingUsers(true)">Click here to allow the plugin to create users.</a></p>
         </div>
         <div ng-show="isCreatingUsers">
-            <p>JIRA Public Mode is disabled, but the plugin will create new users.</p>
+            <p>Public sign ups are disabled, but the plugin will create new users.</p>
             <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
             <p>Should only existing users be allowed when logging in by OpenID authentication?</p>
             <p><a id="switchCreatingUsers" data-disable="true" ng-click="creatingUsers(false)">Click here to disallow the plugin to create new users.</a></p>
@@ -123,7 +122,7 @@
             <p>Users will be matched by e-mail only.</p>
         </div>
         <div ng-show="!isExternalUserManagement">
-            <p>JIRA Public Mode is enabled, OpenID authentication will match existing users by e-mail or create new users.</p>
+            <p>Public sign ups are enabled, OpenID authentication will match existing users by e-mail or create new users.</p>
             <p>Each enabled Provider needs to return e-mail and full name at least.</p>
         </div>
     </div>
