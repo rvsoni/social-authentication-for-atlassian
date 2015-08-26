@@ -31,16 +31,6 @@ public final class AbstractOpenIdServlet {
     @ComponentImport
     final I18nResolver i18nResolver;
 
-    public boolean isExternalUserManagement() {
-        try {
-            com.atlassian.jira.config.properties.ApplicationProperties ap = ComponentLocator.getComponent(com.atlassian.jira.config.properties.ApplicationProperties.class);
-            return ap != null && ap.getOption(APKeys.JIRA_OPTION_USER_EXTERNALMGT);
-        } catch (Throwable ignore) {
-            // in case running in Confluence
-            return false;
-        }
-    }
-
     protected boolean hasAdminPermission()
     {
         String user = userManager.getRemoteUsername();

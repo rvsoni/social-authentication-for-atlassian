@@ -12,13 +12,13 @@ import com.atlassian.jira.security.login.LoginManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.util.UserUtil;
-import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.AbstractOpenIdServlet;
 import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
@@ -49,7 +49,7 @@ public class JiraAuthenticationService implements AuthenticationService {
 
     final TemplateHelper templateHelper;
 
-    final AbstractOpenIdServlet abstractOpenIdServlet;
+    final ExternalUserManagementService externalUserManagementService;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
@@ -78,7 +78,7 @@ public class JiraAuthenticationService implements AuthenticationService {
                 com.atlassian.crowd.embedded.api.User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
                 StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
-        if (user == null && !abstractOpenIdServlet.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
+        if (user == null && !externalUserManagementService.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
             try {
                 user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
                         email, identity);

@@ -63,17 +63,20 @@ public class OpenIdDao {
     }
 
     public OpenIdProvider createProvider(@Nonnull Map<String, Object> params) throws SQLException {
-        return activeObjects.create(OpenIdProvider.class,
+        return activeObjects.executeInTransaction(() -> activeObjects.create(OpenIdProvider.class,
                 ImmutableMap.<String, Object>builder()
                         .putAll(params)
                         .put(OpenIdProvider.ORDERING, getNextOrdering())
-                        .put(OpenIdProvider.ENABLED, true).build());
+                        .put(OpenIdProvider.ENABLED, true).build()));
     }
 
     public void deleteProvider(Integer id) throws SQLException {
         OpenIdProvider provider = findProvider(id);
         if (provider != null) {
-            activeObjects.delete(provider);
+            activeObjects.executeInTransaction(() -> {
+                activeObjects.delete(provider);
+                return null;
+            });
         }
     }
 

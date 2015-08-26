@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public abstract class AbstractOAuth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
@@ -71,7 +72,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
                     .put(OpenIdProvider.NAME, getCreatedProviderName())
                     .put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl())
                     .put(OpenIdProvider.CALLBACK_ID, getCallbackId()) // changing the id will break all existing urls
-                    .put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains())
+                    .put(OpenIdProvider.ALLOWED_DOMAINS, defaultString(providerBean.getAllowedDomains()))
                     .put(OpenIdProvider.PROVIDER_TYPE, getId())
                     .put(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
                     .put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
