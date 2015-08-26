@@ -10,6 +10,7 @@ import com.atlassian.webresource.api.assembler.WebResourceAssembler;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import com.pawelniewiadomski.jira.openid.authentication.services.PublicModeService;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -39,6 +40,8 @@ public class ConfigurationServlet extends HttpServlet {
 
     final UserManager userManager;
 
+    final PublicModeService publicModeService;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
@@ -47,7 +50,7 @@ public class ConfigurationServlet extends HttpServlet {
 
         assembler.resources().requireContext("jira-openid-configuration");
         assembler.data()
-                .requireData("openid.publicMode", globalSettings.isJiraPublicMode())
+                .requireData("openid.publicMode", publicModeService.canAnyoneSignUp())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
                 .requireData("openid.externalUserManagement", abstractOpenIdServlet.isExternalUserManagement())
                 .requireData("openid.baseUrl", applicationProperties.getBaseUrl())

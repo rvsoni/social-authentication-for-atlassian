@@ -49,6 +49,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.atlassian.confluence</groupId>
+            <artifactId>confluence</artifactId>
+            <version>${confluence.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.atlassian.prettyurls</groupId>
             <artifactId>atlassian-pretty-urls-plugin</artifactId>
             <version>${prettyurls.version}</version>
@@ -423,7 +429,7 @@
         <jackson.version>2.0.1</jackson.version>
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
         <xvfb.enable>true</xvfb.enable>
-        <confluence.version>5.8.4</confluence.version>
+        <confluence.version>5.8.9</confluence.version>
         <atlassian.spring.scanner.version>1.2.9</atlassian.spring.scanner.version>
     </properties>
     <profiles>
