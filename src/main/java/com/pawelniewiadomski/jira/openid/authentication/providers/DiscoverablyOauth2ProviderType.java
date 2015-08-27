@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 public class DiscoverablyOauth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;

@@ -1,99 +1,69 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest.responses;
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import lombok.Data;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @SuppressWarnings("unused")
+@JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProviderBean extends BasicProviderBean {
+@Data
+public class ProviderBean {
+    final int id;
 
-    @JsonProperty
-    private String allowedDomains;
+    final String name;
 
-    @JsonProperty
-    private Integer ordering;
+    final String providerType;
 
-    @JsonProperty
-    private boolean enabled;
+    final String allowedDomains;
 
-    @JsonProperty
-    private String clientId;
+    final Integer ordering;
 
-    @JsonProperty
-    private String clientSecret;
+    final boolean enabled;
 
-    @JsonProperty
-    private String endpointUrl;
+    final String clientId;
 
-    @JsonProperty
-    private String callbackId;
+    final String clientSecret;
 
-    @JsonProperty
-    private String extensionNamespace;
+    final String endpointUrl;
 
-    public ProviderBean() {
-    }
+    final String callbackId;
 
-    public ProviderBean(Integer id, String name, boolean enabled, Integer ordering, String allowedDomains, String providerType) {
-        super(id, name, providerType);
-        this.enabled = enabled;
-        this.ordering = ordering == null ? 1 : ordering;
+    final String extensionNamespace;
+
+    @java.beans.ConstructorProperties({"id", "name", "providerType", "allowedDomains", "ordering", "enabled", "clientId", "clientSecret", "endpointUrl", "callbackId", "extensionNamespace"})
+    public ProviderBean(@JsonProperty("id") int id,
+                        @JsonProperty("name") String name,
+                        @JsonProperty("providerType") String providerType,
+                        @JsonProperty("allowedDomains") String allowedDomains,
+                        @JsonProperty("ordering") Integer ordering,
+                        @JsonProperty("enabled") boolean enabled,
+                        @JsonProperty("clientId") String clientId,
+                        @JsonProperty("clientSecret") String clientSecret,
+                        @JsonProperty("endpointUrl") String endpointUrl,
+                        @JsonProperty("callbackId") String callbackId,
+                        @JsonProperty("extensionNamespace") String extensionNamespace) {
+        this.id = id;
+        this.name = name;
+        this.providerType = providerType;
         this.allowedDomains = allowedDomains;
-    }
-
-    public ProviderBean(OpenIdProvider provider) {
-        this(provider.getID(), provider.getName(), provider.isEnabled(), provider.getOrdering(),
-                provider.getAllowedDomains(), provider.getProviderType());
-
-        this.endpointUrl = provider.getEndpointUrl();
-        this.extensionNamespace = provider.getExtensionNamespace();
-        this.callbackId = provider.getCallbackId();
-        this.clientId = provider.getClientId();
-        this.clientSecret = provider.getClientSecret();
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public String getEndpointUrl() {
-        return endpointUrl;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public int getOrdering() {
-        return ordering;
-    }
-
-    public void setOrdering(final int ordering) {
         this.ordering = ordering;
+        this.enabled = enabled;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.endpointUrl = endpointUrl;
+        this.callbackId = callbackId;
+        this.extensionNamespace = extensionNamespace;
     }
 
-    public String getAllowedDomains() {
-        return allowedDomains;
-    }
 
-    public void setAllowedDomains(final String allowedDomains) {
-        this.allowedDomains = allowedDomains;
-    }
-
-    public String getExtensionNamespace() {
-        return extensionNamespace;
-    }
-
-    public String getCallbackId() {
-        return callbackId;
+    public static ProviderBean of(OpenIdProvider provider) {
+        return new ProviderBean(provider.getID(), provider.getName(), provider.getProviderType(),
+                provider.getAllowedDomains(),
+                provider.getOrdering() == null ? 1 : provider.getOrdering(),
+                provider.isEnabled(), provider.getClientId(), provider.getClientSecret(),
+                provider.getEndpointUrl(), provider.getCallbackId(), provider.getExtensionNamespace());
     }
 }

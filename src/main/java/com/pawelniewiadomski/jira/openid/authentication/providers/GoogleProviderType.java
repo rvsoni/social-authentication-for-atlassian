@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
+import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
 
 public class GoogleProviderType extends AbstractOAuth2ProviderType {
 

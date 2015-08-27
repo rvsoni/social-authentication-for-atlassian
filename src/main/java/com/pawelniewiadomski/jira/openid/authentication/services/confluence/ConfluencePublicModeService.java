@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang.StringUtils.split;
 
-@Service
 @ConfluenceComponent
 @AllArgsConstructor
 public class ConfluencePublicModeService implements PublicModeService {
@@ -29,6 +29,11 @@ public class ConfluencePublicModeService implements PublicModeService {
     @Override
     public Optional<List<String>> getAllowedDomains() {
         return Optional.of(ofNullable(split(signupManager.getRestrictedDomains(), ','))
-                .map(ImmutableList::copyOf).orElse(ImmutableList.<String>of()));
+                .map(new Function<String[], ImmutableList<String>>() {
+                    @Override
+                    public ImmutableList<String> apply(String[] elements) {
+                        return ImmutableList.copyOf(elements);
+                    }
+                }).orElse(ImmutableList.<String>of()));
     }
 }

@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.atlassian.fugue.Either;
-import com.atlassian.sal.api.user.UserManager;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -12,8 +11,6 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -45,7 +42,7 @@ public class ProvidersResource {
                         if (errorsOrProvider.isLeft()) {
                             return Response.ok(errorsOrProvider.left().get()).build();
                         } else {
-                            return Response.ok(new ProviderBean(errorsOrProvider.right().get())).build();
+                            return Response.ok(ProviderBean.of(errorsOrProvider.right().get())).build();
                         }
                     }
                 }
@@ -66,7 +63,7 @@ public class ProvidersResource {
                             if (errorsOrProvider.isLeft()) {
                                 return Response.ok(errorsOrProvider.left().get()).build();
                             } else {
-                                return Response.ok(new ProviderBean(errorsOrProvider.right().get())).build();
+                                return Response.ok(ProviderBean.of(errorsOrProvider.right().get())).build();
                             }
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -183,7 +180,7 @@ public class ProvidersResource {
                     Iterables.transform(openIdDao.findAllProviders(), new Function<OpenIdProvider, ProviderBean>() {
                         @Override
                         public ProviderBean apply(OpenIdProvider provider) {
-                            return new ProviderBean(provider);
+                            return ProviderBean.of(provider);
                         }
                     }))).cacheControl(openIdResource.never()).build();
         } catch (SQLException e) {

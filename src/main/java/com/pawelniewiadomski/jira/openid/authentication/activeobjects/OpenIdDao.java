@@ -2,6 +2,7 @@ package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import net.java.ao.Query;
@@ -63,19 +64,27 @@ public class OpenIdDao {
     }
 
     public OpenIdProvider createProvider(@Nonnull Map<String, Object> params) throws SQLException {
-        return activeObjects.executeInTransaction(() -> activeObjects.create(OpenIdProvider.class,
-                ImmutableMap.<String, Object>builder()
-                        .putAll(params)
-                        .put(OpenIdProvider.ORDERING, getNextOrdering())
-                        .put(OpenIdProvider.ENABLED, true).build()));
+        return activeObjects.executeInTransaction(new TransactionCallback<OpenIdProvider>() {
+            @Override
+            public OpenIdProvider doInTransaction() {
+                return activeObjects.create(OpenIdProvider.class,
+                        ImmutableMap.<String, Object>builder()
+                                .putAll(params)
+                                .put(OpenIdProvider.ORDERING, OpenIdDao.this.getNextOrdering())
+                                .put(OpenIdProvider.ENABLED, true).build());
+            }
+        });
     }
 
     public void deleteProvider(Integer id) throws SQLException {
         OpenIdProvider provider = findProvider(id);
         if (provider != null) {
-            activeObjects.executeInTransaction(() -> {
-                activeObjects.delete(provider);
-                return null;
+            activeObjects.executeInTransaction(new TransactionCallback<Object>() {
+                @Override
+                public Object doInTransaction() {
+                    activeObjects.delete(provider);
+                    return null;
+                }
             });
         }
     }

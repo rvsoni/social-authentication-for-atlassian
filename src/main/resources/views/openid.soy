@@ -1,14 +1,14 @@
 {namespace OpenId.Templates}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  * @param content content
  */
 {template .errorWrapper}
 {call aui.page.document}
     {param windowTitle: 'OpenID Failed'/}
     {param headContent}
-        <meta name="decorator" content="general"/>
+        <meta name="decorator" content="atl.general"/>
     {/param}
     {param extraClasses: 'openid error'/}
     {param pageType: 'focused'/}
@@ -28,7 +28,7 @@
                                     {param type: 'link'/}
                                     {param tagName: 'a'/}
                                     {param extraAttributes}
-                                    href="{$baseUrl}/login.jsp"
+                                    href="{$loginUrl}"
                                     {/param}
                                 {/call}
                             {/param}
@@ -42,7 +42,7 @@
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  * @param? sslError in case it's SSL mis-configuration
  */
 {template .error}
@@ -58,12 +58,12 @@
         {/if}
 
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  * @param providerName name of the provider
  */
 {template .invalidState}
@@ -71,12 +71,12 @@
     {param content}
         Response from {$providerName} didn't match the state saved in the session. Either JIRA server was restarted or your session was renewed.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  * @param providerName name of the provider
  * @param errorMessage error message
  */
@@ -85,54 +85,54 @@
     {param content}
         {$providerName} returned '{$errorMessage}' which suggests an invalid configuration, please check if Client ID and Client Secret match with those offered by {$providerName}.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  */
 {template .emptyEmail}
 {call .errorWrapper}
     {param content}
     OpenID provider did not return a valid email address for the identity. Cannot proceed. Please try again using different method.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  */
 {template .domainMismatch}
 {call .errorWrapper}
     {param content}
     Your email address is not on a list of allowed domains. Please use a different account to log in.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  */
 {template .noUserMatched}
 {call .errorWrapper}
     {param content}
     No existing user was matched. Cannot proceed. Please try again using different method.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}
 
 /**
- * @param baseUrl base URL
+ * @param loginUrl
  */
 {template .invalidLicense}
 {call .errorWrapper}
     {param content}
     No valid license found. Please ask your administrator to configure the plugin.
     {/param}
-    {param baseUrl: $baseUrl/}
+    {param loginUrl: $loginUrl/}
 {/call}
 {/template}

@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
 import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
@@ -11,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -27,6 +30,8 @@ public class TemplateHelper
 
     final ApplicationProperties applicationProperties;
 
+    final LoginUriProvider loginUriProvider;
+
     public void render(final HttpServletRequest request,
                        final HttpServletResponse response,
                        final String template) throws ServletException, IOException
@@ -40,6 +45,11 @@ public class TemplateHelper
     {
         final Map<String, Object> params = Maps.newHashMap(map);
         params.put("baseUrl", getBaseUrl(request));
+        try {
+            params.put("loginUrl", loginUriProvider.getLoginUri(new URI("/")));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
 
         setNoCacheHeaders(response);
         response.setContentType("text/html; charset=UTF-8");

@@ -324,6 +324,7 @@
                         <product>
                             <id>jira</id>
                             <version>${jira.version}</version>
+                            <jvmDebugPort>5006</jvmDebugPort>
                             <!-- Uncomment to install TestKit backdoor in JIRA. -->
                             <pluginArtifacts>
                                 <pluginArtifact>
@@ -364,6 +365,10 @@
                     </systemPropertyVariables>
                     <instructions>
                         <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
+                        <Import-Package>
+                            com.atlassian.jira;resolution:=optional,
+                            *;resolution:=optional
+                        </Import-Package>
                     </instructions>
                     <testGroups>
                         <testGroup>

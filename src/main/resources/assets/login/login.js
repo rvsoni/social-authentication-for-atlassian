@@ -1,3 +1,12 @@
+define('openid/product', ['jquery'], function($) {
+    var appName = $('meta[name=application-name]').data('name');
+    if (appName) {
+        return {name: appName};
+    } else {
+        return {name: 'confluence'};
+    }
+});
+
 define('openid/marionette', ['backbone'], function (Backbone) {
     return Marionette.noConflict();
 });
@@ -15,7 +24,7 @@ define('openid/providerView', ['openid/marionette', 'underscore', 'ajs'], functi
         template: function (data) {
             return _.template('<a id="openid-<%= id %>" data-id="<%= id %>" class="openid aui-button" href="<%= authenticationUrl %>"><%= name %></a>')(data);
         },
-        serializeData: function() {
+        serializeData: function () {
             return _.extend(this.model.toJSON(), {
                 authenticationUrl: this.getAuthenticationUrl(this.model.get('id'))
             })
@@ -30,7 +39,7 @@ define('openid/providerView', ['openid/marionette', 'underscore', 'ajs'], functi
             else
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
-        getAuthenticationUrl: function(providerId) {
+        getAuthenticationUrl: function (providerId) {
             var authenticationUrl = AJS.contextPath() + '/plugins/servlet/openid-login?pid=' + providerId;
             var returnUrl = this.getParameterByName("os_destination", window.location.href);
             if (returnUrl) {
@@ -62,65 +71,34 @@ define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openi
                 return _.template('<div class="divider"><span>or</span></div><div class="providers"></div>')(data);
             },
             onRender: function () {
-                console.log("Rendering loginView");
+                console.log("Rendering providers container...");
             }
         });
     });
 
-require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/providersModel'],
-    function (AJS, $, Marionette, LoginView, ProvidersModel) {
+require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'underscore'],
+    function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
         console.log('OpenID booting up...');
-        $('.login-section').append('<div id="openid"></div>');
+
+        var isJIRA = Product.name === 'jira';
+        var loginFormSelector = isJIRA ? "#login-form" : "form.login-form-container";
+        var $loginForm = $(loginFormSelector);
+        if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1)
+        {
+            console.log('Login form has no action or that is WebSudo');
+            return;
+        }
+
+        if (_.isFunction($loginForm.removeDirtyWarning)) {
+            console.log('Disabling dirty warning');
+            $loginForm.removeDirtyWarning();
+        }
+
+        var $attachLocation = isJIRA ? $loginForm : $('.login-section');
+        $attachLocation.append('<div id="openid"></div>');
         var providers = new ProvidersModel();
         var login = new LoginView({collection: providers});
         providers.fetch({
             success: login.render
         });
-
-        return;
-
-        var $login = $("#login-form"); // check JIRA form first
-
-
-        if ($login.length && (!$login.attr('action') || $login.attr('action').indexOf('WebSudo') == -1)) {
-            var buttons = [];
-
-            buttons.push('<button id="openid-button" class="aui-button aui-dropdown2-trigger" href="#openid-providers" aria-owns="openid-providers"'
-                + ' aria-haspopup="true" aria-controls="openid-providers">OpenID Login</button>');
-            buttons.push('<div id="openid-providers" class="aui-dropdown2 aui-style-default" aria-hidden="true" data-dropdown2-alignment="left">');
-            buttons.push('<ul class="aui-list-truncate">');
-            buttons.push('<li><a href="#" class="loading"><span class="aui-icon aui-icon-wait"></span> Loading, please wait</a></li>');
-            buttons.push('</ul>');
-
-            $(buttons.join("")).insertAfter($(".buttons-container.form-footer .buttons input:first"));
-
-            $.ajax(contextPath + "/rest/jira-openid-authentication/1.0/openIdProviders/login").done(function (data) {
-                var $providers = $("#openid-providers ul");
-
-                $providers.find("li a.loading").remove();
-
-                if ($.isArray(data) && data.length > 0) {
-                    var openIds = [];
-
-                    $(data).each(function (idx, obj) {
-                        var authenticationUrl = contextPath + '/plugins/servlet/openid-login?pid=' + obj.id;
-                        var returnUrl = getParameterByName("os_destination", window.location.href);
-                        if (returnUrl) {
-                            authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);
-                        }
-
-                        openIds.push(
-                            '<li><a id="openid-' + obj.id + '" class="openid" href="'
-                            + authenticationUrl + '">' + obj.name + '</a></li>');
-                    });
-                    $providers.append(openIds.join(""));
-                    $providers.find("li a").click(function () {
-                        $("#login-form").removeDirtyWarning();
-                    });
-                } else {
-                    $providers.append("<li><a href='#'>All OpenID providers were disabled</a></li>");
-                }
-            });
-        }
-
     });

@@ -4,7 +4,6 @@ import com.atlassian.plugin.spring.scanner.annotation.component.ConfluenceCompon
 import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
 import org.springframework.stereotype.Service;
 
-@Service
 @ConfluenceComponent
 public class ConfluenceExternalUserManagementService implements ExternalUserManagementService{
     @Override

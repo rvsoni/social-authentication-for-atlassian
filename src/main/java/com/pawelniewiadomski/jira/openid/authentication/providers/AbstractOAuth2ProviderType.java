@@ -12,8 +12,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.defaultString;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public abstract class AbstractOAuth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     public AbstractOAuth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {

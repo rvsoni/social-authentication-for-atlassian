@@ -11,7 +11,7 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class OpenIdProviderType extends AbstractProviderType {
 

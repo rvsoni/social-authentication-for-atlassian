@@ -30,7 +30,6 @@ import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang.StringUtils.*;
 
 @Slf4j
-@Service
 @ConfluenceComponent
 @AllArgsConstructor
 public class ConfluenceAuthenticationService implements AuthenticationService
