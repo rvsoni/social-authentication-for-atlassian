@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.sal.api.message.I18nResolver;
-import com.pawelniewiadomski.jira.openid.authentication.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;

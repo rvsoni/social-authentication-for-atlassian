@@ -9,6 +9,8 @@
     {param windowTitle: 'OpenID Failed'/}
     {param headContent}
         <meta name="decorator" content="atl.general"/>
+        <parameter name="show-main-container" value="false"/>
+        <parameter name="bodyClass" value="openid error aui-page-focused"/>
     {/param}
     {param extraClasses: 'openid error'/}
     {param pageType: 'focused'/}
@@ -18,7 +20,11 @@
             {param content}
                 {call aui.page.pageHeaderMain}
                     {param content}
-                        <h1>OpenID Failed</h1>
+                        <div id="title-heading" class="pagetitle">
+                            <h1 id="title-text">
+                                OpenID Failed
+                            </h1>
+                        </div>
                     {/param}
                 {/call}
             {/param}

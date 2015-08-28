@@ -63,7 +63,7 @@ define('openid/emptyView', ['openid/marionette'], function (Marionette) {
 define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openid/providerView', 'openid/emptyView', 'underscore'],
     function (Marionette, ProvidersModel, ProviderView, EmptyView, _) {
         return Marionette.CompositeView.extend({
-            el: '#openid',
+            el: '#openid-login',
             childView: ProviderView,
             childViewContainer: '.providers',
             emptyView: EmptyView,
@@ -95,7 +95,7 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
         }
 
         var $attachLocation = isJIRA ? $loginForm : $('.login-section');
-        $attachLocation.append('<div id="openid"></div>');
+        $attachLocation.append('<div id="openid-login"></div>');
         var providers = new ProvidersModel();
         var login = new LoginView({collection: providers});
         providers.fetch({

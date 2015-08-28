@@ -7,13 +7,14 @@ import com.atlassian.fugue.Pair;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
+import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +52,7 @@ public class OAuthCallbackServlet extends HttpServlet
 
     final ProviderTypeFactory providerTypeFactory;
 
-    final AbstractOpenIdServlet abstractOpenIdServlet;
+    final ServletUtils servletUtils;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

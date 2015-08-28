@@ -1,9 +1,10 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.upm.api.license.entity.PluginLicense;
 import com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginUnresolvedException;
 import com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManager;
 import com.google.common.collect.Iterables;
+import com.pawelniewiadomski.jira.openid.authentication.services.SpringContext;
 import org.springframework.stereotype.Component;
 
 /**

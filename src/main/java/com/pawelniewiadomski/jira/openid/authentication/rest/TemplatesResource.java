@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
-import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

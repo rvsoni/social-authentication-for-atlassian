@@ -11,11 +11,10 @@ import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProv
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
+import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static com.atlassian.user.security.password.Credential.unencrypted;
-import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
+import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang.StringUtils.*;

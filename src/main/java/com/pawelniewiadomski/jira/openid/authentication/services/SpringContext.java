@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.jira.openid.authentication.services;
 
 /**
  * TODO: Document this class / interface here

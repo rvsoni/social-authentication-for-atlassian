@@ -5,7 +5,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 
-import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
+import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 
 public class OpenIdConnectReturnToHelper
 {

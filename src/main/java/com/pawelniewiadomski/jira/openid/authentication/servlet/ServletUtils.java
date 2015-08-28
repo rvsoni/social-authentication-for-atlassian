@@ -1,10 +1,8 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
-import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
-import com.atlassian.sal.api.component.ComponentLocator;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
 import lombok.AllArgsConstructor;
@@ -17,7 +15,7 @@ import java.net.URI;
 
 @Service
 @AllArgsConstructor
-public final class AbstractOpenIdServlet {
+public final class ServletUtils {
 
     @ComponentImport
     final ApplicationProperties applicationProperties;

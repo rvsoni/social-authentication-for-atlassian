@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.servlet;
+package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.pawelniewiadomski.jira.openid.authentication.servlet.BaseUrlHelper.getBaseUrl;
+import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachingUtils.setNoCacheHeaders;
 
 @Service

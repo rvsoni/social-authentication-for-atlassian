@@ -1,12 +1,9 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
-import com.pawelniewiadomski.jira.openid.authentication.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationHandler;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
-import com.pawelniewiadomski.jira.openid.authentication.services.OAuthAuthenticationHandler;
-import com.pawelniewiadomski.jira.openid.authentication.services.OpenIdAuthenticationHandler;
+import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

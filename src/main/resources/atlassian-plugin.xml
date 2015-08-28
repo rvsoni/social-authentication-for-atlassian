@@ -159,7 +159,7 @@
               weight="70">
         <label key="openid.menu"/>
         <link linkId="openid">/openid/configuration</link>
-        <condition class="com.pawelniewiadomski.jira.openid.authentication.UserIsSysAdminCondition"/>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.conditions.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>
 
@@ -167,7 +167,7 @@
               weight="70">
         <label key="openid.menu"/>
         <link linkId="openid">/openid/configuration</link>
-        <condition class="com.pawelniewiadomski.jira.openid.authentication.UserIsSysAdminCondition"/>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.conditions.UserIsSysAdminCondition"/>
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>
 

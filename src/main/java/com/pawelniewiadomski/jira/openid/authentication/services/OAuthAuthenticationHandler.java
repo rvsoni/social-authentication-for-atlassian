@@ -4,7 +4,6 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.servlet.TemplateHelper;
 import lombok.AllArgsConstructor;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.springframework.stereotype.Service;

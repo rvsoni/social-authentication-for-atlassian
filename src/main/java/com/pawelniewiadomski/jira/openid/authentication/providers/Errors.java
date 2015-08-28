@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

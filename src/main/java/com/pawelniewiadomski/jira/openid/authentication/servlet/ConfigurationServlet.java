@@ -1,6 +1,5 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
-import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.json.marshal.Jsonable;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;
@@ -8,10 +7,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.atlassian.webresource.api.assembler.WebResourceAssembler;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
-import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
-import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
-import com.pawelniewiadomski.jira.openid.authentication.services.PublicModeService;
+import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -35,7 +31,7 @@ public class ConfigurationServlet extends HttpServlet {
 
     final ProviderTypeFactory providerTypeFactory;
 
-    final AbstractOpenIdServlet abstractOpenIdServlet;
+    final ServletUtils servletUtils;
 
     final ApplicationProperties applicationProperties;
 
@@ -64,9 +60,9 @@ public class ConfigurationServlet extends HttpServlet {
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         if (userManager.getRemoteUsername() == null) {
-            abstractOpenIdServlet.redirectToLogin(req, resp);
+            servletUtils.redirectToLogin(req, resp);
             return true;
-        } else if (!abstractOpenIdServlet.hasAdminPermission()) {
+        } else if (!servletUtils.hasAdminPermission()) {
             throw new UnsupportedOperationException("you don't have permission");
         }
         return false;

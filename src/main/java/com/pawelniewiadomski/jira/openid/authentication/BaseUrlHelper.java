@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.servlet;
+package com.pawelniewiadomski.jira.openid.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
