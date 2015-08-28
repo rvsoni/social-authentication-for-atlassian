@@ -435,7 +435,7 @@
         <oracle.jdbc.version>11.2.0.2.0</oracle.jdbc.version>
         <xvfb.enable>true</xvfb.enable>
         <confluence.version>5.8.9</confluence.version>
-        <atlassian.spring.scanner.version>1.2.9</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>1.2.11</atlassian.spring.scanner.version>
     </properties>
     <profiles>
         <profile>

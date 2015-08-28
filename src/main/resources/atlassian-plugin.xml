@@ -11,7 +11,7 @@
         <param name="plugin-banner">assets/images/banner.png</param>
 
         <param name="atlassian-licensing-enabled">true</param>
-	    <param name="atlassian-data-center-compatible">true</param>
+        <param name="atlassian-data-center-compatible">true</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
@@ -28,11 +28,16 @@
         <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
 
         <resource type="download" name="openid.js" location="views/openid.soy"/>
-        <resource type="download" name="openid-configuration-container.js" location="views/openid/configuration/container.soy"/>
-        <resource type="download" name="openid-configuration-providers.js" location="views/openid/configuration/providers.soy"/>
-        <resource type="download" name="openid-configuration-create-provider.js" location="views/openid/configuration/create-provider.soy"/>
-        <resource type="download" name="openid-configuration-edit-provider.js" location="views/openid/configuration/edit-provider.soy"/>
-        <resource type="download" name="openid-configuration-delete-provider.js" location="views/openid/configuration/delete-provider.soy"/>
+        <resource type="download" name="openid-configuration-container.js"
+                  location="views/openid/configuration/container.soy"/>
+        <resource type="download" name="openid-configuration-providers.js"
+                  location="views/openid/configuration/providers.soy"/>
+        <resource type="download" name="openid-configuration-create-provider.js"
+                  location="views/openid/configuration/create-provider.soy"/>
+        <resource type="download" name="openid-configuration-edit-provider.js"
+                  location="views/openid/configuration/edit-provider.soy"/>
+        <resource type="download" name="openid-configuration-delete-provider.js"
+                  location="views/openid/configuration/delete-provider.soy"/>
     </web-resource>
 
     <!-- add our web resources -->
@@ -71,8 +76,10 @@
 
         <resource type="download" name="webjars/" location="META-INF/resources/webjars"/>
 
-        <resource type="download" name="webjars/angularjs/angular.min.js" location="META-INF/resources/webjars/angularjs/1.3.0/angular.min.js"/>
-        <resource type="download" name="webjars/angularjs/angular-route.min.js" location="META-INF/resources/webjars/angularjs/1.3.0/angular-route.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular.min.js"
+                  location="META-INF/resources/webjars/angularjs/1.3.0/angular.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular-route.min.js"
+                  location="META-INF/resources/webjars/angularjs/1.3.0/angular-route.min.js"/>
 
         <resource type="download" name="jira-openid-configuration.css" location="assets/configuration/openid.less"/>
         <resource type="download" name="configuration.js" location="assets/configuration/configuration.js"/>
@@ -120,6 +127,19 @@
         <description key="license-servlet.description">The License Servlet Plugin</description>
         <url-pattern>/openid-authentication-license</url-pattern>
     </servlet>
+
+    <!-- Confluence -->
+    <component key="confluenceAuthenticationService"
+               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluenceAuthenticationService"
+               application="confluence"/>
+
+    <component key="confluenceExternalUserManagementService"
+               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluenceExternalUserManagementService"
+               application="confluence"/>
+
+    <component key="confluencePublicModeService"
+               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluencePublicModeService"
+               application="confluence"/>
 
     <!-- Active Objects -->
     <ao key="openid-active-objects">

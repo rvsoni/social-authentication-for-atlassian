@@ -13,11 +13,20 @@
     {param extraClasses: 'openid error'/}
     {param pageType: 'focused'/}
     {param content}
+        {call aui.page.pageHeader}
+            {param id}main-header{/param}
+            {param content}
+                {call aui.page.pageHeaderMain}
+                    {param content}
+                        <h1>OpenID Failed</h1>
+                    {/param}
+                {/call}
+            {/param}
+        {/call}
         {call aui.page.pagePanel}
             {param content}
                 {call aui.page.pagePanelContent}
                     {param content}
-                        <h2>OpenID Failed</h2>
                         <div class="error-message">
                             {$content|noAutoescape}
                         </div>
