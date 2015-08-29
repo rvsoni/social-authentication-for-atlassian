@@ -1,4 +1,4 @@
-package it.jira;
+package it.common;
 
 import com.google.common.base.Preconditions;
 import org.codehaus.jackson.map.ObjectMapper;

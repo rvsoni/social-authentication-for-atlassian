@@ -80,16 +80,9 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>10.0.1</version>
+            <version>11.0.2</version>
             <scope>provided</scope>
         </dependency>
-        <!-- WIRED TEST RUNNER DEPENDENCIES -->
-        <!--dependency>
-            <groupId>com.atlassian.plugins</groupId>
-            <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
-            <version>${plugin.testrunner.version}</version>
-            <scope>test</scope>
-        </dependency-->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
@@ -281,6 +274,24 @@
             <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.confluence</groupId>
+            <artifactId>confluence-test-support</artifactId>
+            <version>${confluence.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.confluence</groupId>
+            <artifactId>confluence-webdriver-support</artifactId>
+            <version>${confluence.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>1.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -344,6 +355,7 @@
                         <product>
                             <id>confluence</id>
                             <version>${confluence.version}</version>
+                            <httpPort>8080</httpPort>
                             <bundledArtifacts>
                                 <bundledArtifact>
                                     <groupId>com.atlassian.upm</groupId>
@@ -427,7 +439,7 @@
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>
         <upm.license.compatibility.version>2.4.1</upm.license.compatibility.version>
-        <sal.api.version>2.4.0</sal.api.version>
+        <sal.api.version>2.13.4</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
         <ao.version>0.19.7</ao.version>
         <rest.version>2.7.1</rest.version>

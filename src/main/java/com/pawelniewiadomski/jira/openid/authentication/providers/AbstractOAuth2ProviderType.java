@@ -9,6 +9,7 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.defaultString;
@@ -47,12 +48,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
     }
 
     @Override
-    public Either<Errors, Map<String, Object>> validateCreate(ProviderBean providerBean) {
-        return validateUpdate(null, providerBean);
-    }
-
-    @Override
-    public Either<Errors, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
+    public Either<Errors, Map<String, Object>> validateCreateOrUpdate(@Nullable OpenIdProvider provider, ProviderBean providerBean) {
         Errors errors = new Errors();
 
         validateName(provider, getCreatedProviderName(), errors);
@@ -67,15 +63,15 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
         if (errors.hasAnyErrors()) {
             return Either.left(errors);
         } else {
-            return Either.right(ImmutableMap.<String, Object>builder()
-                    .put(OpenIdProvider.NAME, getCreatedProviderName())
-                    .put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl())
-                    .put(OpenIdProvider.CALLBACK_ID, getCallbackId()) // changing the id will break all existing urls
-                    .put(OpenIdProvider.ALLOWED_DOMAINS, defaultString(providerBean.getAllowedDomains()))
-                    .put(OpenIdProvider.PROVIDER_TYPE, getId())
-                    .put(OpenIdProvider.CLIENT_ID, providerBean.getClientId())
-                    .put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret())
-                    .build());
+            final Map<String, Object> map = new HashMap<>();
+            map.put(OpenIdProvider.NAME, getCreatedProviderName());
+            map.put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl());
+            map.put(OpenIdProvider.CALLBACK_ID, getCallbackId()); // changing the id will break all existing urls
+            map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
+            map.put(OpenIdProvider.PROVIDER_TYPE, getId());
+            map.put(OpenIdProvider.CLIENT_ID, providerBean.getClientId());
+            map.put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret());
+            return Either.right(map);
         }
     }
 }

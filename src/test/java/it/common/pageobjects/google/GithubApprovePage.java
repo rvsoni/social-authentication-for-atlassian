@@ -1,12 +1,12 @@
-package it.jira.pageobjects.google;
+package it.common.pageobjects.google;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraPage;
 import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class FacebookApprovePage extends AbstractJiraPage {
-    @ElementBy(name = "__CONFIRM__")
+public class GithubApprovePage extends AbstractJiraPage {
+    @ElementBy(name = "authorize")
     PageElement approveButton;
 
     @Override

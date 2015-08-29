@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +27,7 @@ public class OpenIdDao {
         if (providers != null && providers.length > 0) {
             return Arrays.asList(providers);
         }
-	  	return Collections.emptyList();
+        return Collections.emptyList();
     }
 
     @Nonnull
@@ -38,7 +35,7 @@ public class OpenIdDao {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
                 Query.select().order(String.format("%s DESC, %s DESC", OpenIdProvider.ORDERING, OpenIdProvider.NAME)).limit(1));
         if (providers != null && providers.length > 0) {
-            return providers[providers.length-1].getOrdering() + 1;
+            return providers[providers.length - 1].getOrdering() + 1;
         }
         return 1;
     }
@@ -46,7 +43,7 @@ public class OpenIdDao {
     @Nullable
     public OpenIdProvider findByName(@Nonnull String name) throws SQLException {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
-				Query.select().where(String.format("%s = ?", OpenIdProvider.NAME), name));
+                Query.select().where(String.format("%s = ?", OpenIdProvider.NAME), name));
         if (providers != null && providers.length > 0) {
             return providers[0];
         }
@@ -67,11 +64,11 @@ public class OpenIdDao {
         return activeObjects.executeInTransaction(new TransactionCallback<OpenIdProvider>() {
             @Override
             public OpenIdProvider doInTransaction() {
-                return activeObjects.create(OpenIdProvider.class,
-                        ImmutableMap.<String, Object>builder()
-                                .putAll(params)
-                                .put(OpenIdProvider.ORDERING, OpenIdDao.this.getNextOrdering())
-                                .put(OpenIdProvider.ENABLED, true).build());
+                Map<String, Object> map = new HashMap<>();
+                map.putAll(params);
+                map.put(OpenIdProvider.ORDERING, OpenIdDao.this.getNextOrdering());
+                map.put(OpenIdProvider.ENABLED, true);
+                return activeObjects.create(OpenIdProvider.class, map);
             }
         });
     }

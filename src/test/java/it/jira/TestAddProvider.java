@@ -2,6 +2,7 @@ package it.jira;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.pageobjects.elements.query.Poller;
+import it.common.AddProviderAssertions;
 import it.jira.pageobjects.AddProviderPage;
 import it.jira.pageobjects.ConfigurationPage;
 import it.jira.pageobjects.EditProviderPage;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertThat;
 public class TestAddProvider extends BaseJiraWebTest {
 
     private AddProviderPage addPage;
+    private AddProviderAssertions addProviderAssertions;
 
     @Before
     public void setUp() {
@@ -27,58 +29,16 @@ public class TestAddProvider extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         addPage = jira.visit(AddProviderPage.class);
+        addProviderAssertions = new AddProviderAssertions(addPage);
     }
 
     @Test
     public void testAddOAuthErrors() {
-        addPage.setProviderType("OpenID Connect/OAuth 2.0");
-
-        waitUntil(addPage.getCallbackUrl(), startsWith("http://localhost"));
-
-        assertThat(addPage.getFormError("name"), hasErrorMessage("Please provide the name."));
-        assertThat(addPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));
-        assertThat(addPage.getFormError("clientId"), hasErrorMessage("Please provide the client ID."));
-        assertThat(addPage.getFormError("clientSecret"), hasErrorMessage("Please provide the client secret."));
-
-        addPage.setEndpointUrl("https://accounts.google.com");
-
-        waitUntil(addPage.getFormErrors(), IsIterableWithSize.<AddProviderPage.AuiErrorMessage>iterableWithSize(3));
-        assertThat(addPage.getFormError("name"), hasErrorMessage("Please provide the name."));
-        assertThat(addPage.getFormError("clientId"), hasErrorMessage("Please provide the client ID."));
-        assertThat(addPage.getFormError("clientSecret"), hasErrorMessage("Please provide the client secret."));
-
-        addPage.setEndpointUrl("https://wp.pl");
-        addPage.setName("Testing").setClientId("XXX").setClientSecret("XXX");
-
-        addPage = addPage.saveWithErrors();
-        Poller.waitUntilTrue(addPage.hasErrors());
-        waitUntil(addPage.getFormErrors(), IsIterableWithSize.<AddProviderPage.AuiErrorMessage>iterableWithSize(1));
-        assertThat(addPage.getFormError("endpointUrl"), hasErrorMessage("OpenId Connect discovery document at https://wp.pl/.well-known/openid-configuration is invalid or missing."));
+        addProviderAssertions.testAddOAuthErrors();
     }
 
     @Test
     public void testAddAndEdit() {
-        final String name = "Testing";
-        final String endpointUrl = "http://asdkasjdkald.pl";
-
-        addPage.setProviderType("OpenID 1.0");
-        addPage.setName(name);
-        addPage.setEndpointUrl(endpointUrl);
-
-        waitUntil(addPage.getExtensionNamespace(), equalTo("ext1"));
-
-        ConfigurationPage configurationPage = addPage.save();
-
-        EditProviderPage editPage = configurationPage.editProvider("Testing");
-        waitUntilFalse(editPage.isSelectProviderTypeVisible());
-        waitUntil(editPage.getName(), equalTo(name));
-        waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
-
-        editPage.setName("");
-        editPage.setEndpointUrl("");
-
-        Poller.waitUntilTrue(editPage.hasErrors());
-        assertThat(editPage.getFormError("name"), hasErrorMessage("Please provide the name."));
-        assertThat(editPage.getFormError("endpointUrl"), hasErrorMessage("Please provide the provider URL."));
+        addProviderAssertions.testAddAndEdit();
     }
 }

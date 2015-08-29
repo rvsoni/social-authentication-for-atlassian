@@ -32,7 +32,7 @@ public class ProviderValidator {
     public Either<Errors, OpenIdProvider> validateCreate(ProviderBean providerBean) {
         final ProviderType providerType = providerTypeFactory.getProviderTypeById(providerBean.getProviderType());
 
-        final Either<Errors, Map<String, Object>> errorsOrProvider = providerType.validateCreate(providerBean);
+        final Either<Errors, Map<String, Object>> errorsOrProvider = providerType.validateCreateOrUpdate(null, providerBean);
         if (errorsOrProvider.isLeft()) {
             return Either.left(errorsOrProvider.left().get());
         } else {
@@ -48,7 +48,7 @@ public class ProviderValidator {
     public Either<Errors, OpenIdProvider> validateUpdate(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean) throws InvocationTargetException, IllegalAccessException {
         final ProviderType providerType = providerTypeFactory.getProviderTypeById(providerBean.getProviderType());
 
-        final Either<Errors, Map<String, Object>> errorsOrProvider = providerType.validateUpdate(provider, providerBean);
+        final Either<Errors, Map<String, Object>> errorsOrProvider = providerType.validateCreateOrUpdate(provider, providerBean);
         if (errorsOrProvider.isLeft()) {
             return Either.left(errorsOrProvider.left().get());
         } else {

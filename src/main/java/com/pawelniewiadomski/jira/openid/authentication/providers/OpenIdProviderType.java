@@ -2,12 +2,13 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.fugue.Either;
 import com.atlassian.sal.api.message.I18nResolver;
-import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -41,12 +42,7 @@ public class OpenIdProviderType extends AbstractProviderType {
     }
 
     @Override
-    public Either<Errors, Map<String, Object>> validateCreate(ProviderBean providerBean) {
-        return validateUpdate(null, providerBean);
-    }
-
-    @Override
-    public Either<Errors, Map<String, Object>> validateUpdate(OpenIdProvider provider, ProviderBean providerBean) {
+    public Either<Errors, Map<String, Object>> validateCreateOrUpdate(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean) {
         Errors errors = new Errors();
 
         validateName(provider, providerBean, errors);
@@ -62,12 +58,13 @@ public class OpenIdProviderType extends AbstractProviderType {
         if (errors.hasAnyErrors()) {
             return Either.left(errors);
         } else {
-            return Either.right(ImmutableMap.<String, Object>builder()
-                    .put(OpenIdProvider.NAME, providerBean.getName())
-                    .put(OpenIdProvider.ENDPOINT_URL, providerBean.getEndpointUrl())
-                    .put(OpenIdProvider.PROVIDER_TYPE, "openid1")
-                    .put(OpenIdProvider.EXTENSION_NAMESPACE, providerBean.getExtensionNamespace())
-                    .put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains()).build());
+            Map<String, Object> map = new HashMap<>();
+            map.put(OpenIdProvider.NAME, providerBean.getName());
+            map.put(OpenIdProvider.ENDPOINT_URL, providerBean.getEndpointUrl());
+            map.put(OpenIdProvider.PROVIDER_TYPE, "openid1");
+            map.put(OpenIdProvider.EXTENSION_NAMESPACE, providerBean.getExtensionNamespace());
+            map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
+            return Either.right(map);
         }
     }
 

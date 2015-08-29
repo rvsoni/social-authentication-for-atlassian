@@ -21,11 +21,11 @@ public abstract class AbstractProviderType implements ProviderType {
         this.openIdDao = openIdDao;
     }
 
-    protected void validateName(@Nonnull OpenIdProvider provider, @Nonnull ProviderBean providerBean, @Nonnull Errors errors) {
+    protected void validateName(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean, @Nonnull Errors errors) {
         validateName(provider, providerBean.getName(), errors);
     }
 
-    protected void validateName(@Nonnull OpenIdProvider provider, @Nullable String name, @Nonnull Errors errors) {
+    protected void validateName(@Nullable OpenIdProvider provider, @Nullable String name, @Nonnull Errors errors) {
         if (isEmpty(name)) {
             errors.addError("name", i18nResolver.getText("configuration.name.empty"));
         } else {
