@@ -1,10 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.services.confluence;
 
 import com.atlassian.confluence.user.ConfluenceUser;
+import com.atlassian.confluence.user.ConfluenceUserImpl;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.component.ConfluenceComponent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
+import com.atlassian.user.User;
 import com.atlassian.user.impl.DefaultUser;
 import com.atlassian.user.search.SearchResult;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -66,7 +68,7 @@ public class ConfluenceAuthenticationService implements AuthenticationService
             }
         }
 
-        ConfluenceUser user;
+        ConfluenceUser user = null;
         final SearchResult usersByEmail = userAccessor.getUsersByEmail(StringUtils.stripToEmpty(email).toLowerCase());
 
         if (usersByEmail.pager().isEmpty()
@@ -81,8 +83,9 @@ public class ConfluenceAuthenticationService implements AuthenticationService
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             }
-        } else {
-            user = (ConfluenceUser) usersByEmail.pager().iterator().next();
+        } else if (!usersByEmail.pager().isEmpty()) {
+            User crowdUser = (User) usersByEmail.pager().iterator().next();
+            user = userAccessor.getUserByName(crowdUser.getName());
         }
 
         if (user != null) {

@@ -83,7 +83,7 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
         final GitHubTokenResponse token = oAuthClient.accessToken(oAuthRequest, GitHubTokenResponse.class);
         final String accessToken = token.getAccessToken();
 
-        final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me")
+        final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me?fields=email,name")
                 .setAccessToken(accessToken)
                 .buildQueryMessage();
 
