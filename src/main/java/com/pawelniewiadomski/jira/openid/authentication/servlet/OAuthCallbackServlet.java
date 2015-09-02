@@ -4,11 +4,10 @@ package com.pawelniewiadomski.jira.openid.authentication.servlet;
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.collect.ImmutableMap;
-import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
@@ -40,9 +39,6 @@ public class OAuthCallbackServlet extends HttpServlet
 
     @ComponentImport
     final CrowdService crowdService;
-
-    @ComponentImport
-    final UserUtil userUtil;
 
     final AuthenticationService authenticationService;
 

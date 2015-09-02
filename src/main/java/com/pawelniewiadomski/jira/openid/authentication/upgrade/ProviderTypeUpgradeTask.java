@@ -11,7 +11,6 @@ import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

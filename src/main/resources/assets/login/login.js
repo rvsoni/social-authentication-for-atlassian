@@ -1,4 +1,4 @@
-define('openid/product', ['jquery'], function($) {
+define('openid/product', ['jquery'], function ($) {
     var appName = $('meta[name=application-name]').data('name');
     if (appName) {
         return {name: appName};
@@ -40,10 +40,10 @@ define('openid/providerView', ['openid/marionette', 'underscore', 'ajs'], functi
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/plugins/servlet/openid-login?pid=' + providerId;
+            var authenticationUrl = AJS.contextPath() + '/openid/login/' + providerId;
             var returnUrl = this.getParameterByName("os_destination", window.location.href);
             if (returnUrl) {
-                authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);
+                authenticationUrl += "?returnUrl=" + encodeURIComponent(returnUrl);
             }
             return authenticationUrl;
         }
@@ -78,27 +78,28 @@ define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openi
 
 require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'underscore'],
     function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
-        console.log('OpenID booting up...');
+        $(document).ready(function () {
+            console.log('OpenID booting up...');
 
-        var isJIRA = Product.name === 'jira';
-        var loginFormSelector = isJIRA ? "#login-form" : "form.login-form-container";
-        var $loginForm = $(loginFormSelector);
-        if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1)
-        {
-            console.log('Login form has no action or that is WebSudo');
-            return;
-        }
+            var isJIRA = Product.name === 'jira';
+            var loginFormSelector = isJIRA ? "#login-form" : "form.login-form-container";
+            var $loginForm = $(loginFormSelector);
+            if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
+                console.log('Login form has no action or that is WebSudo');
+                return;
+            }
 
-        if (_.isFunction($loginForm.removeDirtyWarning)) {
-            console.log('Disabling dirty warning');
-            $loginForm.removeDirtyWarning();
-        }
+            if (_.isFunction($loginForm.removeDirtyWarning)) {
+                console.log('Disabling dirty warning');
+                $loginForm.removeDirtyWarning();
+            }
 
-        var $attachLocation = isJIRA ? $loginForm : $('.login-section');
-        $attachLocation.append('<div id="openid-login"></div>');
-        var providers = new ProvidersModel();
-        var login = new LoginView({collection: providers});
-        providers.fetch({
-            success: login.render
+            var $attachLocation = isJIRA ? $loginForm : $('.login-section');
+            $attachLocation.append('<div id="openid-login"></div>');
+            var providers = new ProvidersModel();
+            var login = new LoginView({collection: providers});
+            providers.fetch({
+                success: login.render
+            });
         });
     });

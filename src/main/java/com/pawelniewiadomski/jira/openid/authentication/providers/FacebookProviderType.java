@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class FacebookProviderType extends AbstractOAuth2ProviderType {
 
@@ -89,6 +90,11 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
 
-        return Either.left(Pair.pair((String) userInfo.get("name"), (String) userInfo.get("email")));
+        final String email = (String) userInfo.get("email");
+        if (isEmpty(email)) {
+            return Either.right("You need to make your JIRA Facebook app available to the general public in Status and Review section of FB Developers.");
+        }
+
+        return Either.left(Pair.pair((String) userInfo.get("name"), email));
     }
 }

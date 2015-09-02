@@ -12,11 +12,10 @@ import it.common.ItEnvironment;
 import it.common.pageobjects.google.FacebookApprovePage;
 import it.common.pageobjects.google.FacebookLoginPage;
 import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.OpenIdLoginPage;
+import it.jira.pageobjects.JiraLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -52,9 +51,9 @@ public class TestFacebookAuthentication extends BaseJiraWebTest {
     @Test
     @LoginAs(anonymous = true)
     public void testLogInWorks() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        OpenIdLoginPage loginPage = jira.visit(OpenIdLoginPage.class);
+        JiraLoginPage loginPage = jira.visit(JiraLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
-        loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
+        loginPage.startAuthenticationDanceFor("Facebook");
 
         loginDance((String) getProperty(passwords, "facebook.user"), (String) getProperty(passwords, "facebook.password"));
 
@@ -84,9 +83,9 @@ public class TestFacebookAuthentication extends BaseJiraWebTest {
     public void testLogInRedirectsToReturnUrl() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         jira.getTester().getDriver().navigate().to(jira.getProductInstance().getBaseUrl()
                 + "/login.jsp?os_destination=%2Fsecure%2FViewProfile.jspa");
-        OpenIdLoginPage loginPage = jira.getPageBinder().bind(OpenIdLoginPage.class);
+        JiraLoginPage loginPage = jira.getPageBinder().bind(JiraLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
-        loginPage.getOpenIdProviders().openAndClick(By.id("openid-1"));
+        loginPage.startAuthenticationDanceFor("Facebook");
 
         loginDance((String) getProperty(passwords, "facebook.user"), (String) getProperty(passwords, "facebook.password"));
 

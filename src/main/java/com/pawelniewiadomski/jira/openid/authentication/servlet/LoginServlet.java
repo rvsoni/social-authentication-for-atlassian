@@ -1,7 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.servlet;
 
-import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
@@ -51,7 +51,8 @@ public class LoginServlet extends HttpServlet {
 
         try {
             if (provider != null) {
-                final AuthenticationHandler authenticationHandler = OpenIdProvider.OPENID_TYPE.equals(provider.getProviderType()) ? openIdAuthenticationHandler : oAuthAuthenticationHandler;
+                final AuthenticationHandler authenticationHandler = OpenIdProvider.OPENID_TYPE.equals(provider.getProviderType())
+                        ? openIdAuthenticationHandler : oAuthAuthenticationHandler;
                 if (authenticationHandler.doAuthenticationDance(provider, request, response)) {
                     return;
                 }

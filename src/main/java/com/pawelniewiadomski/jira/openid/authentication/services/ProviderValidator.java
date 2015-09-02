@@ -2,8 +2,8 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 
 import com.atlassian.fugue.Either;
 import com.atlassian.sal.api.message.I18nResolver;
-import com.pawelniewiadomski.jira.openid.authentication.providers.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
+import com.pawelniewiadomski.jira.openid.authentication.providers.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;

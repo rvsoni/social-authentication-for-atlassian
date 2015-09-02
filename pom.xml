@@ -435,7 +435,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.4.10</jira.version>
         <amps.version>5.1.11</amps.version>
-        <prettyurls.version>1.8</prettyurls.version>
+        <prettyurls.version>1.11.0</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>
         <upm.license.compatibility.version>2.4.1</upm.license.compatibility.version>

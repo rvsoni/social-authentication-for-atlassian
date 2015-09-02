@@ -128,6 +128,11 @@
         <url-pattern>/openid-authentication-license</url-pattern>
     </servlet>
 
+    <component key="tx-processor" name="Transactional Annotation Processor"
+               class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+        <decription>Processes @Transactional annotations.</decription>
+    </component>
+
     <!-- Confluence -->
     <component key="confluenceAuthenticationService"
                class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluenceAuthenticationService"
@@ -149,6 +154,7 @@
     <!-- Pretty links -->
     <routing key="routes" path="/openid">
         <route from="/configuration" to="/plugins/servlet/openid-configuration"/>
+        <route from="/login/{pid}" to="/plugins/servlet/openid-login?pid={pid}"/>
         <route from="/oauth2-callback/{cid}" to="/plugins/servlet/oauth2-callback?cid={cid}"/>
     </routing>
 
