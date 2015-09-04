@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.services.confluence;
 
 import com.atlassian.confluence.user.ConfluenceUser;
-import com.atlassian.confluence.user.ConfluenceUserImpl;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.component.ConfluenceComponent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -78,6 +77,7 @@ public class ConfluenceAuthenticationService implements AuthenticationService
                 user = userAccessor.createUser(
                         new DefaultUser(lowerCase(replaceChars(identity, " '()", "")), identity, email),
                         unencrypted(randomUUID().toString()));
+                userAccessor.addMembership(userAccessor.getNewUserDefaultGroupName(), user.getName());
             } catch (UnsupportedOperationException | IllegalArgumentException e) {
                 log.error(format("Cannot create an account for %s %s", identity, email), e);
                 templateHelper.render(request, response, "OpenId.Templates.error");
