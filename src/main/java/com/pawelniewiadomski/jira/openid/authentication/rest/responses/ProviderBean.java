@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest.responses;
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import lombok.Builder;
 import lombok.Data;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -10,6 +11,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@Builder
 public class ProviderBean {
     final int id;
 

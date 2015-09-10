@@ -1,11 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.services.confluence;
 
+import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.component.ConfluenceComponent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
-import com.atlassian.user.User;
+import com.atlassian.user.*;
 import com.atlassian.user.impl.DefaultUser;
 import com.atlassian.user.search.SearchResult;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -32,20 +33,24 @@ import static org.apache.commons.lang.StringUtils.*;
 @Slf4j
 @ConfluenceComponent
 @AllArgsConstructor
-public class ConfluenceAuthenticationService implements AuthenticationService
-{
+public class ConfluenceAuthenticationService implements AuthenticationService {
     final GlobalSettings globalSettings;
 
     final TemplateHelper templateHelper;
 
     @ComponentImport
+    final GroupManager groupManager;
+
+    @ComponentImport
     final UserAccessor userAccessor;
+
+    @ComponentImport
+    final SettingsManager settingsManager;
 
     final ExternalUserManagementService externalUserManagementService;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
-                            final OpenIdProvider provider, String identity, String email) throws IOException, ServletException
-    {
+                                   final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
         if (isBlank(email)) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
@@ -77,8 +82,11 @@ public class ConfluenceAuthenticationService implements AuthenticationService
                 user = userAccessor.createUser(
                         new DefaultUser(lowerCase(replaceChars(identity, " '()", "")), identity, email),
                         unencrypted(randomUUID().toString()));
-                userAccessor.addMembership(userAccessor.getNewUserDefaultGroupName(), user.getName());
-            } catch (UnsupportedOperationException | IllegalArgumentException e) {
+
+                final Group defaultGroup = groupManager
+                        .getGroup(settingsManager.getGlobalSettings().getDefaultUsersGroup());
+                groupManager.addMembership(defaultGroup, user);
+            } catch (UnsupportedOperationException | IllegalArgumentException | EntityException e) {
                 log.error(format("Cannot create an account for %s %s", identity, email), e);
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;

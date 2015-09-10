@@ -9,28 +9,36 @@ import com.sun.jersey.api.client.WebResource;
 
 import javax.annotation.Nonnull;
 
-public class LicenseControl extends RestApiClient {
+public class PluginsRestClient extends RestApiClient<PluginsRestClient> {
     private final String rootPath;
 
-    public LicenseControl(@Nonnull ProductInstance productInstance) {
+    public PluginsRestClient(@Nonnull ProductInstance productInstance) {
         super(new ProductInstanceBasedEnvironmentData(productInstance));
         this.rootPath = productInstance.getBaseUrl();
     }
 
-    protected final WebResource createResourceForPath(String restModulePath, String restModuleVersion) {
-        WebResource resource = this.resourceRoot(this.rootPath).path("rest").path(restModulePath).path(restModuleVersion);
+    protected final WebResource createResourcePath() {
+        WebResource resource = this.resourceRoot(this.rootPath).path("rest").path("plugins").path("1.0");
         return resource;
     }
 
-    protected final WebResource createResourceForPath(String restModulePath) {
-        return this.createResourceForPath(restModulePath, "1.0");
+    public boolean isPluginLicenseValid(String pluginKey) throws JSONException {
+        pluginKey = pluginKey + "-key";
+        JSONObject license = new JSONObject(this.createResourcePath().path(pluginKey).path("license").get(String.class));
+        return (Boolean) license.get("valid") == true;
+    }
+
+    public void setPluginLicenseIfInvalid(String pluginKey, String license) throws JSONException {
+        if (!isPluginLicenseValid(pluginKey)) {
+            setPluginLicense(pluginKey, license);
+        }
     }
 
     public void setPluginLicense(String pluginKey, String license) throws JSONException {
         pluginKey = pluginKey + "-key";
         JSONObject licenseDetails = new JSONObject();
         licenseDetails.put("rawLicense", license);
-        this.createResourceForPath("plugins").path(pluginKey + "/license")
+        this.createResourcePath().path(pluginKey).path("license")
                 .accept(new String[]{"application/vnd.atl.plugins+json"}).type("application/vnd.atl.plugins+json")
                 .put(licenseDetails.toString());
     }
