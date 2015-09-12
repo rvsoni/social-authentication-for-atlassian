@@ -5,7 +5,7 @@ import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class GithubApprovePage extends AbstractJiraPage {
+public class GitHubApprovePage extends AbstractJiraPage {
     @ElementBy(name = "authorize")
     PageElement approveButton;
 

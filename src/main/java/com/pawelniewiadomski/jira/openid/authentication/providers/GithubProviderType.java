@@ -24,9 +24,9 @@ import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 
-public class GithubProviderType extends AbstractOAuth2ProviderType {
+public class GitHubProviderType extends AbstractOAuth2ProviderType {
 
-    public GithubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    public GitHubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
         super(i18nResolver, openIdDao);
     }
 

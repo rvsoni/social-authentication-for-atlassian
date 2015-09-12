@@ -11,8 +11,8 @@ import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
 import it.jira.pageobjects.AddProviderPage;
 import it.jira.pageobjects.JiraLoginPage;
-import it.common.pageobjects.google.GithubApprovePage;
-import it.common.pageobjects.google.GithubLoginPage;
+import it.common.pageobjects.google.GitHubApprovePage;
+import it.common.pageobjects.google.GitHubLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,13 +66,13 @@ public class TestVkAuthentication extends BaseJiraWebTest {
         Preconditions.checkNotNull(email);
         Preconditions.checkNotNull(password);
 
-        GithubLoginPage loginPage = jira.getPageBinder().bind(GithubLoginPage.class);
+        GitHubLoginPage loginPage = jira.getPageBinder().bind(GitHubLoginPage.class);
 
         loginPage.setEmail(email);
         loginPage.setPassword(password);
 
         Poller.waitUntilTrue(loginPage.isSignInEnabled());
-        DelayedBinder<GithubApprovePage> approvePage = loginPage.signIn();
+        DelayedBinder<GitHubApprovePage> approvePage = loginPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }

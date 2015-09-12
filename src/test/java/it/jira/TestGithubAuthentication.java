@@ -9,8 +9,8 @@ import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
-import it.common.pageobjects.google.GithubApprovePage;
-import it.common.pageobjects.google.GithubLoginPage;
+import it.common.pageobjects.google.GitHubApprovePage;
+import it.common.pageobjects.google.GitHubLoginPage;
 import it.jira.pageobjects.AddProviderPage;
 import it.jira.pageobjects.JiraLoginPage;
 import org.junit.After;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 
-public class TestGithubAuthentication extends BaseJiraWebTest {
+public class TestGitHubAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -66,13 +66,13 @@ public class TestGithubAuthentication extends BaseJiraWebTest {
         Preconditions.checkNotNull(email);
         Preconditions.checkNotNull(password);
 
-        GithubLoginPage loginPage = jira.getPageBinder().bind(GithubLoginPage.class);
+        GitHubLoginPage loginPage = jira.getPageBinder().bind(GitHubLoginPage.class);
 
         loginPage.setEmail(email);
         loginPage.setPassword(password);
 
         Poller.waitUntilTrue(loginPage.isSignInEnabled());
-        DelayedBinder<GithubApprovePage> approvePage = loginPage.signIn();
+        DelayedBinder<GitHubApprovePage> approvePage = loginPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }

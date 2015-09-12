@@ -5,7 +5,7 @@ import com.atlassian.pageobjects.elements.ElementBy;
 import com.atlassian.pageobjects.elements.PageElement;
 import com.atlassian.pageobjects.elements.query.TimedCondition;
 
-public class GithubLoginPage extends AbstractJiraPage {
+public class GitHubLoginPage extends AbstractJiraPage {
     @ElementBy(id = "login_field")
     PageElement email;
 
@@ -29,13 +29,13 @@ public class GithubLoginPage extends AbstractJiraPage {
         return this.email.isVisible();
     }
 
-    public GithubLoginPage setEmail(String email) {
+    public GitHubLoginPage setEmail(String email) {
         this.email.clear();
         this.email.type(email);
         return this;
     }
 
-    public GithubLoginPage setPassword(String password) {
+    public GitHubLoginPage setPassword(String password) {
         this.password.clear();
         this.password.type(password);
         return this;
@@ -46,8 +46,8 @@ public class GithubLoginPage extends AbstractJiraPage {
         return signInButton.timed().isEnabled();
     }
 
-    public com.atlassian.pageobjects.DelayedBinder<GithubApprovePage> signIn() {
+    public com.atlassian.pageobjects.DelayedBinder<GitHubApprovePage> signIn() {
         this.signInButton.click();
-        return pageBinder.delayedBind(GithubApprovePage.class);
+        return pageBinder.delayedBind(GitHubApprovePage.class);
     }
 }

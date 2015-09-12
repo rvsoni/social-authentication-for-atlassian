@@ -29,7 +29,7 @@ public class EditProviderAssertions {
 
         ConfigurationPage configurationPage = addPage.save();
 
-        EditProviderPage editPage = configurationPage.editProvider("Testing");
+        EditProviderPage editPage = configurationPage.editProvider(name);
         waitUntil(editPage.getName(), equalTo(name));
         waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
 
@@ -54,7 +54,7 @@ public class EditProviderAssertions {
 
         ConfigurationPage configurationPage = addPage.save();
 
-        EditProviderPage editPage = configurationPage.editProvider("Testing");
+        EditProviderPage editPage = configurationPage.editProvider(name);
         waitUntil(editPage.getName(), equalTo(name));
         waitUntil(editPage.getEndpointUrl(), equalTo(endpointUrl));
 
