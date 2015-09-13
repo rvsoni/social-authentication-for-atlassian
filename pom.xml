@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>jira-openid-authentication-plugin</artifactId>
-    <version>2.5.4</version>
+    <version>2.5.5-SNAPSHOT</version>
     <organization>
         <name>Pawel Niewiadomski</name>
         <url>http://pawelniewiadomski.com/</url>
@@ -12,7 +12,7 @@
     <scm>
         <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</developerConnection>
-        <tag>jira-openid-authentication-plugin-2.5.4</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
