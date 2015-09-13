@@ -105,8 +105,8 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes',
-        function ($scope, $location, $http, restPath, baseUrl, errorHandler, providerTypes) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'providers', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes',
+        function ($scope, $location, $http, providers, restPath, baseUrl, errorHandler, providerTypes) {
 
         $scope.baseUrl = baseUrl;
         $scope.providerTypes = providerTypes;
@@ -133,6 +133,7 @@ angular.module("openid.configuration", ['ngRoute'])
             var newProvider = angular.extend({}, $scope.provider, {providerType: $scope.providerType.id});
             $http.post(restPath + '/providers', newProvider).success(function(response) {
                 if (response.errorMessages == undefined && response.errors == undefined) {
+                    providers.resetProviders();
                     $location.path('/');
                 } else {
                     $scope.errors = response.errors;
@@ -164,6 +165,7 @@ angular.module("openid.configuration", ['ngRoute'])
 
             $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function(response) {
                 if (response.errorMessages == undefined && response.errors == undefined) {
+                    providers.resetProviders();
                     $location.path('/');
                 } else {
                     $scope.errors = response.errors;
