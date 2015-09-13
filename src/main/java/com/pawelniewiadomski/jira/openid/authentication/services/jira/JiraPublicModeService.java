@@ -1,12 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication.services.jira;
 
+import com.atlassian.fugue.Option;
 import com.atlassian.jira.util.JiraUtils;
 import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.pawelniewiadomski.jira.openid.authentication.services.PublicModeService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 @JiraComponent
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class JiraPublicModeService implements PublicModeService {
     }
 
     @Override
-    public Optional<List<String>> getAllowedDomains() {
-        return Optional.empty();
+    public Option<List<String>> getAllowedDomains() {
+        return Option.none();
     }
 }

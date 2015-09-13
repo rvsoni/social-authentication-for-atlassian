@@ -9,6 +9,7 @@ import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
+import it.common.pageobjects.google.GooglePasswordPage;
 import it.jira.pageobjects.AddProviderPage;
 import it.jira.pageobjects.ErrorPage;
 import it.jira.pageobjects.JiraLoginPage;
@@ -81,11 +82,11 @@ public class TestGoogleAuthentication extends BaseJiraWebTest {
             googleLoginPage = jira.getPageBinder().bind(GoogleAccountChooserPage.class).addAccount();
         }
 
-        googleLoginPage.setEmail(email);
-        googleLoginPage.setPassword(password);
+        GooglePasswordPage passwordPage = googleLoginPage.setEmail(email).next();
+        passwordPage.setPassword(password);
 
-        Poller.waitUntilTrue(googleLoginPage.isSignInEnabled());
-        DelayedBinder<GoogleApprovePage> approvePage = googleLoginPage.signIn();
+        Poller.waitUntilTrue(passwordPage.isSignInEnabled());
+        DelayedBinder<GoogleApprovePage> approvePage = passwordPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }

@@ -9,18 +9,15 @@ public class GoogleLoginPage extends AbstractJiraPage {
     @ElementBy(id = "Email")
     PageElement email;
 
-    @ElementBy(id = "Passwd")
-    PageElement password;
-
-    @ElementBy(id = "signIn")
-    PageElement signInButton;
+    @ElementBy(id = "next")
+    PageElement nextButton;
 
     @ElementBy(id = "account-chooser-link")
     PageElement accountChooserLink;
 
     @Override
     public TimedCondition isAt() {
-        return password.timed().isVisible();
+        return email.timed().isVisible();
     }
 
     @Override
@@ -38,20 +35,9 @@ public class GoogleLoginPage extends AbstractJiraPage {
         return this;
     }
 
-    public GoogleLoginPage setPassword(String password) {
-        this.password.clear();
-        this.password.type(password);
-        return this;
-    }
-
-    public TimedCondition isSignInEnabled()
-    {
-        return signInButton.timed().isEnabled();
-    }
-
-    public com.atlassian.pageobjects.DelayedBinder<GoogleApprovePage> signIn() {
-        this.signInButton.click();
-        return pageBinder.delayedBind(GoogleApprovePage.class);
+    public GooglePasswordPage next() {
+        this.nextButton.click();
+        return pageBinder.bind(GooglePasswordPage.class);
     }
 
     public GoogleAccountChooserPage selectDifferentAccount() {

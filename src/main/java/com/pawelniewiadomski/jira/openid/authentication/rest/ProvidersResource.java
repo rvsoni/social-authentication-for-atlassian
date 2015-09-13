@@ -2,11 +2,12 @@ package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.atlassian.fugue.Either;
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import com.pawelniewiadomski.jira.openid.authentication.providers.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.providers.Errors;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderValidator;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,6 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,7 +33,7 @@ public class ProvidersResource {
 
     @POST
     public Response createProvider(final ProviderBean providerBean) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(
                 new Supplier<Response>() {
                     @Override
                     public Response get() {
@@ -52,7 +52,7 @@ public class ProvidersResource {
     @PUT
     @Path("/{providerId}")
     public Response updateProvider(@PathParam("providerId") final int providerId, final ProviderBean providerBean) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(
                 new Supplier<Response>() {
                     @Override
                     public Response get() {
@@ -76,7 +76,7 @@ public class ProvidersResource {
     @DELETE
     @Path("/{providerId}")
     public Response deleteProvider(@PathParam("providerId") final int providerId) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
             @Override
             public Response get() {
                 try {
@@ -92,7 +92,7 @@ public class ProvidersResource {
     @POST
     @Path("/moveUp/{providerId}")
     public Response moveProviderUp(@PathParam("providerId") final int providerId) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
             @Override
             public Response get() {
                 try {
@@ -125,7 +125,7 @@ public class ProvidersResource {
     @POST
     @Path("/moveDown/{providerId}")
     public Response moveProviderDown(@PathParam("providerId") final int providerId) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
             @Override
             public Response get() {
                 try {
@@ -157,7 +157,7 @@ public class ProvidersResource {
     @POST
     @Path("/{providerId}/state")
     public Response setState(@PathParam("providerId") final int providerId, final Map<String, Boolean> params) {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
             @Override
             public Response get() {
                 try {
@@ -190,7 +190,7 @@ public class ProvidersResource {
 
     @GET
     public Response getOpenIdProviders() {
-        return openIdResource.permissionDeniedIfNotAdmin().orElseGet(new Supplier<Response>() {
+        return openIdResource.permissionDeniedIfNotAdmin().getOrElse(new Supplier<Response>() {
             @Override
             public Response get() {
                 return ProvidersResource.this.getProvidersResponse();

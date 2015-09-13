@@ -3,9 +3,12 @@ package it.confluence;
 import com.atlassian.confluence.pageobjects.page.DashboardPage;
 import com.atlassian.confluence.pageobjects.page.user.ViewUserProfilePage;
 import com.atlassian.confluence.webdriver.AbstractInjectableWebDriverTest;
+import com.atlassian.fugue.Option;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.ProductInstance;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 import it.common.ItEnvironment;
 import it.common.PluginsRestClient;
@@ -19,7 +22,6 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilTrue;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,9 +38,14 @@ public class TestFacebookAuthentication extends AbstractInjectableWebDriverTest 
         new PluginsRestClient(productInstance).setPluginLicenseIfInvalid(ItEnvironment.PLUGIN_KEY, ItEnvironment.LICENSE_3HR);
 
         final ProvidersRestClient providersRestClient = new ProvidersRestClient(productInstance);
-        Optional<ProviderBean> providers = providersRestClient.getProviders().stream()
-                .filter(p -> p.getName().equals("Facebook")).findFirst();
-        if (!providers.isPresent()) {
+        Option<ProviderBean> providers = Option.some(Iterables.getFirst(Iterables.filter(providersRestClient.getProviders(), new Predicate<ProviderBean>() {
+            @Override
+            public boolean apply(ProviderBean providerBean) {
+                return providerBean.getName().equals("Facebook");
+            }
+        }), null));
+
+        if (providers.isEmpty()) {
             providersRestClient.createProvider(ProviderBean.builder()
                     .clientId((String) getProperty(passwords, "facebook.confluence.clientId"))
                     .clientSecret((String) getProperty(passwords, "facebook.confluence.clientSecret"))

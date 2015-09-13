@@ -46,6 +46,7 @@ public class TestGitHubAuthentication extends BaseJiraWebTest {
         jira.getTester().getDriver().manage().deleteAllCookies();
         jira.getTester().getDriver().navigate().to("https://github.com");
         jira.getTester().getDriver().manage().deleteAllCookies();
+        jira.gotoLoginPage();
     }
 
     @Test
