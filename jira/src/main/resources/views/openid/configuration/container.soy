@@ -1,0 +1,21 @@
+{namespace OpenId.Templates.Configuration}
+
+/**
+ * Container page for all other sub-views
+ */
+{template .container}
+{call aui.page.document}
+    {param windowTitle: getText('openid.authentication.providers')/}
+    {param extraClasses: 'openid list-providers'/}
+    {param headContent}
+        <meta name="decorator" content="admin"/>
+        <meta name="admin.active.section" content="users_groups_configuration/embedded_crowd_section"/>
+        <meta name="admin.active.tab" content="openid"/>
+    {/param}
+    {param content}
+        <div ng-app="openid.configuration">
+            <div ng-view></div>
+        </div>
+    {/param}
+{/call}
+{/template}
