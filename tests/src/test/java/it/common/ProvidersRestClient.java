@@ -4,7 +4,6 @@ import com.atlassian.jira.pageobjects.config.ProductInstanceBasedEnvironmentData
 import com.atlassian.jira.testkit.client.RestApiClient;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.pageobjects.ProductInstance;
-import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
