@@ -14,7 +14,7 @@
             {param text}{$provider.name}{/param}
             {param tagName: 'a'/}
             {param extraAttributes}
-                href="{$baseUrl}/plugins/servlet/openid-login?pid={$provider.id}"
+                href="{$baseUrl}/openid/login/{$provider.id}"
             {/param}
         {/call}
     {/foreach}
