@@ -7,6 +7,6 @@ package com.pawelniewiadomski.jira.openid.authentication;
  */
 public class PluginKey {
 
-	public static final String KEY = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin";
+	public static final String KEY = "com.pawelniewiadomski.jira.confluence-openid-authentication-plugin";
 
 }

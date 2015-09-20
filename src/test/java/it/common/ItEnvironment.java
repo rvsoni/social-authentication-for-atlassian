@@ -1,6 +1,7 @@
 package it.common;
 
 import com.google.common.base.Preconditions;
+import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -17,7 +18,7 @@ public class ItEnvironment {
             "hZFmm2zZV5k6/95CbR7Y9bYGo/zGrV3Ir4jRbDyCA6vt34DO8p3SDAsAhQnJjLD5k9Fr3uaIzkXK\n" +
             "f83o5vDdQIUe4XequNCC3D+9ht9ZYhNZFKmnhc=X02dh";
 
-    public static final String PLUGIN_KEY = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin";
+    public static final String PLUGIN_KEY = PluginKey.KEY;
 
     public static Map<String, Object> getConfiguration() {
         final ObjectMapper mapper = new ObjectMapper();
