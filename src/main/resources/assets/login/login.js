@@ -82,7 +82,7 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
             console.log('OpenID booting up...');
 
             var isJIRA = Product.name === 'jira';
-            var loginFormSelector = isJIRA ? "#login-form" : "form.login-form-container";
+            var loginFormSelector = isJIRA ? "#login-form, #loginform" : "form.login-form-container";
             var $loginForm = $(loginFormSelector);
             if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
                 console.log('Login form has no action or that is WebSudo');
