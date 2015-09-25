@@ -17,6 +17,7 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
+import org.apache.oltu.oauth2.jwt.ClaimsSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -158,17 +159,21 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
 
         final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
         final String accessToken = token.getAccessToken();
-        final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
-        String username = email;
+        ClaimsSet claimsSet = token.getIdToken().getClaimsSet();
+        String email = claimsSet.getCustomField("email", String.class);
+        email = defaultIfEmpty(email, claimsSet.getCustomField("upn", String.class));
+        String username = defaultIfEmpty(claimsSet.getCustomField("name", String.class), email);
 
         final String userInfoUrl = getUserInfoUrl(provider);
-        if (isNotEmpty(userInfoUrl)) {
+        if ((email == null || username == null) && isNotEmpty(userInfoUrl)) {
             OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(userInfoUrl)
                     .setAccessToken(accessToken)
                     .buildHeaderMessage();
 
             OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
             Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
+            // as a last resort try upn from user info (in case of Azure that's email)
+            email = defaultIfEmpty(email, (String) userInfo.get("upn"));
             username = defaultIfEmpty((String) userInfo.get("name"), email);
         }
         return Either.left(Pair.pair(username, email));
