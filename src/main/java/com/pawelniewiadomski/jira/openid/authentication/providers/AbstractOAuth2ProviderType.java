@@ -8,6 +8,7 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
     }
 
     @Override
-    public Either<Errors, Map<String, Object>> validateCreateOrUpdate(@Nullable OpenIdProvider provider, ProviderBean providerBean) {
+    public Either<Errors, OpenIdProvider> createOrUpdate(@Nullable OpenIdProvider provider, ProviderBean providerBean) {
         Errors errors = new Errors();
 
         validateName(provider, getCreatedProviderName(), errors);
@@ -61,7 +62,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
 
         if (errors.hasAnyErrors()) {
             return Either.left(errors);
-        } else {
+        } else if (provider == null) {
             final Map<String, Object> map = new HashMap<>();
             map.put(OpenIdProvider.NAME, getCreatedProviderName());
             map.put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl());
@@ -70,7 +71,21 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
             map.put(OpenIdProvider.PROVIDER_TYPE, getId());
             map.put(OpenIdProvider.CLIENT_ID, providerBean.getClientId());
             map.put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret());
-            return Either.right(map);
+            try {
+                return Either.right(openIdDao.createProvider(map));
+            } catch (SQLException e) {
+                return Either.left(new Errors().addErrorMessage("Error when saving the provider: " + e.getMessage()));
+            }
+        } else {
+            provider.setName(getCreatedProviderName());
+            provider.setEndpointUrl(getAuthorizationUrl());
+            provider.setCallbackId(getCallbackId());
+            provider.setAllowedDomains(providerBean.getAllowedDomains());
+            provider.setProviderType(getId());
+            provider.setClientId(providerBean.getClientId());
+            provider.setClientSecret(providerBean.getClientSecret());
+            provider.save();
+            return Either.right(provider);
         }
     }
 }

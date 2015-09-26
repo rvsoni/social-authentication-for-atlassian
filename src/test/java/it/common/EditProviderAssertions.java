@@ -17,8 +17,7 @@ public class EditProviderAssertions {
     AddProviderPage addPage;
 
     @Test
-    public void editOpenIdProvider()
-    {
+    public void editOpenIdProvider() {
         final String name = "Testing " + randomUUID();
         final String endpointUrl = "http://asdkasjdkald.pl";
 
@@ -71,7 +70,8 @@ public class EditProviderAssertions {
                 .setName("OAuth")
                 .setEndpointUrl("https://accounts.google.com")
                 .setClientId("AAA")
-                .setClientSecret("BBB");
+                .setClientSecret("BBB")
+                .setAllowedDomains("test.pl");
 
         ConfigurationPage configurationPage = addPage.save();
 
@@ -80,16 +80,19 @@ public class EditProviderAssertions {
         waitUntil(editPage.getEndpointUrl(), equalTo("https://accounts.google.com"));
         waitUntil(editPage.getClientId(), equalTo("AAA"));
         waitUntil(editPage.getClientSecret(), equalTo("BBB"));
+        waitUntil(editPage.getAllowedDomains(), equalTo("test.pl"));
 
         configurationPage = editPage.setName("New Name")
                 .setClientId("NNN")
                 .setClientSecret("GGG")
+                .setAllowedDomains("wp.pl, onet.pl")
                 .save();
         editPage = configurationPage.editProvider("New Name");
         waitUntil(editPage.getName(), equalTo("New Name"));
         waitUntil(editPage.getEndpointUrl(), equalTo("https://accounts.google.com"));
         waitUntil(editPage.getClientId(), equalTo("NNN"));
         waitUntil(editPage.getClientSecret(), equalTo("GGG"));
+        waitUntil(editPage.getAllowedDomains(), equalTo("wp.pl, onet.pl"));
     }
 
     @Test

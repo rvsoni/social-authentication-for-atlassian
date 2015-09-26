@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +71,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     }
 
     @Override
-    public Either<Errors, Map<String, Object>> validateCreateOrUpdate(OpenIdProvider provider, ProviderBean providerBean) {
+    public Either<Errors, OpenIdProvider> createOrUpdate(OpenIdProvider provider, ProviderBean providerBean) {
         Errors errors = new Errors();
 
         validateName(provider, providerBean, errors);
@@ -104,7 +105,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
 
         if (errors.hasAnyErrors()) {
             return Either.left(errors);
-        } else {
+        } else if (provider == null) {
             Map<String, Object> map = new HashMap<>();
             map.put(OpenIdProvider.NAME, providerBean.getName());
             map.put(OpenIdProvider.ENDPOINT_URL, providerBean.getEndpointUrl());
@@ -113,7 +114,22 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             map.put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret());
             map.put(OpenIdProvider.CALLBACK_ID, providerBean.getCallbackId());
             map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
-            return Either.right(map);
+            try {
+                return Either.right(openIdDao.createProvider(map));
+            } catch (SQLException e) {
+                return Either.left(new Errors().addErrorMessage("Error when saving the provider: " + e.getMessage()));
+            }
+        } else {
+            provider.setName(providerBean.getName());
+            provider.setEndpointUrl(providerBean.getEndpointUrl());
+            provider.setProviderType("oauth2");
+            provider.setProviderType(getId());
+            provider.setClientId(providerBean.getClientId());
+            provider.setClientSecret(providerBean.getClientSecret());
+            provider.setCallbackId(providerBean.getCallbackId());
+            provider.setAllowedDomains(providerBean.getAllowedDomains());
+            provider.save();
+            return Either.right(provider);
         }
     }
 
