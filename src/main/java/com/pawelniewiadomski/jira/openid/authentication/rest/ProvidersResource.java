@@ -37,7 +37,7 @@ public class ProvidersResource {
                 new Supplier<Response>() {
                     @Override
                     public Response get() {
-                        Either<Errors, OpenIdProvider> errorsOrProvider = validator.validateCreate(providerBean);
+                        Either<Errors, OpenIdProvider> errorsOrProvider = validator.validateAndCreate(providerBean);
 
                         if (errorsOrProvider.isLeft()) {
                             return Response.ok(errorsOrProvider.left().get()).build();
@@ -58,7 +58,7 @@ public class ProvidersResource {
                     public Response get() {
                         try {
                             final OpenIdProvider provider = openIdDao.findProvider(providerId);
-                            final Either<Errors, OpenIdProvider> errorsOrProvider = validator.validateUpdate(provider, providerBean);
+                            final Either<Errors, OpenIdProvider> errorsOrProvider = validator.validateAndUpdate(provider, providerBean);
 
                             if (errorsOrProvider.isLeft()) {
                                 return Response.ok(errorsOrProvider.left().get()).build();

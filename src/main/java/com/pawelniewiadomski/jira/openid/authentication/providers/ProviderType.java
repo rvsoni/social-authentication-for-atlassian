@@ -26,5 +26,5 @@ public interface ProviderType {
     String getCreatedProviderName();
 
     @Nonnull
-    Either<Errors, Map<String, Object>> validateCreateOrUpdate(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean);
+    Either<Errors, OpenIdProvider> createOrUpdate(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean);
 }

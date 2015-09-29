@@ -82,24 +82,41 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
             console.log('OpenID booting up...');
 
             var isJIRA = Product.name === 'jira';
-            var loginFormSelector = isJIRA ? "#login-form" : "form.login-form-container";
-            var $loginForm = $(loginFormSelector);
-            if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
-                console.log('Login form has no action or that is WebSudo');
-                return;
+            if (isJIRA && $('#dashboard').length) {
+                console.log('Dashboard detected, waiting for elements...');
+
+                var f = function() {
+                    if (!modifyLoginForm()) {
+                        setTimeout(f, 100);
+                    }
+                };
+
+                setTimeout(f, 100);
+            } else {
+                modifyLoginForm();
             }
 
-            if (_.isFunction($loginForm.removeDirtyWarning)) {
-                console.log('Disabling dirty warning');
-                $loginForm.removeDirtyWarning();
-            }
+            function modifyLoginForm() {
+                var loginFormSelector = isJIRA ? "#login-form, #loginform" : "form.login-form-container";
+                var $loginForm = $(loginFormSelector);
+                if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
+                    console.log('Login form has no action or that is WebSudo');
+                    return false;
+                }
 
-            var $attachLocation = isJIRA ? $loginForm : $('.login-section');
-            $attachLocation.append('<div id="openid-login"></div>');
-            var providers = new ProvidersModel();
-            var login = new LoginView({collection: providers});
-            providers.fetch({
-                success: login.render
-            });
+                if (_.isFunction($loginForm.removeDirtyWarning)) {
+                    console.log('Disabling dirty warning');
+                    $loginForm.removeDirtyWarning();
+                }
+
+                var $attachLocation = isJIRA ? $loginForm : $('.login-section');
+                $attachLocation.append('<div id="openid-login"></div>');
+                var providers = new ProvidersModel();
+                var login = new LoginView({collection: providers});
+                providers.fetch({
+                    success: login.render
+                });
+                return true;
+            }
         });
     });
