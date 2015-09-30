@@ -1,7 +1,6 @@
 package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.activeobjects.tx.Transactional;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import lombok.AllArgsConstructor;
 import net.java.ao.Query;
@@ -60,6 +59,12 @@ public class OpenIdDaoImpl implements OpenIdDao {
             return providers[0];
         }
         return null;
+    }
+
+    @Override
+    public OpenIdProvider saveProvider(@Nonnull OpenIdProvider provider) throws SQLException {
+        provider.save();
+        return provider;
     }
 
     @Override

@@ -84,8 +84,12 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
             provider.setProviderType(getId());
             provider.setClientId(providerBean.getClientId());
             provider.setClientSecret(providerBean.getClientSecret());
-            provider.save();
-            return Either.right(provider);
+
+            try {
+                return Either.right(openIdDao.saveProvider(provider));
+            } catch (SQLException e) {
+                return Either.left(new Errors().addErrorMessage("Error when saving the provider: " + e.getMessage()));
+            }
         }
     }
 }

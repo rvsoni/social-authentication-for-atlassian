@@ -21,6 +21,8 @@ public interface OpenIdDao {
 
     OpenIdProvider createProvider(@Nonnull Map<String, Object> params) throws SQLException;
 
+    OpenIdProvider saveProvider(@Nonnull OpenIdProvider provider) throws SQLException;
+
     void deleteProvider(Integer id) throws SQLException;
 
     @Nullable
