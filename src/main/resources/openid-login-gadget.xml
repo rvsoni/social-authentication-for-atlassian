@@ -4,7 +4,7 @@
             title="OpenID Login"
             description="Sing up and log in users through OpenID authentication provider"
             author="Pawel Niewiadomski" author_email="11110000b@gmail.com" directory_title="OpenID Authentication"
-            thumbnail='#staticResourceUrl("com.pawelniewiadomski.jira.confluence-openid-authentication-plugin:openid-login-gadget", "gadgetIcon.png")'>
+            thumbnail='#staticResourceUrl("com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-login-gadget", "gadgetIcon.png")'>
         <Require feature="dynamic-height"/>
         <Require feature="views"/>
 
@@ -24,7 +24,7 @@
     <Content type="html">
         <![CDATA[
         #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
-        #requireResource("com.pawelniewiadomski.jira.confluence-openid-authentication-plugin:openid-login-gadget-resources")
+        #requireResource("com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-login-gadget-resources")
         #includeResources()
 
         <script type="text/javascript">

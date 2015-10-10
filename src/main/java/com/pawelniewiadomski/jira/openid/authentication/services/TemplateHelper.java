@@ -24,7 +24,7 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachi
 @AllArgsConstructor
 public class TemplateHelper
 {
-    public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.confluence-openid-authentication-plugin:openid-soy-templates";
+    public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
 
     final SoyTemplateRenderer soyTemplateRenderer;
 
