@@ -109,6 +109,11 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
                     $loginForm.removeDirtyWarning();
                 }
 
+                if ($loginForm.attr('id') == 'loginform') {
+                    // in case on dashboard resize login gadget
+                    $loginForm.parent().parent().css('height', 'auto');
+                }
+
                 var $attachLocation = isJIRA ? $loginForm : $('.login-section');
                 $attachLocation.append('<div id="openid-login"></div>');
                 var providers = new ProvidersModel();
