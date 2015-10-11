@@ -267,25 +267,12 @@
         <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
+                <artifactId>maven-confluence-plugin</artifactId>
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <extractDependencies>true</extractDependencies>
                     <products>
-                        <product>
-                            <id>jira</id>
-                            <version>${jira.version}</version>
-                            <jvmDebugPort>5006</jvmDebugPort>
-                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
-                            <pluginArtifacts>
-                                <pluginArtifact>
-                                    <groupId>com.atlassian.jira.tests</groupId>
-                                    <artifactId>jira-testkit-plugin</artifactId>
-                                    <version>${testkit.version}</version>
-                                </pluginArtifact>
-                            </pluginArtifacts>
-                        </product>
                         <product>
                             <id>confluence</id>
                             <version>${confluence.version}</version>

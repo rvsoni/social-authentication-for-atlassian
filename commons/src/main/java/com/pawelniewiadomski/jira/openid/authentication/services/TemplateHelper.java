@@ -1,10 +1,11 @@
 package com.pawelniewiadomski.jira.openid.authentication.services;
 
-import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
+import com.atlassian.util.concurrent.LazyReference;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,20 @@ import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachi
 @Service
 public class TemplateHelper
 {
-    public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
+    public static final String SOY_TEMPLATES = "openid-soy-templates";
 
     @Autowired protected SoyTemplateRenderer soyTemplateRenderer;
 
-    @Autowired protected ApplicationProperties applicationProperties;
-
     @Autowired protected LoginUriProvider loginUriProvider;
+
+    @Autowired protected PluginKey pluginKey;
+
+    protected LazyReference<String> soyTemplatesResourceKey = new LazyReference<String>() {
+        @Override
+        protected String create() throws Exception {
+            return pluginKey.getKey() + ':' + SOY_TEMPLATES;
+        }
+    };
 
     public void render(final HttpServletRequest request,
                        final HttpServletResponse response,
@@ -54,7 +62,7 @@ public class TemplateHelper
         setNoCacheHeaders(response);
         response.setContentType("text/html; charset=UTF-8");
         try {
-            soyTemplateRenderer.render(response.getWriter(), SOY_TEMPLATES, template, params);
+            soyTemplateRenderer.render(response.getWriter(), soyTemplatesResourceKey.get(), template, params);
         } catch (SoyException e) {
             throw new ServletException(e);
         }
@@ -67,7 +75,7 @@ public class TemplateHelper
         params.put("baseUrl", getBaseUrl(request));
 
         try {
-            return soyTemplateRenderer.render(SOY_TEMPLATES, template, params);
+            return soyTemplateRenderer.render(soyTemplatesResourceKey.get(), template, params);
         } catch (SoyException e) {
             throw new ServletException(e);
         }

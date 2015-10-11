@@ -89,9 +89,6 @@
     <rest name="OpenID REST" key="rest-plugin" path="/jira-openid-authentication" version="1.0"/>
 
     <!-- import from the product container -->
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
-    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
-
     <servlet name="OpenId Login Servlet" key="openid-login-servlet"
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.LoginServlet">
         <url-pattern>/openid-login</url-pattern>
@@ -121,7 +118,8 @@
     <component-import key="crowdService" interface="com.atlassian.crowd.embedded.api.CrowdService"/>
     <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
     <component-import key="pageBuilderService" interface="com.atlassian.webresource.api.assembler.PageBuilderService"/>
-    <component-import key="salApplicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
 
     <component-import key="groupManager" interface="com.atlassian.user.GroupManager"/>
     <component-import key="userAccessor" interface="com.atlassian.confluence.user.UserAccessor"/>
@@ -147,8 +145,12 @@
                class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluencePublicModeService"
                application="confluence"/>
 
-    <component key="addOrderUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true"/>
-    <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true"/>
+    <component key="addOrderUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
+    <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
 
     <!-- Active Objects -->
     <ao key="openid-active-objects">

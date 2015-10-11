@@ -24,21 +24,29 @@ public class ConfigurationServlet extends HttpServlet {
     @Autowired
     protected PageBuilderService pageBuilderService;
 
-    @Autowired protected GlobalSettings globalSettings;
+    @Autowired
+    protected GlobalSettings globalSettings;
 
-    @Autowired protected TemplateHelper templateHelper;
+    @Autowired
+    protected TemplateHelper templateHelper;
 
-    @Autowired protected ProviderTypeFactory providerTypeFactory;
+    @Autowired
+    protected ProviderTypeFactory providerTypeFactory;
 
-    @Autowired protected ServletUtils servletUtils;
+    @Autowired
+    protected ServletUtils servletUtils;
 
-    @Autowired protected ApplicationProperties applicationProperties;
+    @Autowired
+    protected ApplicationProperties applicationProperties;
 
-    @Autowired protected UserManager userManager;
+    @Autowired
+    protected UserManager userManager;
 
-    @Autowired protected PublicModeService publicModeService;
+    @Autowired
+    protected PublicModeService publicModeService;
 
-    @Autowired protected ExternalUserManagementService externalUserManagementService;
+    @Autowired
+    protected ExternalUserManagementService externalUserManagementService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
