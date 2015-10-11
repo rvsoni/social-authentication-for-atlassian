@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,6 @@ import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.get
  * Handling OpenID 1.0 authentications.
  */
 @Service
-@AllArgsConstructor
 public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Logger log = Logger.getLogger(this.getClass());
@@ -41,9 +41,9 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
 
-    final AuthenticationService authenticationService;
+    @Autowired protected AuthenticationService authenticationService;
 
-    final TemplateHelper templateHelper;
+    @Autowired protected TemplateHelper templateHelper;
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)

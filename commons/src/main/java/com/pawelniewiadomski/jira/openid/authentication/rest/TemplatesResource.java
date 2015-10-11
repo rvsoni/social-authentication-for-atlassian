@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest;
 
 import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +19,8 @@ import java.util.Collections;
 @Produces({MediaType.TEXT_HTML})
 public class TemplatesResource {
 
-    final TemplateHelper templateHelper;
-
-    public TemplatesResource(TemplateHelper templateHelper) {
-        this.templateHelper = templateHelper;
-    }
+    @Autowired
+    protected TemplateHelper templateHelper;
 
     @GET
     @Path("{templateName}")

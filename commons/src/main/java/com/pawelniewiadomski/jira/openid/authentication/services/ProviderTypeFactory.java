@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.providers.*;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
@@ -17,13 +18,12 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
 public class ProviderTypeFactory {
-    private final I18nResolver i18nResolver;
+    @Autowired protected I18nResolver i18nResolver;
 
-    private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    @Autowired protected OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
-    private final OpenIdDao openIdDao;
+    @Autowired protected OpenIdDao openIdDao;
 
     @Nonnull
     public ProviderType getProviderTypeById(@Nonnull String id) throws IllegalArgumentException {

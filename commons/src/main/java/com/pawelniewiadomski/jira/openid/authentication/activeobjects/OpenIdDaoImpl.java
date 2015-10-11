@@ -1,8 +1,8 @@
 package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
-import lombok.AllArgsConstructor;
 import net.java.ao.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class OpenIdDaoImpl implements OpenIdDao {
 
-    final ActiveObjects activeObjects;
+    @Autowired
+    protected ActiveObjects activeObjects;
 
     @Override
     @Nonnull

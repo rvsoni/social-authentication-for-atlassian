@@ -9,6 +9,7 @@ import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
@@ -19,25 +20,25 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 
-@AllArgsConstructor
 public class ConfigurationServlet extends HttpServlet {
-    final PageBuilderService pageBuilderService;
+    @Autowired
+    protected PageBuilderService pageBuilderService;
 
-    final GlobalSettings globalSettings;
+    @Autowired protected GlobalSettings globalSettings;
 
-    final TemplateHelper templateHelper;
+    @Autowired protected TemplateHelper templateHelper;
 
-    final ProviderTypeFactory providerTypeFactory;
+    @Autowired protected ProviderTypeFactory providerTypeFactory;
 
-    final ServletUtils servletUtils;
+    @Autowired protected ServletUtils servletUtils;
 
-    final ApplicationProperties applicationProperties;
+    @Autowired protected ApplicationProperties applicationProperties;
 
-    final UserManager userManager;
+    @Autowired protected UserManager userManager;
 
-    final PublicModeService publicModeService;
+    @Autowired protected PublicModeService publicModeService;
 
-    final ExternalUserManagementService externalUserManagementService;
+    @Autowired protected ExternalUserManagementService externalUserManagementService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

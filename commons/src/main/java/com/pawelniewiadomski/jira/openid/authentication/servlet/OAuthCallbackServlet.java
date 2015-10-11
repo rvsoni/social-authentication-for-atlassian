@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,21 +31,22 @@ import java.sql.SQLException;
  * Handling OpenID Connect authentications.
  */
 @Slf4j
-@AllArgsConstructor
 public class OAuthCallbackServlet extends HttpServlet
 {
-    final GlobalSettings globalSettings;
-    final LicenseProvider licenseProvider;
+    @Autowired
+    protected GlobalSettings globalSettings;
 
-    final AuthenticationService authenticationService;
+    @Autowired protected LicenseProvider licenseProvider;
 
-    final TemplateHelper templateHelper;
+    @Autowired protected AuthenticationService authenticationService;
 
-    final OpenIdDao openIdDao;
+    @Autowired protected TemplateHelper templateHelper;
 
-    final ProviderTypeFactory providerTypeFactory;
+    @Autowired protected OpenIdDao openIdDao;
 
-    final ServletUtils servletUtils;
+    @Autowired protected ProviderTypeFactory providerTypeFactory;
+
+    @Autowired protected ServletUtils servletUtils;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

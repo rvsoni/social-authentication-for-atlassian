@@ -7,6 +7,7 @@ import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,18 +17,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @Slf4j
-@AllArgsConstructor
 public class LoginServlet extends HttpServlet {
 
-    final LicenseProvider licenseProvider;
+    @Autowired protected LicenseProvider licenseProvider;
 
-    final TemplateHelper templateHelper;
+    @Autowired protected TemplateHelper templateHelper;
 
-    final OAuthAuthenticationHandler oAuthAuthenticationHandler;
+    @Autowired protected OAuthAuthenticationHandler oAuthAuthenticationHandler;
 
-    final OpenIdAuthenticationHandler openIdAuthenticationHandler;
+    @Autowired protected OpenIdAuthenticationHandler openIdAuthenticationHandler;
 
-    final OpenIdDao openIdDao;
+    @Autowired
+    protected OpenIdDao openIdDao;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

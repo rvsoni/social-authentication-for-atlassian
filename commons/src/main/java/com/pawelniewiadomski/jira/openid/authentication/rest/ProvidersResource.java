@@ -12,6 +12,7 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,15 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@AllArgsConstructor
 @Path("providers")
 @Produces({MediaType.APPLICATION_JSON})
 public class ProvidersResource {
-    final OpenIdDao openIdDao;
+    @Autowired protected OpenIdDao openIdDao;
 
-    final ProviderValidator validator;
+    @Autowired protected ProviderValidator validator;
 
-    final OpenIdResource openIdResource;
+    @Autowired protected OpenIdResource openIdResource;
 
     @POST
     public Response createProvider(final ProviderBean providerBean) {

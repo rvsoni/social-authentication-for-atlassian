@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;
 
 @Service
-@AllArgsConstructor
 public class OpenIdDiscoveryDocumentProvider
 {
     @JsonAutoDetect

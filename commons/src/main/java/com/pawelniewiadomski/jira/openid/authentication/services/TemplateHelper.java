@@ -6,6 +6,7 @@ import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
@@ -21,16 +22,15 @@ import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.get
 import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachingUtils.setNoCacheHeaders;
 
 @Service
-@AllArgsConstructor
 public class TemplateHelper
 {
     public static final String SOY_TEMPLATES = "com.pawelniewiadomski.jira.jira-openid-authentication-plugin:openid-soy-templates";
 
-    final SoyTemplateRenderer soyTemplateRenderer;
+    @Autowired protected SoyTemplateRenderer soyTemplateRenderer;
 
-    final ApplicationProperties applicationProperties;
+    @Autowired protected ApplicationProperties applicationProperties;
 
-    final LoginUriProvider loginUriProvider;
+    @Autowired protected LoginUriProvider loginUriProvider;
 
     public void render(final HttpServletRequest request,
                        final HttpServletResponse response,

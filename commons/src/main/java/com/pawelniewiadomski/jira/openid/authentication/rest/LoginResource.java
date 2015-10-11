@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.BasicProviderBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.*;
@@ -20,12 +21,8 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON})
 public class LoginResource extends OpenIdResource {
 
-    final OpenIdDao openIdDao;
-
-    public LoginResource(OpenIdDao openIdDao, UserManager userManager) {
-        super(userManager);
-        this.openIdDao = openIdDao;
-    }
+    @Autowired
+    protected OpenIdDao openIdDao;
 
     @GET
     @AnonymousAllowed

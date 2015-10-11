@@ -5,6 +5,7 @@ import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.atlassian.sal.api.user.UserManager;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,16 +14,16 @@ import java.io.IOException;
 import java.net.URI;
 
 @Service
-@AllArgsConstructor
 public final class ServletUtils {
 
-    final ApplicationProperties applicationProperties;
+    @Autowired protected ApplicationProperties applicationProperties;
 
-    final LoginUriProvider loginUriProvider;
+    @Autowired protected LoginUriProvider loginUriProvider;
 
-    final UserManager userManager;
+    @Autowired protected UserManager userManager;
 
-    final I18nResolver i18nResolver;
+    @Autowired
+    protected I18nResolver i18nResolver;
 
     protected boolean hasAdminPermission()
     {

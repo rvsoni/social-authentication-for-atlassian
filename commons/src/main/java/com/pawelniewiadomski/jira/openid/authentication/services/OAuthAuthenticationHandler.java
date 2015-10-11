@@ -6,6 +6,7 @@ import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2Provider
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import lombok.AllArgsConstructor;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +17,13 @@ import java.util.UUID;
  * Handling OpenID Connect authentications.
  */
 @Service
-@AllArgsConstructor
 public class OAuthAuthenticationHandler implements AuthenticationHandler
 {
-    final TemplateHelper templateHelper;
+    @Autowired
+    protected TemplateHelper templateHelper;
 
-    final ProviderTypeFactory providerTypeFactory;
+    @Autowired
+    protected ProviderTypeFactory providerTypeFactory;
 
     @Override
     public boolean doAuthenticationDance(OpenIdProvider provider, HttpServletRequest request, HttpServletResponse response) throws Exception {

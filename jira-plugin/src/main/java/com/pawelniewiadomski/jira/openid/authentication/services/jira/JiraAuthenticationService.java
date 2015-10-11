@@ -21,6 +21,7 @@ import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -36,17 +37,16 @@ import static org.apache.commons.lang.StringUtils.replaceChars;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class JiraAuthenticationService implements AuthenticationService {
-    final UserUtilBridgeFactory userUtilBridgeFactory;
+    @Autowired protected UserUtilBridgeFactory userUtilBridgeFactory;
 
-    final CrowdService crowdService;
+    @Autowired protected CrowdService crowdService;
 
-    final GlobalSettings globalSettings;
+    @Autowired protected GlobalSettings globalSettings;
 
-    final TemplateHelper templateHelper;
+    @Autowired protected TemplateHelper templateHelper;
 
-    final ExternalUserManagementService externalUserManagementService;
+    @Autowired protected ExternalUserManagementService externalUserManagementService;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
