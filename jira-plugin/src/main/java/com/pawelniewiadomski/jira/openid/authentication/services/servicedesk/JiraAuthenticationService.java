@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.jira;
+package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.crowd.search.query.entity.UserQuery;
@@ -18,7 +18,6 @@ import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationS
 import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
 import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

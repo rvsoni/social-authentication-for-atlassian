@@ -33,6 +33,7 @@
         <module>commons</module>
         <module>confluence-plugin</module>
         <module>jira-plugin</module>
+        <module>servicedesk-plugin</module>
     </modules>
     <dependencyManagement>
         <dependencies>

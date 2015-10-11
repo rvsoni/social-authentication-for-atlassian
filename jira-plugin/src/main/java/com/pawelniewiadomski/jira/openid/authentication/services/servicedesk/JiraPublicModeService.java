@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.jira;
+package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
 
 import com.atlassian.fugue.Option;
 import com.atlassian.jira.util.JiraUtils;
