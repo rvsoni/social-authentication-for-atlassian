@@ -26,8 +26,8 @@
             <url>https://dl.dropboxusercontent.com/u/2052049/repo/</url>
         </repository>
     </repositories>
-    <name>OpenID Authentication for Confluence</name>
-    <description>This plugins lets you setup OpenID authentication for Atlassian Confluence.</description>
+    <name>OpenID Authentication for JIRA</name>
+    <description>This plugins lets you setup OpenID authentication for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
     <dependencies>
         <dependency>
