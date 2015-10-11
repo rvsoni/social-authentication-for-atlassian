@@ -1,0 +1,45 @@
+{namespace OpenId.Templates.Configuration}
+
+/**
+ * Edit provider.
+ */
+{template .editProvider}
+    {call aui.page.pageHeader}
+        {param content}
+            {call aui.page.pageHeaderMain}
+                {param content}
+                    <h2>Edit Authentication Provider</h2>
+                {/param}
+            {/call}
+        {/param}
+    {/call}
+    {call aui.form.form}
+        {param action: ''/}
+        {param id: 'editProvider'/}
+        {param extraAttributes}ng-submit="updateProvider($event)" name="providerForm"{/param}
+        {param content}
+            {call aui.form.fieldset}
+                {param legendContent: 'Edit Provider'/}
+                {param content}
+                    {call .providerDetails}
+                    {/call}
+                {/param}
+            {/call}
+
+            {call aui.form.buttons}
+                {param content}
+                    {call aui.form.submit}
+                        {param text: 'Edit Provider'/}
+                        {param id: 'saveProvider'/}
+                    {/call}
+                    {call aui.form.linkButton}
+                        {param text: 'Cancel'/}
+                        {param id: 'cancel'/}
+                        {param url}#/{/param}
+                    {/call}
+                {/param}
+            {/call}
+        {/param}
+    {/call}
+{/template}
+

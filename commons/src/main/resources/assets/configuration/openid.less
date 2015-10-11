@@ -1,0 +1,74 @@
+#com-atlassian-confluence {
+  .operations-list {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    & > li {
+      display: inline-block;
+    }
+
+    & li + li:before {
+      content: "\b7";
+      /* mid dot */
+      padding: 0 0.42857143em 0 0.21428571em;
+      color: #707070;
+    }
+  }
+
+  .help-lnk .aui-icon.aui-iconfont-help {
+    color: #707070;
+  }
+
+  .aui-buttons ~ .help-lnk {
+    display: inline-block;
+    margin: 10px 0 10px 10px;
+  }
+}
+
+.openid {
+
+  .operations-list {
+    a {
+      cursor: pointer;
+    }
+  }
+
+  &.list-providers {
+    .icon.loading {
+      margin-top: 25px;
+      display: block;
+    }
+
+    tr.disabled, .order > .disabled {
+      color: #ccc;
+    }
+
+    #new-provider {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+  }
+
+  form {
+    .presets {
+      padding-top: 5px;
+
+      a.preset {
+        cursor: pointer;
+      }
+
+    }
+  }
+}
+
+.gadget {
+  .view.g-openid {
+    padding: 8px;
+
+    a.openid {
+      color: #000 !important;
+    }
+  }
+}
