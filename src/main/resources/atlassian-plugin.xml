@@ -116,17 +116,7 @@
     <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
     <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
     <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
-    <component key="thirdPartyPluginLicenseStorageManager"
-               class="com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManagerImpl"/>
-    <component key="pluginLicenseStoragePluginInstaller"
-               class="com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginInstaller"/>
-    <component key="atlassianMarketplaceUriFactory"
-               class="com.atlassian.upm.license.storage.lib.AtlassianMarketplaceUriFactoryImpl"/>
-    <servlet name="License Servlet" i18n-name-key="license-servlet.name" key="license-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.servlet.LicenseServlet">
-        <description key="license-servlet.description">The License Servlet Plugin</description>
-        <url-pattern>/openid-authentication-license</url-pattern>
-    </servlet>
+    <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager"/>
 
     <component key="tx-processor" name="Transactional Annotation Processor"
                class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">

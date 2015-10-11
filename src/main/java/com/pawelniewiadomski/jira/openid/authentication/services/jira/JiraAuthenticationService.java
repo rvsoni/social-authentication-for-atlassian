@@ -5,13 +5,12 @@ import com.atlassian.crowd.search.query.entity.UserQuery;
 import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
+import com.atlassian.jira.compatibility.bridge.user.UserUtilBridge;
+import com.atlassian.jira.compatibility.factory.user.UserUtilBridgeFactory;
 import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.exception.CreateException;
-import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.security.login.LoginManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
@@ -30,16 +29,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.UUID;
 
 import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
+import static java.util.UUID.randomUUID;
+import static org.apache.commons.lang.StringUtils.lowerCase;
+import static org.apache.commons.lang.StringUtils.replaceChars;
 
 @Slf4j
 @JiraComponent
 @AllArgsConstructor
 public class JiraAuthenticationService implements AuthenticationService {
-    @ComponentImport
-    final UserUtil userUtil;
+    final UserUtilBridgeFactory userUtilBridgeFactory;
 
     @ComponentImport
     final CrowdService crowdService;
@@ -79,9 +79,10 @@ public class JiraAuthenticationService implements AuthenticationService {
 
         if (user == null && !externalUserManagementService.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
             try {
-                user = userUtil.createUserNoNotification(StringUtils.lowerCase(StringUtils.replaceChars(identity, " '()", "")), UUID.randomUUID().toString(),
-                        email, identity);
-            } catch (PermissionException | CreateException e) {
+                final UserUtilBridge userUtil = ((UserUtilBridge) userUtilBridgeFactory.getObject());
+                user = ApplicationUsers.toDirectoryUser(userUtil.createUserNoNotification(lowerCase(replaceChars(identity, " '()", "")), randomUUID().toString(),
+                        email, identity));
+            } catch (Exception e) {
                 log.error(String.format("Cannot create an account for %s %s", identity, email), e);
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;

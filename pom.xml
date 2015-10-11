@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>11.0.2</version>
+            <version>15.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -102,26 +102,14 @@
         </dependency>
         <dependency>
             <groupId>com.atlassian.upm</groupId>
-            <artifactId>plugin-license-storage-lib</artifactId>
-            <version>${upm.license.compatibility.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.upm</groupId>
-            <artifactId>plugin-license-storage-plugin</artifactId>
-            <version>${upm.license.compatibility.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.upm</groupId>
             <artifactId>licensing-api</artifactId>
-            <version>${upm.license.compatibility.version}</version>
+            <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atlassian.upm</groupId>
             <artifactId>upm-api</artifactId>
-            <version>${upm.license.compatibility.version}</version>
+            <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -292,6 +280,18 @@
             <version>1.11</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira.compat</groupId>
+            <artifactId>jira-cross-compatibility-lib-bridge-factory</artifactId>
+            <version>0.50</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira.compat</groupId>
+            <artifactId>jira-cross-compatibility-lib-bridge-api</artifactId>
+            <version>0.50</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -308,7 +308,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>1.7.0</version>
+                                    <version>1.8.0</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -344,43 +344,22 @@
                                     <version>${testkit.version}</version>
                                 </pluginArtifact>
                             </pluginArtifacts>
-                            <bundledArtifacts>
-                                <bundledArtifact>
-                                    <groupId>com.atlassian.upm</groupId>
-                                    <artifactId>plugin-license-storage-plugin</artifactId>
-                                    <version>${upm.license.compatibility.version}</version>
-                                </bundledArtifact>
-                            </bundledArtifacts>
                         </product>
                         <product>
                             <id>confluence</id>
                             <version>${confluence.version}</version>
                             <httpPort>8080</httpPort>
-                            <bundledArtifacts>
-                                <bundledArtifact>
-                                    <groupId>com.atlassian.upm</groupId>
-                                    <artifactId>plugin-license-storage-plugin</artifactId>
-                                    <version>${upm.license.compatibility.version}</version>
-                                </bundledArtifact>
-                            </bundledArtifacts>
                         </product>
                     </products>
-                    <pluginDependencies>
-                        <pluginDependency>
-                            <groupId>com.atlassian.upm</groupId>
-                            <artifactId>plugin-license-storage-plugin</artifactId>
-                        </pluginDependency>
-                    </pluginDependencies>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                         <xvfb.enable>${xvfb.enable}</xvfb.enable>
                     </systemPropertyVariables>
                     <instructions>
-                        <Private-Package>com.atlassian.upm.license.storage.lib*</Private-Package>
                         <Import-Package>
+                            com.atlassian.sal.api*;version="[2.13.0, 4.0.0)",
                             com.atlassian.jira;resolution:=optional,
-                            *;resolution:=optional
-                        </Import-Package>
+                            *;resolution:=optional</Import-Package>
                     </instructions>
                     <testGroups>
                         <testGroup>
@@ -434,11 +413,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.4.10</jira.version>
-        <amps.version>5.1.11</amps.version>
+        <amps.version>5.1.18</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
         <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>
-        <upm.license.compatibility.version>2.4.1</upm.license.compatibility.version>
         <sal.api.version>2.13.4</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
         <ao.version>0.19.7</ao.version>
@@ -460,6 +438,13 @@
             <id>jira-6.4</id>
             <properties>
                 <jira.version>6.4.1</jira.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-7.0</id>
+            <properties>
+                <jira.version>7.0.0-OD-03-006</jira.version>
+                <testkit.version>7.0.70</testkit.version>
             </properties>
         </profile>
     </profiles>

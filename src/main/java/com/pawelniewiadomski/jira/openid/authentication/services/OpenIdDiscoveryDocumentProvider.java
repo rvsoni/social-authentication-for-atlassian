@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdDiscoveryResponse;
 import lombok.AllArgsConstructor;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -50,7 +51,7 @@ public class OpenIdDiscoveryDocumentProvider
         }
     }
 
-    private final Cache<String, OpenIdDiscoveryDocument> cache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, OpenIdDiscoveryDocument> cache = CacheBuilder.newBuilder()
             .maximumSize(100)
             .build(new CacheLoader<String, OpenIdDiscoveryDocument>()
             {
