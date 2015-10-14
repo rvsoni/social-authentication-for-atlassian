@@ -5,6 +5,7 @@ import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 
+@Slf4j
 public class GitHubProviderType extends AbstractOAuth2ProviderType {
 
     public GitHubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
@@ -88,6 +90,9 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
                 .buildQueryMessage();
 
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+
+        log.trace("JSON response from GitHub", userInfoResponse.getBody());
+
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
 
         return Either.left(Pair.pair((String) userInfo.get("login"), (String) userInfo.get("email")));
