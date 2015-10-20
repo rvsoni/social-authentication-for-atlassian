@@ -44,14 +44,15 @@
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <context>atl.general</context>
+        <context>customerportal</context>
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
         <resource type="download" name="login.css" location="assets/login/login.less"/>
+        <resource type="download" name="sd-shims.js" location="assets/login/sd-shims.js"/>
         <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
         <resource type="download" name="jira-shims.js" location="assets/login/jira-shims.js"/>
-        <resource type="download" name="login.js" location="assets/login/login.js"/>
+        <resource type="download" name="login.js" location="assets/login/sd-login.js"/>
         <resource type="download" name="images/" location="assets/images"/>
     </web-resource>
 
@@ -75,7 +76,7 @@
         <context>jira-servicedesk-configuration</context>
     </web-resource>
 
-    <rest name="OpenID REST" key="rest-plugin" path="/easy-sign-ups-authentication" version="1.0"/>
+    <rest name="OpenID REST" key="rest-plugin" path="/easy-sign-ups" version="1.0"/>
 
     <!-- import from the product container -->
     <servlet name="Login Servlet" key="easy-sign-ups-login-servlet"

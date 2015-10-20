@@ -27,7 +27,6 @@ public class OpenIdDaoImpl implements OpenIdDao {
         return Collections.emptyList();
     }
 
-    @Nonnull
     public int getNextOrdering() {
         final OpenIdProvider[] providers = activeObjects.find(OpenIdProvider.class,
                 Query.select().order(String.format("%s DESC, %s DESC", OpenIdProvider.ORDERING, OpenIdProvider.NAME)).limit(1));

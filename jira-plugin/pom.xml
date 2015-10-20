@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pawelniewiadomski.jira</groupId>
@@ -272,26 +273,18 @@
                 <extensions>true</extensions>
                 <configuration>
                     <extractDependencies>true</extractDependencies>
-                    <products>
-                        <product>
-                            <id>jira</id>
-                            <version>${jira.version}</version>
-                            <jvmDebugPort>5006</jvmDebugPort>
-                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
-                            <pluginArtifacts>
-                                <pluginArtifact>
-                                    <groupId>com.atlassian.jira.tests</groupId>
-                                    <artifactId>jira-testkit-plugin</artifactId>
-                                    <version>${testkit.version}</version>
-                                </pluginArtifact>
-                            </pluginArtifacts>
-                        </product>
-                        <product>
-                            <id>confluence</id>
-                            <version>${confluence.version}</version>
-                            <httpPort>8080</httpPort>
-                        </product>
-                    </products>
+                    <productVersion>${jira.version}</productVersion>
+                    <productDataVersion>${jira.version}</productDataVersion>
+                    <skipRestDocGeneration>true</skipRestDocGeneration>
+                    <jvmDebugPort>5006</jvmDebugPort>
+                    <!-- Uncomment to install TestKit backdoor in JIRA. -->
+                    <pluginArtifacts>
+                        <pluginArtifact>
+                            <groupId>com.atlassian.jira.tests</groupId>
+                            <artifactId>jira-testkit-plugin</artifactId>
+                            <version>${testkit.version}</version>
+                        </pluginArtifact>
+                    </pluginArtifacts>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                         <xvfb.enable>${xvfb.enable}</xvfb.enable>
@@ -300,28 +293,9 @@
                         <Import-Package>
                             com.atlassian.sal.api*;version="[2.10.0, 4.0.0)",
                             com.atlassian.jira;resolution:=optional,
-                            *;resolution:=optional</Import-Package>
+                            *;resolution:=optional
+                        </Import-Package>
                     </instructions>
-                    <testGroups>
-                        <testGroup>
-                            <id>jira-integration</id>
-                            <productIds>
-                                <productId>jira</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/jira/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                        <testGroup>
-                            <id>confluence-integration</id>
-                            <productIds>
-                                <productId>confluence</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/confluence/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                    </testGroups>
                 </configuration>
             </plugin>
         </plugins>

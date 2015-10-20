@@ -5,6 +5,7 @@ import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.atlassian.webresource.api.assembler.WebResourceAssembler;
+import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
@@ -48,13 +49,16 @@ public class ConfigurationServlet extends HttpServlet {
     @Autowired
     protected ExternalUserManagementService externalUserManagementService;
 
+    @Autowired
+    protected PluginKey pluginKey;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
 
         final WebResourceAssembler assembler = pageBuilderService.assembler();
 
-        assembler.resources().requireContext("jira-openid-configuration");
+        assembler.resources().requireContext(pluginKey.configurationContext());
         assembler.data()
                 .requireData("openid.publicMode", publicModeService.canAnyoneSignUp())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())

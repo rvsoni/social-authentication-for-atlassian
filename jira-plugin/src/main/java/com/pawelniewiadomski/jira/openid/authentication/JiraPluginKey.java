@@ -11,4 +11,9 @@ public class JiraPluginKey implements PluginKey {
 	public String getKey() {
 		return KEY;
 	}
+
+	@Override
+	public String configurationContext() {
+		return "jira-openid-configuration";
+	}
 }

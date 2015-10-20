@@ -11,4 +11,9 @@ public class ServiceDeskPluginKey implements PluginKey {
 	public String getKey() {
 		return KEY;
 	}
+
+	@Override
+	public String configurationContext() {
+		return "jira-servicedesk-configuration";
+	}
 }
