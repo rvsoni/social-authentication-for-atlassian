@@ -1,4 +1,4 @@
-package it.jira.pageobjects;
+package it.common.pageobjects;
 
 import com.atlassian.jira.pageobjects.pages.AbstractJiraAdminPage;
 import com.atlassian.pageobjects.elements.ElementBy;

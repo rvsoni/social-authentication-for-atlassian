@@ -1,15 +1,15 @@
 package it.common;
 
 import com.atlassian.pageobjects.elements.query.Poller;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.ConfigurationPage;
-import it.jira.pageobjects.EditProviderPage;
+import it.common.pageobjects.AddProviderPage;
+import it.common.pageobjects.ConfigurationPage;
+import it.common.pageobjects.EditProviderPage;
 import lombok.AllArgsConstructor;
 import org.hamcrest.collection.IsIterableWithSize;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
-import static it.jira.pageobjects.AddProviderPage.hasErrorMessage;
+import static it.common.pageobjects.AddProviderPage.hasErrorMessage;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;

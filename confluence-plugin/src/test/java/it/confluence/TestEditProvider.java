@@ -3,7 +3,7 @@ package it.confluence;
 import com.atlassian.confluence.it.User;
 import com.atlassian.confluence.webdriver.AbstractInjectableWebDriverTest;
 import it.common.EditProviderAssertions;
-import it.jira.pageobjects.AddProviderPage;
+import it.common.pageobjects.AddProviderPage;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -38,12 +38,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.atlassian.confluence</groupId>
-            <artifactId>confluence</artifactId>
-            <version>${confluence.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.atlassian.prettyurls</groupId>
             <artifactId>atlassian-pretty-urls-plugin</artifactId>
             <version>${prettyurls.version}</version>
@@ -232,18 +226,6 @@
             <artifactId>lombok</artifactId>
             <version>1.16.6</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.confluence</groupId>
-            <artifactId>confluence-test-support</artifactId>
-            <version>${confluence.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.confluence</groupId>
-            <artifactId>confluence-webdriver-support</artifactId>
-            <version>${confluence.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>

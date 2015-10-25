@@ -19,24 +19,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-api</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-rest-api</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-core</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.atlassian.confluence</groupId>
             <artifactId>confluence</artifactId>
             <version>${confluence.version}</version>
@@ -81,12 +63,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.2-atlassian-1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.tests</groupId>
-            <artifactId>jira-testkit-client</artifactId>
-            <version>${testkit.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.atlassian.upm</groupId>
@@ -167,12 +143,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-rest-java-client</artifactId>
-            <version>1.1-m02</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.1</version>
@@ -250,18 +220,6 @@
             <version>1.11</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-factory</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-api</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -272,13 +230,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <extractDependencies>true</extractDependencies>
-                    <products>
-                        <product>
-                            <id>confluence</id>
-                            <version>${confluence.version}</version>
-                            <httpPort>8080</httpPort>
-                        </product>
-                    </products>
+                    <productVersion>${confluence.version}</productVersion>
+                    <httpPort>8080</httpPort>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                         <xvfb.enable>${xvfb.enable}</xvfb.enable>
@@ -286,29 +239,8 @@
                     <instructions>
                         <Import-Package>
                             com.atlassian.sal.api*;version="[2.10.0, 4.0.0)",
-                            com.atlassian.jira;resolution:=optional,
                             *;resolution:=optional</Import-Package>
                     </instructions>
-                    <testGroups>
-                        <testGroup>
-                            <id>jira-integration</id>
-                            <productIds>
-                                <productId>jira</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/jira/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                        <testGroup>
-                            <id>confluence-integration</id>
-                            <productIds>
-                                <productId>confluence</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/confluence/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                    </testGroups>
                 </configuration>
             </plugin>
         </plugins>

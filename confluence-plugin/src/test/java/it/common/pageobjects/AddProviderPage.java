@@ -1,4 +1,4 @@
-package it.jira.pageobjects;
+package it.common.pageobjects;
 
 import com.atlassian.jira.functest.framework.matchers.IterableMatchers;
 import com.atlassian.jira.pageobjects.framework.elements.ExtendedElementFinder;

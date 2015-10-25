@@ -320,88 +320,12 @@
                 <version>1.0-m5.1</version>
             </plugin>
             <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
-                <version>${amps.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <extractDependencies>true</extractDependencies>
-                    <products>
-                        <product>
-                            <id>jira</id>
-                            <version>${jira.version}</version>
-                            <jvmDebugPort>5006</jvmDebugPort>
-                            <!-- Uncomment to install TestKit backdoor in JIRA. -->
-                            <pluginArtifacts>
-                                <pluginArtifact>
-                                    <groupId>com.atlassian.jira.tests</groupId>
-                                    <artifactId>jira-testkit-plugin</artifactId>
-                                    <version>${testkit.version}</version>
-                                </pluginArtifact>
-                            </pluginArtifacts>
-                        </product>
-                        <product>
-                            <id>confluence</id>
-                            <version>${confluence.version}</version>
-                            <httpPort>8080</httpPort>
-                        </product>
-                    </products>
-                    <jvmArgs>-Xmx768m</jvmArgs>
-                    <systemPropertyVariables>
-                        <xvfb.enable>${xvfb.enable}</xvfb.enable>
-                    </systemPropertyVariables>
-                    <instructions>
-                        <Import-Package>
-                            com.atlassian.sal.api*;version="[2.10.0, 4.0.0)",
-                            com.atlassian.jira;resolution:=optional,
-                            *;resolution:=optional</Import-Package>
-                    </instructions>
-                    <testGroups>
-                        <testGroup>
-                            <id>jira-integration</id>
-                            <productIds>
-                                <productId>jira</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/jira/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                        <testGroup>
-                            <id>confluence-integration</id>
-                            <productIds>
-                                <productId>confluence</productId>
-                            </productIds>
-                            <includes>
-                                <include>it/**/confluence/*Test.java</include>
-                            </includes>
-                        </testGroup>
-                    </testGroups>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-storage-plugin</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <includeArtifactIds>plugin-license-storage-plugin</includeArtifactIds>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -410,7 +334,6 @@
         <jira.version>6.4.10</jira.version>
         <amps.version>5.1.18</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
-        <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
         <testkit.version>6.2.21</testkit.version>
         <sal.api.version>2.13.4</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
