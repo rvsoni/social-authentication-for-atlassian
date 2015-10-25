@@ -16,4 +16,8 @@ public class ServiceDeskPluginKey implements PluginKey {
 	public String configurationContext() {
 		return "jira-servicedesk-configuration";
 	}
+
+	public String getRestKey() {
+		return "easy-sign-ups";
+	}
 }

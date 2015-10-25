@@ -56,10 +56,17 @@
         <resource type="download" name="images/" location="assets/images"/>
     </web-resource>
 
+    <web-resource-transformer key="fix-paths" class="com.pawelniewiadomski.jira.openid.authentication.services.servicedesk.PathsTransformer"/>
+
     <web-resource key="jira-openid-configuration-plugin-resources">
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
+
+        <transformation extension="js">
+            <transformer key="fix-paths"/>
+        </transformation>
+
         <dependency>com.atlassian.auiplugin:ajs</dependency>
 
         <resource type="download" name="images/" location="assets/images"/>
