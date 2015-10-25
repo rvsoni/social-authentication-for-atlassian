@@ -81,7 +81,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
-    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, Error> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.GOOGLE.getTokenEndpoint())
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -108,7 +108,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
         } catch(OAuthSystemException e) {
             if (e.getMessage().contains("https://www.googleapis.com/plus/v1/people/me/openIdConnect")) {
                 log.error("OpenID verification failed", e);
-                return Either.right(i18nResolver.getText("google.plus.api.error"));
+                return Either.right(Error.builder().errorMessage(i18nResolver.getText("google.plus.api.error")).build());
             } else {
                 throw e;
             }

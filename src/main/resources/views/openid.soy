@@ -98,6 +98,22 @@
 
 /**
  * @param loginUrl
+ * @param error
+ */
+{template .oauthErrorWithPayload}
+{call .errorWrapper}
+    {param content}
+        <div>{$error.errorMessage}</div>
+        {if $error.payload}
+            <small class="payload">{$error.payload}</small>
+        {/if}
+    {/param}
+    {param loginUrl: $loginUrl/}
+{/call}
+{/template}
+
+/**
+ * @param loginUrl
  * @param providerName name of the provider
  * @param errorMessage error message
  */
