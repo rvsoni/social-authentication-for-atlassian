@@ -70,7 +70,7 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
-    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, Error> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.GITHUB.getTokenEndpoint())
                 .setGrantType(GrantType.AUTHORIZATION_CODE)

@@ -163,7 +163,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     }
 
     @Override
-    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, Error> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(getTokenUrl(provider))
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -175,10 +175,18 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
 
         final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
         final String accessToken = token.getAccessToken();
-        ClaimsSet claimsSet = token.getIdToken().getClaimsSet();
-        String email = claimsSet.getCustomField("email", String.class);
-        email = defaultIfEmpty(email, claimsSet.getCustomField("upn", String.class));
-        String username = defaultIfEmpty(claimsSet.getCustomField("name", String.class), email);
+        final ClaimsSet claimsSet = token.getIdToken().getClaimsSet();
+
+        String payload = token.getBody();
+
+        String email, username;
+        try {
+            email = claimsSet.getCustomField("email", String.class);
+            email = defaultIfEmpty(email, claimsSet.getCustomField("upn", String.class));
+            username = defaultIfEmpty(claimsSet.getCustomField("name", String.class), email);
+        } catch (ClassCastException e) {
+            return Either.right(Error.builder().payload(payload).errorMessage(e.getMessage()).build());
+        }
 
         final String userInfoUrl = getUserInfoUrl(provider);
         if ((email == null || username == null) && isNotEmpty(userInfoUrl)) {
@@ -186,12 +194,28 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                     .setAccessToken(accessToken)
                     .buildHeaderMessage();
 
-            OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
-            Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
+            final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+            final Map<String, Object> userInfo = JSONUtils.parseJSON(payload);
+
+            payload = userInfoResponse.getBody();
+
             // as a last resort try upn from user info (in case of Azure that's email)
+            email = defaultIfEmpty(email, (String) userInfo.get("email"));
             email = defaultIfEmpty(email, (String) userInfo.get("upn"));
             username = defaultIfEmpty((String) userInfo.get("name"), email);
         }
+
+        if (isBlank(email)) {
+            return Either.right(Error.builder()
+                    .payload(payload)
+                    .errorMessage("Failed to retrieve user's email. Expected 'upn' or 'email' field, got following payload:").build());
+        }
+        if (isBlank(username)) {
+            return Either.right(Error.builder()
+                    .payload(payload)
+                    .errorMessage("Failed to retrieve user's name. Expected 'name' field, got following payload:").build());
+        }
+
         return Either.left(Pair.pair(username, email));
     }
 }

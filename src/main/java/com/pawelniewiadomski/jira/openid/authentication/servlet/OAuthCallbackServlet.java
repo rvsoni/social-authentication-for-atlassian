@@ -32,8 +32,7 @@ import java.sql.SQLException;
  */
 @Slf4j
 @AllArgsConstructor
-public class OAuthCallbackServlet extends HttpServlet
-{
+public class OAuthCallbackServlet extends HttpServlet {
     final GlobalSettings globalSettings;
     final LicenseProvider licenseProvider;
 
@@ -66,8 +65,7 @@ public class OAuthCallbackServlet extends HttpServlet
         }
 
         if (provider != null) {
-            try
-            {
+            try {
                 final OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
                 final String state = (String) request.getSession().getAttribute(AuthenticationService.STATE_IN_SESSION);
                 if (!StringUtils.equals(state, oar.getState())) {
@@ -77,15 +75,15 @@ public class OAuthCallbackServlet extends HttpServlet
                 }
 
                 final OAuth2ProviderType providerType = (OAuth2ProviderType) providerTypeFactory.getProviderTypeById(provider.getProviderType());
-                final Either<Pair<String, String>, String> userOrError = providerType.getUsernameAndEmail(oar.getCode(), provider, request);
+                final Either<Pair<String, String>, OAuth2ProviderType.Error> userOrError = providerType.getUsernameAndEmail(oar.getCode(), provider, request);
 
                 if (userOrError.isLeft()) {
                     Pair<String, String> usernameAndEmail = userOrError.left().get();
                     authenticationService.showAuthentication(request, response, provider, usernameAndEmail.left(), usernameAndEmail.right());
                 } else {
-                    templateHelper.render(request, response, "OpenId.Templates.errorWrapper",
-                            ImmutableMap.<String, Object>of(
-                                    "content", userOrError.right().get()));
+                    final OAuth2ProviderType.Error error = userOrError.right().get();
+                    templateHelper.render(request, response, "OpenId.Templates.oauthErrorWithPayload",
+                            ImmutableMap.<String, Object>of("error", error));
                 }
                 return;
             } catch (Exception e) {
