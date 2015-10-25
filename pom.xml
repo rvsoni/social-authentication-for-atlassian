@@ -344,6 +344,7 @@
         <xvfb.enable>true</xvfb.enable>
         <confluence.version>5.8.9</confluence.version>
         <atlassian.spring.scanner.version>1.2.11</atlassian.spring.scanner.version>
+        <jira.servicedesk.application.version>3.0.0</jira.servicedesk.application.version>
     </properties>
     <profiles>
         <profile>
@@ -361,7 +362,7 @@
         <profile>
             <id>jira-7.0</id>
             <properties>
-                <jira.version>7.0.0-OD-03-006</jira.version>
+                <jira.version>7.0.0</jira.version>
                 <testkit.version>7.0.70</testkit.version>
             </properties>
         </profile>
