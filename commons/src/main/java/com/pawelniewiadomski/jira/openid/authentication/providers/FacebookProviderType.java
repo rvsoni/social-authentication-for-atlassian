@@ -70,7 +70,7 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
-    public Either<Pair<String, String>, String> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
+    public Either<Pair<String, String>, Error> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.FACEBOOK.getTokenEndpoint())
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -92,7 +92,8 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
 
         final String email = (String) userInfo.get("email");
         if (isEmpty(email)) {
-            return Either.right("You need to make your JIRA Facebook app available to the general public in Status and Review section of FB Developers.");
+            return Either.right(Error.builder().payload(userInfoResponse.getBody())
+                    .errorMessage("You need to make your JIRA Facebook app available to the general public in Status and Review section of FB Developers.").build());
         }
 
         return Either.left(Pair.pair((String) userInfo.get("name"), email));
