@@ -6,4 +6,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PluginKey {
 	String getKey();
 	String configurationContext();
+	String getRestKey();
 }
