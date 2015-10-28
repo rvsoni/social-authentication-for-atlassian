@@ -231,6 +231,7 @@
                 <configuration>
                     <extractDependencies>true</extractDependencies>
                     <productVersion>${confluence.version}</productVersion>
+                    <contextPath>/</contextPath>
                     <httpPort>8080</httpPort>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
