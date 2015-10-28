@@ -3,10 +3,10 @@ package com.pawelniewiadomski.jira.openid.authentication.services;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.soy.renderer.SoyException;
 import com.atlassian.soy.renderer.SoyTemplateRenderer;
-import com.atlassian.util.concurrent.LazyReference;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +33,12 @@ public class TemplateHelper
 
     @Autowired protected PluginKey pluginKey;
 
-    protected LazyReference<String> soyTemplatesResourceKey = new LazyReference<String>() {
+    protected Supplier<String> soyTemplatesResourceKey = Suppliers.memoize(new Supplier<String>() {
         @Override
-        protected String create() throws Exception {
+        public String get() {
             return pluginKey.getKey() + ':' + SOY_TEMPLATES;
         }
-    };
+    });
 
     public void render(final HttpServletRequest request,
                        final HttpServletResponse response,

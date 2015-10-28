@@ -8,7 +8,6 @@ import com.atlassian.webresource.api.assembler.WebResourceAssembler;
 import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
-import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -63,7 +62,7 @@ public class ConfigurationServlet extends HttpServlet {
                 .requireData("openid.publicMode", publicModeService.canAnyoneSignUp())
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
                 .requireData("openid.externalUserManagement", externalUserManagementService.isExternalUserManagement())
-                .requireData("openid.baseUrl", applicationProperties.getBaseUrl())
+                .requireData("openid.baseUrl", applicationProperties.getBaseUrl() + '/' + pluginKey.getRestKey())
                 .requireData("openid.providerTypes", getProviderTypes());
 
         templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
