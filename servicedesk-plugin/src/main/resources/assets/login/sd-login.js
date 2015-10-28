@@ -40,7 +40,7 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/openid/login/' + providerId;
+            var authenticationUrl = AJS.contextPath() + '/easy-sign-ups/login/' + providerId;
             var returnUrl = this.getParameterByName("os_destination", window.location.href);
             if (returnUrl) {
                 authenticationUrl += "?returnUrl=" + encodeURIComponent(returnUrl);
