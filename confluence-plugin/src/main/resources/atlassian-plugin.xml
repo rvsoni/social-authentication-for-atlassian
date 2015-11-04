@@ -183,11 +183,6 @@
         <param name="webfragments.keywords">webfragments.keywords.admin.system.openid</param>
     </web-item>
 
-    <!-- Gadget -->
-    <gadget key="openid-login-gadget" location="openid-login-gadget.xml">
-        <resource type="download" name="gadgetIcon.png" location="assets/images/gadgetIcon.png"/>
-    </gadget>
-
     <web-resource key="openid-login-gadget-resources">
         <dependency>jira.webresources:global-static</dependency>
         <dependency>com.atlassian.gadgets.publisher:ajs-gadgets</dependency>

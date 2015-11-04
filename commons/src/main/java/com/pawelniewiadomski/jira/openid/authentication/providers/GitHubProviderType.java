@@ -3,6 +3,8 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -17,16 +19,19 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
+import org.codehaus.jackson.type.TypeReference;
+import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.List;
 import java.util.Map;
 
 import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 
 @Slf4j
 public class GitHubProviderType extends AbstractOAuth2ProviderType {
+    private final org.codehaus.jackson.map.ObjectMapper mapper = new org.codehaus.jackson.map.ObjectMapper();
 
     public GitHubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
         super(i18nResolver, openIdDao);
@@ -65,7 +70,7 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
                 .setClientId(provider.getClientId())
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
-                .setScope("openid email profile")
+                .setScope("user")
                 .setParameter("prompt", "select_account")
                 .setRedirectURI(getReturnTo(provider, request))
                 .buildQueryMessage();
@@ -91,9 +96,30 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
 
         final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
 
-        log.trace("JSON response from GitHub", userInfoResponse.getBody());
-
         final Map<String, Object> userInfo = JSONUtils.parseJSON(userInfoResponse.getBody());
+
+        if (!userInfo.containsKey("email") || JSONObject.NULL.equals(userInfo.get("email"))) {
+            final OAuthClientRequest emailsClientRequest = new OAuthBearerClientRequest("https://api.github.com/user/emails")
+                    .setAccessToken(accessToken)
+                    .buildQueryMessage();
+
+            final OAuthResourceResponse emailsResponse = oAuthClient.resource(emailsClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+            final List<EmailResponse> emails = mapper.readValue(emailsResponse.getBody(), new TypeReference<List<EmailResponse>>() {});
+            final EmailResponse email = Iterables.getFirst(Iterables.concat(Iterables.filter(emails, new Predicate<EmailResponse>() {
+                @Override
+                public boolean apply(EmailResponse emailResponse) {
+                    return emailResponse.isPrimary();
+                }
+            }), emails), null);
+
+            if (email == null) {
+                return Either.right(Error.builder()
+                        .errorMessage("Failed to retrieve user's email. Expected 'email' field, got following payload:")
+                        .payload(emailsResponse.getBody()).build());
+            }
+
+            return Either.left(Pair.pair((String) userInfo.get("login"), email.getEmail()));
+        }
 
         return Either.left(Pair.pair((String) userInfo.get("login"), (String) userInfo.get("email")));
     }
