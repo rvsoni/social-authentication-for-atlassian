@@ -1,4 +1,4 @@
-package it.jira;
+package it.servicedesk;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -9,10 +9,10 @@ import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.JiraLoginPage;
-import it.common.pageobjects.google.LinkedInApprovePage;
-import it.common.pageobjects.google.LinkedInLoginPage;
+import it.common.pageobjects.google.FacebookApprovePage;
+import it.common.pageobjects.google.FacebookLoginPage;
+import it.servicedesk.pageobjects.AddProviderPage;
+import it.servicedesk.pageobjects.JiraLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.apache.commons.beanutils.PropertyUtils.getProperty;
 
-public class TestLinkedInAuthentication extends BaseJiraWebTest {
+public class TestFacebookAuthentication extends BaseJiraWebTest {
 
     final static Map<String, Object> passwords = ItEnvironment.getConfiguration();
 
@@ -33,9 +33,9 @@ public class TestLinkedInAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("LinkedIn")
-                .setClientId((String) getProperty(passwords, "linkedin.clientId"))
-                .setClientSecret((String) getProperty(passwords, "linkedin.clientSecret"))
+        addProvider.setProviderType("Facebook")
+                .setClientId((String) getProperty(passwords, "facebook.clientId"))
+                .setClientSecret((String) getProperty(passwords, "facebook.clientSecret"))
                 .save();
 
         jira.getTester().getDriver().manage().deleteAllCookies();
@@ -44,6 +44,8 @@ public class TestLinkedInAuthentication extends BaseJiraWebTest {
     @After
     public void tearDown() {
         jira.getTester().getDriver().manage().deleteAllCookies();
+        jira.getTester().getDriver().navigate().to("https://www.facebook.com");
+        jira.getTester().getDriver().manage().deleteAllCookies();
     }
 
     @Test
@@ -51,9 +53,9 @@ public class TestLinkedInAuthentication extends BaseJiraWebTest {
     public void testLogInWorks() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         JiraLoginPage loginPage = jira.visit(JiraLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
-        loginPage.startAuthenticationDanceFor("LinkedIn");
+        loginPage.startAuthenticationDanceFor("Facebook");
 
-        loginDance((String) getProperty(passwords, "linkedin.user"), (String) getProperty(passwords, "linkedin.password"));
+        loginDance((String) getProperty(passwords, "facebook.user"), (String) getProperty(passwords, "facebook.password"));
 
         jira.getPageBinder().bind(DashboardPage.class);
     }
@@ -64,13 +66,13 @@ public class TestLinkedInAuthentication extends BaseJiraWebTest {
         Preconditions.checkNotNull(email);
         Preconditions.checkNotNull(password);
 
-        LinkedInLoginPage loginPage = jira.getPageBinder().bind(LinkedInLoginPage.class);
+        FacebookLoginPage loginPage = jira.getPageBinder().bind(FacebookLoginPage.class);
 
         loginPage.setEmail(email);
         loginPage.setPassword(password);
 
         Poller.waitUntilTrue(loginPage.isSignInEnabled());
-        DelayedBinder<LinkedInApprovePage> approvePage = loginPage.signIn();
+        DelayedBinder<FacebookApprovePage> approvePage = loginPage.signIn();
         if (approvePage.canBind()) {
             approvePage.bind().approve();
         }
@@ -83,9 +85,9 @@ public class TestLinkedInAuthentication extends BaseJiraWebTest {
                 + "/login.jsp?os_destination=%2Fsecure%2FViewProfile.jspa");
         JiraLoginPage loginPage = jira.getPageBinder().bind(JiraLoginPage.class);
         Poller.waitUntilTrue(loginPage.isOpenIdButtonVisible());
-        loginPage.startAuthenticationDanceFor("LinkedIn");
+        loginPage.startAuthenticationDanceFor("Facebook");
 
-        loginDance((String) getProperty(passwords, "linkedin.user"), (String) getProperty(passwords, "linkedin.password"));
+        loginDance((String) getProperty(passwords, "facebook.user"), (String) getProperty(passwords, "facebook.password"));
 
         jira.getPageBinder().bind(ViewProfilePage.class);
     }

@@ -1,19 +1,14 @@
-package it.jira;
+package it.servicedesk;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import it.common.EditProviderAssertions;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.ConfigurationPage;
-import it.jira.pageobjects.EditProviderPage;
-import org.hamcrest.Matcher;
+import it.servicedesk.pageobjects.AddProviderPage;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntil;
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilFalse;
 import static com.atlassian.pageobjects.elements.query.Poller.waitUntilTrue;
-import static it.jira.pageobjects.AddProviderPage.hasErrorMessage;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 

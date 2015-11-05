@@ -1,4 +1,4 @@
-package it.jira;
+package it.servicedesk;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -9,8 +9,8 @@ import com.atlassian.pageobjects.DelayedBinder;
 import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.JiraLoginPage;
+import it.servicedesk.pageobjects.AddProviderPage;
+import it.servicedesk.pageobjects.JiraLoginPage;
 import it.common.pageobjects.google.VkApprovePage;
 import it.common.pageobjects.google.VkLoginPage;
 import org.junit.After;

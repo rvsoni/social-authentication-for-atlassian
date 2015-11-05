@@ -1,4 +1,4 @@
-package it.jira;
+package it.servicedesk;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -11,8 +11,8 @@ import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
 import it.common.pageobjects.google.GitHubApprovePage;
 import it.common.pageobjects.google.GitHubLoginPage;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.JiraLoginPage;
+import it.servicedesk.pageobjects.AddProviderPage;
+import it.servicedesk.pageobjects.JiraLoginPage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class TestGitHubAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("Github")
+        addProvider.setProviderType("GitHub")
                 .setClientId((String) getProperty(passwords, "github.clientId"))
                 .setClientSecret((String) getProperty(passwords, "github.clientSecret"))
                 .save();

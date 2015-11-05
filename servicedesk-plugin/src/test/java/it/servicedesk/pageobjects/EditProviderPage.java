@@ -1,4 +1,4 @@
-package it.jira.pageobjects;
+package it.servicedesk.pageobjects;
 
 public class EditProviderPage extends AddProviderPage {
 

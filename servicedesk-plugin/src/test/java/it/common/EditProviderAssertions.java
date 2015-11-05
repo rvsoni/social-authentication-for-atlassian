@@ -1,13 +1,13 @@
 package it.common;
 
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.ConfigurationPage;
-import it.jira.pageobjects.EditProviderPage;
+import it.servicedesk.pageobjects.AddProviderPage;
+import it.servicedesk.pageobjects.ConfigurationPage;
+import it.servicedesk.pageobjects.EditProviderPage;
 import lombok.AllArgsConstructor;
 import org.junit.Test;
 
 import static com.atlassian.pageobjects.elements.query.Poller.*;
-import static it.jira.pageobjects.AddProviderPage.hasErrorMessage;
+import static it.servicedesk.pageobjects.AddProviderPage.hasErrorMessage;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
