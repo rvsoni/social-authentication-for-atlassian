@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+
+        <param name="plugin-icon">assets/images/pluginIcon.png</param>
+        <param name="plugin-logo">assets/images/pluginLogo.png</param>
+        <param name="plugin-banner">assets/images/banner.png</param>
+
+        <param name="atlassian-licensing-enabled">true</param>
+        <param name="atlassian-data-center-compatible">true</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n-commons" location="jira-openid-authentication-plugin"/>
+    <resource type="i18n" name="i18n-servicedesk" location="sd-i18n"/>
+
+    <web-resource key="openid-soy-templates">
+        <transformation extension="soy">
+            <transformer key="soyTransformer"/>
+        </transformation>
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+        <resource type="download" name="images/" location="assets/images"/>
+        <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
+
+        <resource type="download" name="openid.js" location="views/openid.soy"/>
+        <resource type="download" name="openid-configuration-container.js"
+                  location="views/openid/configuration/container.soy"/>
+        <resource type="download" name="openid-configuration-providers.js"
+                  location="views/openid/configuration/providers.soy"/>
+        <resource type="download" name="openid-configuration-create-provider.js"
+                  location="views/openid/configuration/create-provider.soy"/>
+        <resource type="download" name="openid-configuration-edit-provider.js"
+                  location="views/openid/configuration/edit-provider.soy"/>
+        <resource type="download" name="openid-configuration-delete-provider.js"
+                  location="views/openid/configuration/delete-provider.soy"/>
+    </web-resource>
+
+    <!-- add our web resources -->
+    <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <context>customerportal</context>
+        <transformation extension="less">
+            <transformer key="lessTransformer"/>
+        </transformation>
+        <resource type="download" name="login.css" location="assets/login/login.less"/>
+        <resource type="download" name="sd-shims.js" location="assets/login/sd-shims.js"/>
+        <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
+        <resource type="download" name="jira-shims.js" location="assets/login/jira-shims.js"/>
+        <resource type="download" name="login.js" location="assets/login/sd-login.js"/>
+        <resource type="download" name="images/" location="assets/images"/>
+    </web-resource>
+
+    <web-resource-transformer key="fix-paths" class="com.pawelniewiadomski.jira.openid.authentication.services.servicedesk.PathsTransformer"/>
+
+    <web-resource key="jira-openid-configuration-plugin-resources">
+        <transformation extension="less">
+            <transformer key="lessTransformer"/>
+        </transformation>
+
+        <transformation extension="js">
+            <transformer key="fix-paths"/>
+        </transformation>
+
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+        <resource type="download" name="images/" location="assets/images"/>
+
+        <resource type="download" name="webjars/" location="META-INF/resources/webjars"/>
+
+        <resource type="download" name="webjars/angularjs/angular.min.js"
+                  location="META-INF/resources/webjars/angularjs/1.3.0/angular.min.js"/>
+        <resource type="download" name="webjars/angularjs/angular-route.min.js"
+                  location="META-INF/resources/webjars/angularjs/1.3.0/angular-route.min.js"/>
+
+        <resource type="download" name="jira-openid-configuration.css" location="assets/configuration/openid.less"/>
+        <resource type="download" name="configuration.js" location="assets/configuration/configuration.js"/>
+        <context>jira-servicedesk-configuration</context>
+    </web-resource>
+
+    <rest name="OpenID REST" key="rest-plugin" path="/easy-sign-ups" version="1.0"/>
+
+    <!-- import from the product container -->
+    <servlet name="Login Servlet" key="easy-sign-ups-login-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.LoginServlet">
+        <url-pattern>/easy-sign-ups-login</url-pattern>
+    </servlet>
+
+    <servlet name="Callback Servlet" key="easy-sign-ups-callback-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.OAuthCallbackServlet">
+        <url-pattern>/easy-sign-ups-callback</url-pattern>
+    </servlet>
+
+    <servlet name="Configuration Servlet" key="easy-sign-ups-configuration-servlet"
+             class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
+        <url-pattern>/easy-sign-ups-configuration</url-pattern>
+    </servlet>
+
+    <component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
+    <component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
+    <component-import key="txTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate"/>
+    <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
+    <component-import key="pluginSettingsFactory"
+                      interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
+    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
+    <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
+    <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager"/>
+
+    <component-import key="crowdService" interface="com.atlassian.crowd.embedded.api.CrowdService"/>
+    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
+    <component-import key="pageBuilderService" interface="com.atlassian.webresource.api.assembler.PageBuilderService"/>
+    <component-import key="loginUrlProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
+
+    <component-import key="jiraApplicationProperties" interface="com.atlassian.jira.config.properties.ApplicationProperties"/>
+
+    <component key="tx-processor" name="Transactional Annotation Processor"
+               class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+        <decription>Processes @Transactional annotations.</decription>
+    </component>
+
+    <component key="addOrderUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
+    <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
+
+    <!-- Active Objects -->
+    <ao key="openid-active-objects">
+        <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
+    </ao>
+
+    <!-- Pretty links -->
+    <routing key="routes" path="/easy-sign-ups">
+        <route from="/configuration" to="/plugins/servlet/easy-sign-ups-configuration"/>
+        <route from="/login/{pid}" to="/plugins/servlet/easy-sign-ups-login?pid={pid}"/>
+        <route from="/oauth2-callback/{cid}" to="/plugins/servlet/easy-sign-ups-callback?cid={cid}"/>
+    </routing>
+
+    <sitemesh key="ad-configuration" path="/easy-sign-ups"/>
+
+    <!-- Web items -->
+    <web-item key="openid_servicedesk_legacy" name="OpenId Link" section="admin_plugins_menu/sd-plugin-admin-section-legacy"
+              weight="70">
+        <label key="openid.sd.menu"/>
+        <link linkId="openid">/easy-sign-ups/configuration</link>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.conditions.UserIsSysAdminCondition"/>
+        <param name="webfragments.keywords">webfragments.keywords.admin.system.openid.sd</param>
+    </web-item>
+
+    <web-item key="openid_servicedesk" name="OpenId Link" section="admin_applications_section/sd-plugin-admin-section"
+              weight="70">
+        <label key="openid.sd.menu"/>
+        <link linkId="openid">/easy-sign-ups/configuration</link>
+        <condition class="com.pawelniewiadomski.jira.openid.authentication.conditions.UserIsSysAdminCondition"/>
+        <param name="webfragments.keywords">webfragments.keywords.admin.system.openid.sd</param>
+    </web-item>
+</atlassian-plugin>

@@ -1,0 +1,197 @@
+{namespace OpenId.Templates.Configuration}
+
+/**
+ * Common provider details.
+ */
+{template .providerDetails}
+{call aui.message.error}
+    {param extraAttributes}ng-if="errorMessages && errorMessages.length > 0"{/param}
+    {param isCloseable: false/}
+    {param content}{lb}{lb}errorMessages[0]{rb}{rb}{/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-show="providerTypes"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'providerType'/}
+            {param content: 'Select provider'/}
+        {/call}
+        <select id="providerType" name="providerType" ng-model="providerType"
+           ng-required="true" ng-options="pt.name for pt in providerTypes"></select>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'name'/}
+            {param isRequired: true/}
+            {param content: 'Name'/}
+        {/call}
+        <input id="name" class="text" type="text" name="name" ng-if="!providerType.createdProviderName" ng-model="provider.name" required="true">
+        <span>{lb}{lb}providerType.createdProviderName{rb}{rb}</span>
+        <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
+        <div data-field="name" class="error" ng-if="errors.name">{lb}{lb}errors.name{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="!providerType.skipUrl"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'endpointUrl'/}
+            {param isRequired: true/}
+            {param content: 'Provider URL'/}
+        {/call}
+        <input id="endpointUrl" class="text" type="url" name="endpointUrl" ng-model="provider.endpointUrl" required="true">
+        <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.required">Please provide the provider URL.</div>
+        <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.url">Please provide a valid URL.</div>
+        <div data-field="endpointUrl" class="error" ng-if="errors.endpointUrl">{lb}{lb}errors.endpointUrl{rb}{rb}</div>
+        {call aui.message.info}
+            {param extraClasses: 'hint hidden'/}
+            {param content}
+                <span class="hint-text"></span>
+            {/param}
+        {/call}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.id=='openid1'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param isRequired: true/}
+            {param forField: 'extensionNamespace'/}
+            {param content: 'Alias'/}
+        {/call}
+        <input id="extensionNamespace" class="text" type="text" name="extensionNamespace" ng-model="provider.extensionNamespace" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Probably you should use 'ext1'{/param}
+        {/call}
+        <div data-field="extensionNamespace" class="error" ng-if="providerForm.extensionNamespace.$error.required">Please provide the alias.</div>
+        <div data-field="extensionNamespace" class="error" ng-if="errors.extensionNamespace">{lb}{lb}errors.extensionNamespace{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="!providerType.skipCallback"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'callbackUrl'/}
+            {param content: 'Callback URL'/}
+        {/call}
+        <input id="callbackId" type="hidden" name="callbackId" ng-model="provider.callbackId">
+        <span id="callbackUrl">{lb}{lb}baseUrl + "/oauth2-callback/" + provider.callbackId{rb}{rb}</span>
+        {call aui.form.fieldDescription}
+            {param message}You need to submit it to your authentication provider.{/param}
+        {/call}
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="!providerType.skipClientInfo"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientId'/}
+            {param content: 'Client ID'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="clientId" class="text" type="text" name="clientId" ng-model="provider.clientId" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Client ID that was established at the provider's site{/param}
+        {/call}
+        <div data-field="clientId" class="error" ng-if="providerForm.clientId.$error.required">Please provide the client ID.</div>
+        <div data-field="clientId" class="error" ng-if="errors.clientId">{lb}{lb}errors.clientId{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="!providerType.skipClientInfo"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'clientSecret'/}
+            {param content: 'Client Secret'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="clientSecret" class="text" type="text" name="clientSecret" ng-model="provider.clientSecret" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Client Secret that was established at the provider's site{/param}
+        {/call}
+        <div data-field="clientSecret" class="error" ng-if="providerForm.clientSecret.$error.required">Please provide the client secret.</div>
+        <div data-field="clientSecret" class="error" ng-if="errors.clientSecret">{lb}{lb}errors.clientSecret{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.id=='openid1' || providerType.id=='oauth2' || providerType.id=='google'"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'allowedDomains'/}
+            {param content: 'Allowed Domains'/}
+        {/call}
+        <input id="allowedDomains" class="text" type="text" name="allowedDomains" ng-model="provider.allowedDomains">
+        {call aui.form.fieldDescription}
+            {param message}Comma separated list of domains. If given only users having emails from allowed domains will be allowed.{/param}
+        {/call}
+        <div data-field="allowedDomains" class="error" ng-if="errors.allowedDomains">{lb}{lb}errors.allowedDomains{rb}{rb}</div>
+    {/param}
+{/call}
+{/template}
+
+/**
+ * Create provider form.
+ */
+{template .createProvider}
+    {call aui.page.pageHeader}
+        {param content}
+            {call aui.page.pageHeaderMain}
+                {param content}
+                    <h2>Add Authentication Provider</h2>
+                    <p class="description">You can add any OpenID/OAuth 2.0 provider that returns e-mail and full name of the user.</p>
+                {/param}
+            {/call}
+        {/param}
+    {/call}
+    {call aui.form.form}
+        {param action: ''/}
+        {param id: 'createProvider'/}
+        {param extraAttributes}ng-submit="createProvider($event)" name="providerForm"{/param}
+        {param content}
+            {call aui.form.fieldset}
+                {param legendContent: 'Add Provider'/}
+                {param content}
+                    {call .providerDetails}
+                    {/call}
+                {/param}
+            {/call}
+
+            {call aui.form.buttons}
+                {param content}
+                    {call aui.form.submit}
+                        {param text: 'Add Provider'/}
+                        {param id: 'saveProvider'/}
+                    {/call}
+                    {call aui.form.linkButton}
+                        {param text: 'Cancel'/}
+                        {param id: 'cancel'/}
+                        {param url}#/{/param}
+                    {/call}
+                {/param}
+            {/call}
+
+            <div ng-if="providerType.id=='google'">
+                <hr>
+                <p>To configure Google authentication you need to follow these steps:</p>
+                <ol>
+                    <li><a href="https://console.developers.google.com" target="_blank">Log in to Google Developer Console</a></li>
+                    <li>Create a new project</li>
+                    <li>After the project is created select <em>APIs & Auth &rarr; APIs</em> in the menu on the left</li>
+                    <li>Enable <em>Google+ API</em> (click <em>OFF</em>)</li>
+                    <li>Open <em>APIs & Auth &rarr; Credentials</em></li>
+                    <li>Click <em>Create new Client ID</em> under <em>OAuth</em></li>
+                    <li>Click <em>Configure consent screen</em></li>
+                    <li>Fill in <em>Product name</em> and any additional fields you want</li>
+                    <li>Click <em>Save</em></li>
+                    <li>Fill in <em>Authorized JavaScript Origins</em> with you JIRA base URL</li>
+                    <li>Fill in <em>Authorized Redirect URIs</em> with the callback URL above</li>
+                    <li>Click <em>Create Client ID</em></li>
+                    <li>Copy <em>Client ID</em> and <em>Client Secret</em> to the form above</li>
+                    <li>Click <em>Add Provider</em> and you're done</li>
+                </ol>
+            </div>
+        {/param}
+    {/call}
+{/template}

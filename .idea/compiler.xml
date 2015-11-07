@@ -17,6 +17,41 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
+      <profile default="false" name="Annotation profile for social-authentication-commons" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="social-authentication-commons" />
+      </profile>
+      <profile default="false" name="Annotation profile for confluence-openid-authentication-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="confluence-openid-authentication-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for jira-openid-authentication-plugin (1)" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jira-openid-authentication-plugin (1)" />
+      </profile>
+      <profile default="false" name="Annotation profile for jira-openid-authentication-plugin (2)" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jira-openid-authentication-plugin (2)" />
+      </profile>
+      <profile default="false" name="Annotation profile for servicedesk-openid-authentication-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="servicedesk-openid-authentication-plugin" />
+      </profile>
       <profile default="false" name="Annotation profile for jira-openid-authentication-plugin" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -26,7 +61,13 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="confluence-openid-authentication-plugin" target="1.7" />
       <module name="jira-openid-authentication-plugin" target="1.7" />
+      <module name="jira-openid-authentication-plugin (1)" target="1.7" />
+      <module name="jira-openid-authentication-plugin (2)" target="1.7" />
+      <module name="servicedesk-openid-authentication-plugin" target="1.7" />
+      <module name="social-authentication-commons" target="1.7" />
+      <module name="social-authentication-parent" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
