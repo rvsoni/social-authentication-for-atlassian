@@ -1,4 +1,4 @@
-package it.jira;
+package it.servicedesk;
 
 import com.atlassian.jira.pageobjects.BaseJiraWebTest;
 import com.atlassian.jira.pageobjects.config.LoginAs;
@@ -10,9 +10,9 @@ import com.atlassian.pageobjects.elements.query.Poller;
 import com.google.common.base.Preconditions;
 import it.common.ItEnvironment;
 import it.common.pageobjects.google.GooglePasswordPage;
-import it.jira.pageobjects.AddProviderPage;
-import it.jira.pageobjects.ErrorPage;
-import it.jira.pageobjects.JiraLoginPage;
+import it.servicedesk.pageobjects.AddProviderPage;
+import it.servicedesk.pageobjects.ErrorPage;
+import it.servicedesk.pageobjects.JiraLoginPage;
 import it.common.pageobjects.google.GoogleAccountChooserPage;
 import it.common.pageobjects.google.GoogleApprovePage;
 import it.common.pageobjects.google.GoogleLoginPage;

@@ -54,7 +54,7 @@ public class TemplateHelper
         final Map<String, Object> params = Maps.newHashMap(map);
         params.put("baseUrl", getBaseUrl(request));
         try {
-            params.put("loginUrl", loginUriProvider.getLoginUri(new URI("/")));
+            params.put("loginUrl", loginUriProvider.getLoginUri(new URI("/")).toString());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

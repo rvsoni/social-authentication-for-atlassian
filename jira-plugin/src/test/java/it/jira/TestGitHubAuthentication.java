@@ -33,7 +33,7 @@ public class TestGitHubAuthentication extends BaseJiraWebTest {
         jira.backdoor().project().addProject("Test", "TST", "admin");
 
         AddProviderPage addProvider = jira.gotoLoginPage().loginAsSysAdmin(AddProviderPage.class);
-        addProvider.setProviderType("Github")
+        addProvider.setProviderType("GitHub")
                 .setClientId((String) getProperty(passwords, "github.clientId"))
                 .setClientSecret((String) getProperty(passwords, "github.clientSecret"))
                 .save();

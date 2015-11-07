@@ -70,7 +70,7 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
                 .setClientId(provider.getClientId())
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
-                .setScope("user")
+                .setScope("user:email")
                 .setParameter("prompt", "select_account")
                 .setRedirectURI(getReturnTo(provider, request))
                 .buildQueryMessage();
