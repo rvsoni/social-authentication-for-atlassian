@@ -3,10 +3,15 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/confluence-plugin/confluence-openid-authentication-plugin.iml" filepath="$PROJECT_DIR$/confluence-plugin/confluence-openid-authentication-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/confluence-plugin/confluence-openid-authentication-plugin (1).iml" filepath="$PROJECT_DIR$/confluence-plugin/confluence-openid-authentication-plugin (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/jira-plugin/jira-openid-authentication-plugin.iml" filepath="$PROJECT_DIR$/jira-plugin/jira-openid-authentication-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jira-plugin/jira-openid-authentication-plugin (1).iml" filepath="$PROJECT_DIR$/jira-plugin/jira-openid-authentication-plugin (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/servicedesk-plugin/servicedesk-openid-authentication-plugin.iml" filepath="$PROJECT_DIR$/servicedesk-plugin/servicedesk-openid-authentication-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/servicedesk-plugin/servicedesk-openid-authentication-plugin (1).iml" filepath="$PROJECT_DIR$/servicedesk-plugin/servicedesk-openid-authentication-plugin (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/commons/social-authentication-commons.iml" filepath="$PROJECT_DIR$/commons/social-authentication-commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commons/social-authentication-commons (1).iml" filepath="$PROJECT_DIR$/commons/social-authentication-commons (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/social-authentication-parent.iml" filepath="$PROJECT_DIR$/social-authentication-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/social-authentication-parent (1).iml" filepath="$PROJECT_DIR$/social-authentication-parent (1).iml" />
     </modules>
   </component>
 </project>

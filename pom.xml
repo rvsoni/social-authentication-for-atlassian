@@ -331,7 +331,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.4.10</jira.version>
-        <amps.version>6.1.2</amps.version>
+        <amps.version>6.2.1</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
         <testkit.version>6.2.21</testkit.version>
         <sal.api.version>2.13.4</sal.api.version>

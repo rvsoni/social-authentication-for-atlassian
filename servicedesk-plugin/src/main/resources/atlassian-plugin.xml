@@ -10,6 +10,8 @@
         <param name="plugin-logo">assets/images/pluginLogo.png</param>
         <param name="plugin-banner">assets/images/banner.png</param>
 
+        <param name="configure.url">/easy-sign-ups/configuration</param>
+
         <param name="atlassian-licensing-enabled">true</param>
         <param name="atlassian-data-center-compatible">true</param>
     </plugin-info>
