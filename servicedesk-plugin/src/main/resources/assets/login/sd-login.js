@@ -29,6 +29,9 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 authenticationUrl: this.getAuthenticationUrl(this.model.get('id'))
             })
         },
+        getPortalId: function() {
+            return window.location.pathname.match(/servicedesk\/customer\/portal\/([0-9]*)\/user/)[1];
+        },
         getParameterByName: function (name, href) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -40,10 +43,11 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/easy-sign-ups/login/' + providerId;
-            var returnUrl = this.getParameterByName("os_destination", window.location.href);
+            var authenticationUrl = AJS.contextPath() + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
+
+            var returnUrl = this.getParameterByName("destination", window.location.href);
             if (returnUrl) {
-                authenticationUrl += "?returnUrl=" + encodeURIComponent(returnUrl);
+                authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);
             }
             return authenticationUrl;
         }
@@ -79,14 +83,10 @@ define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/pr
 require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/product', 'servicedesk/underscore'],
     function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
         $(document).ready(function () {
-            console.log('OpenID booting up...');
+            console.log('Easy sign-ups booting up...');
 
             var loginFormSelector = ".cv-login .cv-main-group .cv-col-secondary";
             var $loginForm = $(loginFormSelector);
-//            if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
-//                console.log('Login form has no action or that is WebSudo');
-//                return false;
-//            }
 
             if (_.isFunction($loginForm.removeDirtyWarning)) {
                 console.log('Disabling dirty warning');

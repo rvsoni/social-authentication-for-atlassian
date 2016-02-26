@@ -51,6 +51,7 @@
             <transformer key="lessTransformer"/>
         </transformation>
         <resource type="download" name="login.css" location="assets/login/login.less"/>
+        <resource type="download" name="sd-login.css" location="assets/login/sd-login.less"/>
         <resource type="download" name="sd-shims.js" location="assets/login/sd-shims.js"/>
         <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
         <resource type="download" name="jira-shims.js" location="assets/login/jira-shims.js"/>

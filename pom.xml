@@ -331,7 +331,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>6.4.10</jira.version>
-        <amps.version>6.2.1</amps.version>
+        <amps.version>6.2.2</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
         <testkit.version>6.2.21</testkit.version>
         <sal.api.version>2.13.4</sal.api.version>
@@ -343,7 +343,6 @@
         <xvfb.enable>true</xvfb.enable>
         <confluence.version>5.8.9</confluence.version>
         <atlassian.spring.scanner.version>1.2.11</atlassian.spring.scanner.version>
-        <jira.servicedesk.application.version>3.0.0</jira.servicedesk.application.version>
     </properties>
     <profiles>
         <profile>
@@ -361,8 +360,9 @@
         <profile>
             <id>jira-7.0</id>
             <properties>
-                <jira.version>7.0.0</jira.version>
+                <jira.version>7.0.10</jira.version>
                 <testkit.version>7.0.70</testkit.version>
+                <jira.servicedesk.application.version>3.0.10</jira.servicedesk.application.version>
             </properties>
         </profile>
     </profiles>
