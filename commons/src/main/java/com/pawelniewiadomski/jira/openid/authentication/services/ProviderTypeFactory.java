@@ -7,9 +7,9 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.providers.*;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,17 @@ import java.util.Map;
 
 @Service
 public class ProviderTypeFactory {
-    @Autowired protected I18nResolver i18nResolver;
+    @Autowired
+    protected I18nResolver i18nResolver;
 
-    @Autowired protected OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    @Autowired
+    protected OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
 
-    @Autowired protected OpenIdDao openIdDao;
+    @Autowired
+    protected OpenIdDao openIdDao;
+
+    @Autowired
+    protected ReturnToHelper returnToHelper;
 
     @Nonnull
     public ProviderType getProviderTypeById(@Nonnull String id) throws IllegalArgumentException {
@@ -43,13 +49,13 @@ public class ProviderTypeFactory {
         @Override
         public Map<String, ProviderType> get() {
             final ImmutableList<ProviderType> providerTypes = ImmutableList.<ProviderType>of(
-                    new GoogleProviderType(i18nResolver, openIdDao),
-                    new FacebookProviderType(i18nResolver, openIdDao),
-                    new LinkedInProviderType(i18nResolver, openIdDao),
-                    new GitHubProviderType(i18nResolver, openIdDao),
-                    new VkProviderType(i18nResolver, openIdDao),
+                    new GoogleProviderType(i18nResolver, openIdDao, returnToHelper),
+                    new FacebookProviderType(i18nResolver, openIdDao, returnToHelper),
+                    new LinkedInProviderType(i18nResolver, openIdDao, returnToHelper),
+                    new GitHubProviderType(i18nResolver, openIdDao, returnToHelper),
+                    new VkProviderType(i18nResolver, openIdDao, returnToHelper),
                     new OpenIdProviderType(i18nResolver, openIdDao),
-                    new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider));
+                    new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider, returnToHelper));
 
             return ImmutableMap.<String, ProviderType>builder().putAll(Maps.uniqueIndex(providerTypes, new Function<ProviderType, String>() {
                 @Override

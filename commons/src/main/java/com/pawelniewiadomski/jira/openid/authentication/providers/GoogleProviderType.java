@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
@@ -24,15 +25,16 @@ import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
 
 public class GoogleProviderType extends AbstractOAuth2ProviderType {
 
     final Logger log = Logger.getLogger(this.getClass());
+    private final ReturnToHelper returnToHelper;
 
-    public GoogleProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    public GoogleProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao, ReturnToHelper returnToHelper) {
         super(i18nResolver, openIdDao);
+        this.returnToHelper = returnToHelper;
     }
 
     @Nonnull
@@ -76,7 +78,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
                 .setState(state)
                 .setScope("openid email profile")
                 .setParameter("prompt", "select_account")
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
 
@@ -87,7 +89,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildBodyMessage();
 

@@ -20,4 +20,9 @@ public class ServiceDeskPluginKey implements PluginKey {
 	public String getRestKey() {
 		return "easy-sign-ups";
 	}
+
+	@Override
+	public String getCallbackPath() {
+		return "/easy-sign-ups/oauth2-callback";
+	}
 }

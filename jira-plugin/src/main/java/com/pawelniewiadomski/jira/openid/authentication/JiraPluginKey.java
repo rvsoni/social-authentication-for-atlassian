@@ -21,4 +21,9 @@ public class JiraPluginKey implements PluginKey {
 	public String getRestKey() {
 		return "openid";
 	}
+
+	@Override
+	public String getCallbackPath() {
+		return "/openid/oauth2-callback";
+	}
 }

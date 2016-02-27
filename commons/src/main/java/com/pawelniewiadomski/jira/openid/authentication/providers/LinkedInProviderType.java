@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -19,15 +20,15 @@ import org.apache.oltu.oauth2.common.utils.JSONUtils;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
-
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 
 public class LinkedInProviderType extends AbstractOAuth2ProviderType {
 
-    public LinkedInProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    private final ReturnToHelper returnToHelper;
+
+    public LinkedInProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao, ReturnToHelper returnToHelper) {
         super(i18nResolver, openIdDao);
+        this.returnToHelper = returnToHelper;
     }
 
     @Nonnull
@@ -65,7 +66,7 @@ public class LinkedInProviderType extends AbstractOAuth2ProviderType {
                 .setState(state)
                 .setScope("r_basicprofile r_emailaddress")
                 .setParameter("prompt", "select_account")
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
 
@@ -76,7 +77,7 @@ public class LinkedInProviderType extends AbstractOAuth2ProviderType {
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildQueryMessage();
 
