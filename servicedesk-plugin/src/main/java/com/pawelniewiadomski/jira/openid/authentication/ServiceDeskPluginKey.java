@@ -25,4 +25,9 @@ public class ServiceDeskPluginKey implements PluginKey {
 	public String getCallbackPath() {
 		return "/easy-sign-ups/oauth2-callback";
 	}
+
+	@Override
+	public boolean areCustomProvidersDisabled() {
+		return true;
+	}
 }

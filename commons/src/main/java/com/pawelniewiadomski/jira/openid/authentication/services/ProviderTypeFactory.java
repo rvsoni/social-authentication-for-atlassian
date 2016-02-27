@@ -7,6 +7,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.providers.*;
@@ -31,6 +32,9 @@ public class ProviderTypeFactory {
     @Autowired
     protected ReturnToHelper returnToHelper;
 
+    @Autowired
+    protected PluginKey pluginKey;
+
     @Nonnull
     public ProviderType getProviderTypeById(@Nonnull String id) throws IllegalArgumentException {
         final ProviderType providerType = ID_MAP.get().get(id);
@@ -48,16 +52,22 @@ public class ProviderTypeFactory {
     private final Supplier<Map<String, ProviderType>> ID_MAP = Suppliers.memoize(new Supplier<Map<String, ProviderType>>() {
         @Override
         public Map<String, ProviderType> get() {
-            final ImmutableList<ProviderType> providerTypes = ImmutableList.<ProviderType>of(
+            final ImmutableList.Builder<ProviderType> providerTypes = ImmutableList.builder();
+
+            providerTypes.add(
                     new GoogleProviderType(i18nResolver, openIdDao, returnToHelper),
                     new FacebookProviderType(i18nResolver, openIdDao, returnToHelper),
                     new LinkedInProviderType(i18nResolver, openIdDao, returnToHelper),
                     new GitHubProviderType(i18nResolver, openIdDao, returnToHelper),
-                    new VkProviderType(i18nResolver, openIdDao, returnToHelper),
-                    new OpenIdProviderType(i18nResolver, openIdDao),
-                    new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider, returnToHelper));
+                    new VkProviderType(i18nResolver, openIdDao, returnToHelper));
 
-            return ImmutableMap.<String, ProviderType>builder().putAll(Maps.uniqueIndex(providerTypes, new Function<ProviderType, String>() {
+            if (!pluginKey.areCustomProvidersDisabled()) {
+                providerTypes.add(
+                        new OpenIdProviderType(i18nResolver, openIdDao),
+                        new DiscoverablyOauth2ProviderType(i18nResolver, openIdDao, discoveryDocumentProvider, returnToHelper));
+            }
+
+            return ImmutableMap.<String, ProviderType>builder().putAll(Maps.uniqueIndex(providerTypes.build(), new Function<ProviderType, String>() {
                 @Override
                 public String apply(@Nullable ProviderType abstractProviderType) {
                     return abstractProviderType.getId();

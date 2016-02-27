@@ -32,7 +32,7 @@ public class PathsTransformer implements WebResourceTransformer {
                     }
 
                     out.append(charSequence.subSequence(start, matcher.start()));
-                    String subst = String.format("/%s/", ((ServiceDeskPluginKey) pluginKey).getRestKey());
+                    String subst = String.format("/%s/", pluginKey.getRestKey());
                     if(subst != null) {
                         out.append(subst);
                     } else {
