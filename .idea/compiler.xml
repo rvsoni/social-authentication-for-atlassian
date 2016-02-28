@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
@@ -12,17 +11,11 @@
       <entry name="!?*.flex" />
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
+      <entry name="!?*.aj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
+      <profile default="true" name="Default" enabled="true">
         <processorPath useClasspath="true" />
-      </profile>
-      <profile default="false" name="Annotation profile for social-authentication-commons" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="social-authentication-commons" />
       </profile>
       <profile default="false" name="Annotation profile for confluence-openid-authentication-plugin" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -31,26 +24,12 @@
         <processorPath useClasspath="true" />
         <module name="confluence-openid-authentication-plugin" />
       </profile>
-      <profile default="false" name="Annotation profile for jira-openid-authentication-plugin (1)" enabled="true">
+      <profile default="false" name="Annotation profile for social-authentication-commons" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="jira-openid-authentication-plugin (1)" />
-      </profile>
-      <profile default="false" name="Annotation profile for jira-openid-authentication-plugin (2)" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="jira-openid-authentication-plugin (2)" />
-      </profile>
-      <profile default="false" name="Annotation profile for servicedesk-openid-authentication-plugin" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="servicedesk-openid-authentication-plugin" />
+        <module name="social-authentication-commons" />
       </profile>
       <profile default="false" name="Annotation profile for jira-openid-authentication-plugin" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -59,16 +38,20 @@
         <processorPath useClasspath="true" />
         <module name="jira-openid-authentication-plugin" />
       </profile>
+      <profile default="false" name="Annotation profile for servicedesk-openid-authentication-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="servicedesk-openid-authentication-plugin" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="confluence-openid-authentication-plugin" target="1.7" />
-      <module name="jira-openid-authentication-plugin" target="1.7" />
-      <module name="jira-openid-authentication-plugin (1)" target="1.7" />
-      <module name="jira-openid-authentication-plugin (2)" target="1.7" />
-      <module name="servicedesk-openid-authentication-plugin" target="1.7" />
-      <module name="social-authentication-commons" target="1.7" />
-      <module name="social-authentication-parent" target="1.7" />
-      <module name="social-authentication-parent (1)" target="1.7" />
+      <module name="confluence-openid-authentication-plugin" target="1.8" />
+      <module name="jira-openid-authentication-plugin" target="1.8" />
+      <module name="servicedesk-openid-authentication-plugin" target="1.8" />
+      <module name="social-authentication-commons" target="1.8" />
+      <module name="social-authentication-parent" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -23,6 +23,8 @@ public class RedirectionService {
         if (isNotBlank(returnUrl)) {
             if (startsWith(returnUrl, "http")) {
                 response.sendRedirect(returnUrl);
+            } else if (startsWith(returnUrl, "portal")) {
+                response.sendRedirect(getBaseUrl(request) + "/servicedesk/customer/" + returnUrl);
             } else {
                 response.sendRedirect(getBaseUrl(request) + returnUrl);
             }

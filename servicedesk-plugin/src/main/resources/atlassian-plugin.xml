@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+<atlassian-plugin key="${pluginKey}" name="${project.name}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
@@ -103,26 +103,6 @@
              class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
         <url-pattern>/easy-sign-ups-configuration</url-pattern>
     </servlet>
-
-    <component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
-    <component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
-    <component-import key="txTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate"/>
-    <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
-    <component-import key="pluginSettingsFactory"
-                      interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
-    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
-    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
-    <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
-    <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager"/>
-
-    <component-import key="crowdService" interface="com.atlassian.crowd.embedded.api.CrowdService"/>
-    <component-import key="activeObjects" interface="com.atlassian.activeobjects.external.ActiveObjects"/>
-    <component-import key="pageBuilderService" interface="com.atlassian.webresource.api.assembler.PageBuilderService"/>
-    <component-import key="loginUrlProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
-    <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer"/>
-
-    <component-import key="jiraApplicationProperties" interface="com.atlassian.jira.config.properties.ApplicationProperties"/>
 
     <component key="tx-processor" name="Transactional Annotation Processor"
                class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">

@@ -10,7 +10,9 @@ import java.io.IOException;
 public interface AuthenticationService {
     String RETURN_URL_SESSION = AuthenticationService.class.getName() + ".returnUrl";
     String STATE_IN_SESSION = AuthenticationService.class.getName() + ".state";
+    String PORTAL_ID_SESSION = AuthenticationService.class.getName() + ".portalId";
     String RETURN_URL_PARAM = "returnUrl";
+    String PORTAL_ID_PARAM = "portalId";
 
     void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                             final OpenIdProvider provider, String identity, String email) throws IOException, ServletException;
