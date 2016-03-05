@@ -13,7 +13,7 @@
     <description>This plugins lets you setup social sign ups for Atlassian ServiceDesk.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
-        <pluginKey>${project.groupId}.${project.artifactId}</pluginKey>
+        <pluginKey>easy.social.sign-ups.servicedesk</pluginKey>
     </properties>
     <dependencies>
         <dependency>
@@ -207,6 +207,7 @@
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                         <xvfb.enable>${xvfb.enable}</xvfb.enable>
+                        <atlassian.dev.mode>${atlassian.dev.mode}</atlassian.dev.mode>
                     </systemPropertyVariables>
                     <instructions>
                         <Atlassian-Plugin-Key>${pluginKey}</Atlassian-Plugin-Key>

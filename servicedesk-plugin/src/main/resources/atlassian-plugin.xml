@@ -46,6 +46,8 @@
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.servicedesk:aui-flatpack</dependency>
+        <dependency>com.atlassian.servicedesk:sd-lib</dependency>
         <context>customerportal</context>
         <transformation extension="less">
             <transformer key="lessTransformer"/>

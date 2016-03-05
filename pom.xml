@@ -362,12 +362,19 @@
         <xvfb.enable>true</xvfb.enable>
         <confluence.version>5.8.9</confluence.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+        <atlassian.dev.mode>true</atlassian.dev.mode>
     </properties>
     <profiles>
         <profile>
             <id>releaseProfile</id>
             <properties>
                 <skipTests>true</skipTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>fast</id>
+            <properties>
+                <atlassian.dev.mode>false</atlassian.dev.mode>
             </properties>
         </profile>
     </profiles>

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceDeskPluginKey implements PluginKey {
 
-	public static final String KEY = "com.pawelniewiadomski.jira.servicedesk-openid-authentication-plugin";
+	public static final String KEY = "easy.social.sign-ups.servicedesk";
 
 	@Override
 	public String getKey() {
