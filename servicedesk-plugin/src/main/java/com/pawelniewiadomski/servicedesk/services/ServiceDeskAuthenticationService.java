@@ -23,7 +23,7 @@ import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.querydsl.ServiceDeskTables;
+import com.pawelniewiadomski.servicedesk.querydsl.ServiceDeskTables;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

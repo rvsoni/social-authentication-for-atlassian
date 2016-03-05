@@ -1,12 +1,3 @@
-define('easy-sign-ups/product', ['servicedesk/jQuery'], function ($) {
-    var appName = $('meta[name=application-name]').data('name');
-    if (appName) {
-        return {name: appName};
-    } else {
-        return {name: 'confluence'};
-    }
-});
-
 define('easy-sign-ups/marionette', ['servicedesk/backbone'], function (Backbone) {
     return Marionette.noConflict();
 });
@@ -17,7 +8,7 @@ define('easy-sign-ups/providersModel', ['servicedesk/backbone', 'ajs', 'serviced
     });
 });
 
-define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs'], function (Marionette, _, AJS) {
+define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs', 'servicedesk/util/context-path'], function (Marionette, _, AJS, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -43,7 +34,7 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
+            var authenticationUrl = contextPath + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
 
             var returnUrl = this.getParameterByName("destination", window.location.href);
             if (returnUrl) {
@@ -80,26 +71,27 @@ define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/pr
         });
     });
 
-require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/product', 'servicedesk/underscore'],
-    function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
+require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'servicedesk/underscore'],
+    function (AJS, $, Marionette, LoginView, ProvidersModel, _) {
         $(document).ready(function () {
             console.log('Easy sign-ups booting up...');
 
             var loginFormSelector = ".cv-login .cv-main-group .cv-col-secondary";
             var $loginForm = $(loginFormSelector);
 
-            if (_.isFunction($loginForm.removeDirtyWarning)) {
-                console.log('Disabling dirty warning');
-                $loginForm.removeDirtyWarning();
-            }
+            if ($loginForm.length) {
+                if (_.isFunction($loginForm.removeDirtyWarning)) {
+                    console.log('Disabling dirty warning');
+                    $loginForm.removeDirtyWarning();
+                }
 
-            var $attachLocation = $loginForm;
-            $attachLocation.append('<div id="openid-login"></div>');
-            var providers = new ProvidersModel();
-            var login = new LoginView({collection: providers});
-            providers.fetch({
-                success: login.render
-            });
-            return true;
+                var $attachLocation = $loginForm;
+                $attachLocation.append('<div id="openid-login"></div>');
+                var providers = new ProvidersModel();
+                var login = new LoginView({collection: providers});
+                providers.fetch({
+                    success: login.render
+                });
+            }
         });
     });

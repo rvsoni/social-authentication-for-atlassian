@@ -102,7 +102,7 @@
     </servlet>
 
     <servlet name="Configuration Servlet" key="easy-sign-ups-configuration-servlet"
-             class="com.pawelniewiadomski.jira.openid.authentication.servlet.ConfigurationServlet">
+             class="com.pawelniewiadomski.servicedesk.servlet.ConfigurationServlet">
         <url-pattern>/easy-sign-ups-configuration</url-pattern>
     </servlet>
 
