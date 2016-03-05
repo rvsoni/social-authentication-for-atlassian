@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>social-authentication-parent</artifactId>
@@ -11,7 +12,8 @@
     </organization>
     <scm>
         <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git
+        </developerConnection>
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
@@ -312,6 +314,7 @@
                     <pushReleases>true</pushReleases>
                     <pushHotfixes>true</pushHotfixes>
                     <noDeploy>true</noDeploy>
+                    <useReleaseProfile>true</useReleaseProfile>
                     <allowUntracked>true</allowUntracked>
                     <flowInitContext>
                         <versionTagPrefix>openid-</versionTagPrefix>
@@ -379,6 +382,11 @@
     <profiles>
         <profile>
             <id>releaseProfile</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                </property>
+            </activation>
             <properties>
                 <skipTests>true</skipTests>
             </properties>
