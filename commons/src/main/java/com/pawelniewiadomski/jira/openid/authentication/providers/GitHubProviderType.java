@@ -5,6 +5,7 @@ import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
-
 @Slf4j
 public class GitHubProviderType extends AbstractOAuth2ProviderType {
     private final org.codehaus.jackson.map.ObjectMapper mapper = new org.codehaus.jackson.map.ObjectMapper();
+    private final ReturnToHelper returnToHelper;
 
-    public GitHubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    public GitHubProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao, ReturnToHelper returnToHelper) {
         super(i18nResolver, openIdDao);
+        this.returnToHelper = returnToHelper;
     }
 
     @Nonnull
@@ -72,7 +73,7 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
                 .setState(state)
                 .setScope("user:email")
                 .setParameter("prompt", "select_account")
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
 
@@ -83,7 +84,7 @@ public class GitHubProviderType extends AbstractOAuth2ProviderType {
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildQueryMessage();
 

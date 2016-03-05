@@ -95,35 +95,51 @@
         {/call}
     </div>
 
-    <h3>
-        Automatically Create Users
-        &nbsp;
-        <span ng-show="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
-        <span ng-hide="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
-    </h3>
+    <div ng-show="serviceDesk">
+        <h3>
+            Public sign-ups
+            &nbsp;
+            <span ng-show="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
+            <span ng-hide="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
+        </h3>
 
-    <div ng-show="!isPublicMode">
-        <div ng-show="!isCreatingUsers">
-            <p>Public sign ups are disabled, only already existing users will be able to log in using OpenID authentication.</p>
-            <p>Users will be matched by e-mail only.</p>
-            <p>Should users be automatically created when logging in by OpenID authentication?</p>
-            <p><a id="switchCreatingUsers" data-disable="false" ng-click="creatingUsers(true)">Click here to allow the plugin to create users.</a></p>
-        </div>
-        <div ng-show="isCreatingUsers">
-            <p>Public sign ups are disabled, but the plugin will create new users.</p>
-            <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
-            <p>Should only existing users be allowed when logging in by OpenID authentication?</p>
-            <p><a id="switchCreatingUsers" data-disable="true" ng-click="creatingUsers(false)">Click here to disallow the plugin to create new users.</a></p>
-        </div>
+        <p>
+            To use this plugin you need to <a href="{lb}{lb}contextPath{rb}{rb}/secure/admin/SDConfiguration.jspa">enable public sign ups</a> in ServiceDesk,
+            then you need to allow public sign ups for every customer portal you want to use the plugin with (Project Administration -> Request security).
+        </p>
     </div>
-    <div ng-show="isPublicMode">
-        <div ng-show="isExternalUserManagement">
-            <p>External User Management is enabled, only already existing users will be able to log in using OpenID authentication.</p>
-            <p>Users will be matched by e-mail only.</p>
+
+    <div ng-hide="serviceDesk">
+        <h3>
+            Automatically Create Users
+            &nbsp;
+            <span ng-show="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-success">Enabled</span>
+            <span ng-hide="isCreatingUsers" id="creatingUsersState" class="aui-lozenge aui-lozenge-error">Disabled</span>
+        </h3>
+
+        <div ng-show="!isPublicMode">
+            <div ng-show="!isCreatingUsers">
+                <p>Public sign ups are disabled, only already existing users will be able to log in using OpenID authentication.</p>
+                <p>Users will be matched by e-mail only.</p>
+                <p>Should users be automatically created when logging in by OpenID authentication?</p>
+                <p><a id="switchCreatingUsers" data-disable="false" ng-click="creatingUsers(true)">Click here to allow the plugin to create users.</a></p>
+            </div>
+            <div ng-show="isCreatingUsers">
+                <p>Public sign ups are disabled, but the plugin will create new users.</p>
+                <p>Users will be matched by e-mail only. Missing users will be automatically added.</p>
+                <p>Should only existing users be allowed when logging in by OpenID authentication?</p>
+                <p><a id="switchCreatingUsers" data-disable="true" ng-click="creatingUsers(false)">Click here to disallow the plugin to create new users.</a></p>
+            </div>
         </div>
-        <div ng-show="!isExternalUserManagement">
-            <p>Public sign ups are enabled, OpenID authentication will match existing users by e-mail or create new users.</p>
-            <p>Each enabled Provider needs to return e-mail and full name at least.</p>
+        <div ng-show="isPublicMode">
+            <div ng-show="isExternalUserManagement">
+                <p>External User Management is enabled, only already existing users will be able to log in using OpenID authentication.</p>
+                <p>Users will be matched by e-mail only.</p>
+            </div>
+            <div ng-show="!isExternalUserManagement">
+                <p>Public sign ups are enabled, OpenID authentication will match existing users by e-mail or create new users.</p>
+                <p>Each enabled Provider needs to return e-mail and full name at least.</p>
+            </div>
         </div>
     </div>
 {/template}

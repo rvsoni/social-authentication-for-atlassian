@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.openid.OpenIdConnectResponse;
@@ -28,15 +29,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 import static org.apache.commons.lang.StringUtils.*;
 
 public class DiscoverablyOauth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
+    private final ReturnToHelper returnToHelper;
 
-    public DiscoverablyOauth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao, OpenIdDiscoveryDocumentProvider discoveryDocumentProvider) {
+    public DiscoverablyOauth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao,
+                                          OpenIdDiscoveryDocumentProvider discoveryDocumentProvider,
+                                          ReturnToHelper returnToHelper) {
         super(i18nResolver, openIdDao);
         this.discoveryDocumentProvider = discoveryDocumentProvider;
+        this.returnToHelper = returnToHelper;
     }
 
     @Nonnull
@@ -148,7 +152,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                 .setState(state)
                 .setScope("openid email profile")
                 .setParameter("prompt", "select_account")
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
 
@@ -169,7 +173,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildBodyMessage();
 

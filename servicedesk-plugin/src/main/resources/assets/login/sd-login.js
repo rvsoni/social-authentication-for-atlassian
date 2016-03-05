@@ -1,12 +1,3 @@
-define('easy-sign-ups/product', ['servicedesk/jQuery'], function ($) {
-    var appName = $('meta[name=application-name]').data('name');
-    if (appName) {
-        return {name: appName};
-    } else {
-        return {name: 'confluence'};
-    }
-});
-
 define('easy-sign-ups/marionette', ['servicedesk/backbone'], function (Backbone) {
     return Marionette.noConflict();
 });
@@ -17,7 +8,7 @@ define('easy-sign-ups/providersModel', ['servicedesk/backbone', 'ajs', 'serviced
     });
 });
 
-define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs'], function (Marionette, _, AJS) {
+define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs', 'servicedesk/util/context-path'], function (Marionette, _, AJS, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -28,6 +19,9 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
             return _.extend(this.model.toJSON(), {
                 authenticationUrl: this.getAuthenticationUrl(this.model.get('id'))
             })
+        },
+        getPortalId: function() {
+            return window.location.pathname.match(/servicedesk\/customer\/portal\/([0-9]*)\/user/)[1];
         },
         getParameterByName: function (name, href) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -40,10 +34,11 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/easy-sign-ups/login/' + providerId;
-            var returnUrl = this.getParameterByName("os_destination", window.location.href);
+            var authenticationUrl = contextPath + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
+
+            var returnUrl = this.getParameterByName("destination", window.location.href);
             if (returnUrl) {
-                authenticationUrl += "?returnUrl=" + encodeURIComponent(returnUrl);
+                authenticationUrl += "&returnUrl=" + encodeURIComponent(returnUrl);
             }
             return authenticationUrl;
         }
@@ -76,30 +71,27 @@ define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/pr
         });
     });
 
-require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/product', 'servicedesk/underscore'],
-    function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
+require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'servicedesk/underscore'],
+    function (AJS, $, Marionette, LoginView, ProvidersModel, _) {
         $(document).ready(function () {
-            console.log('OpenID booting up...');
+            console.log('Easy sign-ups booting up...');
 
             var loginFormSelector = ".cv-login .cv-main-group .cv-col-secondary";
             var $loginForm = $(loginFormSelector);
-//            if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
-//                console.log('Login form has no action or that is WebSudo');
-//                return false;
-//            }
 
-            if (_.isFunction($loginForm.removeDirtyWarning)) {
-                console.log('Disabling dirty warning');
-                $loginForm.removeDirtyWarning();
+            if ($loginForm.length) {
+                if (_.isFunction($loginForm.removeDirtyWarning)) {
+                    console.log('Disabling dirty warning');
+                    $loginForm.removeDirtyWarning();
+                }
+
+                var $attachLocation = $loginForm;
+                $attachLocation.append('<div id="openid-login"></div>');
+                var providers = new ProvidersModel();
+                var login = new LoginView({collection: providers});
+                providers.fetch({
+                    success: login.render
+                });
             }
-
-            var $attachLocation = $loginForm;
-            $attachLocation.append('<div id="openid-login"></div>');
-            var providers = new ProvidersModel();
-            var login = new LoginView({collection: providers});
-            providers.fetch({
-                success: login.render
-            });
-            return true;
         });
     });

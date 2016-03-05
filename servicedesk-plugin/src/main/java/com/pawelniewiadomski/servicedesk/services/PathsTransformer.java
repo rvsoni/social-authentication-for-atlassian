@@ -1,11 +1,10 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
+package com.pawelniewiadomski.servicedesk.services;
 
 import com.atlassian.plugin.elements.ResourceLocation;
 import com.atlassian.plugin.servlet.DownloadableResource;
 import com.atlassian.plugin.webresource.transformer.CharSequenceDownloadableResource;
 import com.atlassian.plugin.webresource.transformer.WebResourceTransformer;
 import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
-import com.pawelniewiadomski.jira.openid.authentication.ServiceDeskPluginKey;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,7 +31,7 @@ public class PathsTransformer implements WebResourceTransformer {
                     }
 
                     out.append(charSequence.subSequence(start, matcher.start()));
-                    String subst = String.format("/%s/", ((ServiceDeskPluginKey) pluginKey).getRestKey());
+                    String subst = String.format("/%s/", pluginKey.getRestKey());
                     if(subst != null) {
                         out.append(subst);
                     } else {

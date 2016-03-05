@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -22,13 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-import static com.pawelniewiadomski.jira.openid.authentication.OpenIdConnectReturnToHelper.getReturnTo;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class FacebookProviderType extends AbstractOAuth2ProviderType {
 
-    public FacebookProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao) {
+    private final ReturnToHelper returnToHelper;
+
+    public FacebookProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao, ReturnToHelper returnToHelper) {
         super(i18nResolver, openIdDao);
+        this.returnToHelper = returnToHelper;
     }
 
     @Nonnull
@@ -65,7 +68,7 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
                 .setScope("public_profile email")
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
 
@@ -76,7 +79,7 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
-                .setRedirectURI(getReturnTo(provider, request))
+                .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildQueryMessage();
 

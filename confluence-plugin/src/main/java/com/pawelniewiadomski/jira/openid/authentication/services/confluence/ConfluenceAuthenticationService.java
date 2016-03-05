@@ -11,10 +11,7 @@ import com.atlassian.user.User;
 import com.atlassian.user.impl.DefaultUser;
 import com.atlassian.user.search.SearchResult;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
-import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
-import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
+import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -47,6 +44,8 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
     final SettingsManager settingsManager;
 
     final ExternalUserManagementService externalUserManagementService;
+
+    final RedirectionService redirectionService;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
@@ -101,12 +100,7 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
 //            ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
-            final String returnUrl = (String) httpSession.getAttribute(RETURN_URL_SESSION);
-            if (isNotBlank(returnUrl)) {
-                response.sendRedirect(getBaseUrl(request) + returnUrl);
-            } else {
-                response.sendRedirect(getBaseUrl(request) + "/index.action");
-            }
+            redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }

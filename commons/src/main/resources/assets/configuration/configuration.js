@@ -16,6 +16,9 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('providerTypes', function() {
         return WRM.data.claim('openid.providerTypes');
     })
+    .factory('serviceDesk', function() {
+        return WRM.data.claim('openid.servicedesk') === true;
+    })
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
@@ -70,10 +73,13 @@ angular.module("openid.configuration", ['ngRoute'])
             .otherwise({ redirectTo: '/' });
     }])
     .controller('ProvidersCtrl', ['$scope', '$http', 'restPath', 'externalUserManagement',
-            'publicMode', 'creatingUsers', 'providers', function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers) {
+            'publicMode', 'creatingUsers', 'providers', 'serviceDesk', 'contextPath',
+            function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers, serviceDesk, contextPath) {
         $scope.isPublicMode = publicMode;
         $scope.isExternalUserManagement = externalUserManagement;
         $scope.isCreatingUsers = creatingUsers;
+        $scope.serviceDesk = serviceDesk;
+        $scope.contextPath = contextPath;
 
         var setProviders = function (data) {
             $scope.providers = data;

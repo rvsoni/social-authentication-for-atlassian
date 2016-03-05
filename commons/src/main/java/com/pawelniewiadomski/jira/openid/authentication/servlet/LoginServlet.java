@@ -43,6 +43,11 @@ public class LoginServlet extends HttpServlet {
             request.getSession().setAttribute(AuthenticationService.RETURN_URL_SESSION, returnUrl);
         }
 
+        final String portalId = request.getParameter(AuthenticationService.PORTAL_ID_PARAM);
+        if (StringUtils.isNotBlank(portalId)) {
+            request.getSession().setAttribute(AuthenticationService.PORTAL_ID_SESSION, portalId);
+        }
+
         final OpenIdProvider provider;
         try {
             provider = openIdDao.findProvider(Integer.valueOf(pid));

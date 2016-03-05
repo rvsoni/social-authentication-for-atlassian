@@ -51,6 +51,10 @@ public class ConfigurationServlet extends HttpServlet {
     @Autowired
     protected PluginKey pluginKey;
 
+    protected void configureAssembler(WebResourceAssembler assembler) {
+        // left blank
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (shouldNotAccess(req, resp)) return;
@@ -64,6 +68,8 @@ public class ConfigurationServlet extends HttpServlet {
                 .requireData("openid.externalUserManagement", externalUserManagementService.isExternalUserManagement())
                 .requireData("openid.baseUrl", applicationProperties.getBaseUrl() + '/' + pluginKey.getRestKey())
                 .requireData("openid.providerTypes", getProviderTypes());
+
+        configureAssembler(assembler);
 
         templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
     }
@@ -82,12 +88,9 @@ public class ConfigurationServlet extends HttpServlet {
     public Jsonable getProviderTypes() {
         final Collection<ProviderType> providers = providerTypeFactory.getAllProviderTypes().values();
 
-        return new Jsonable() {
-            @Override
-            public void write(Writer writer) throws IOException {
-                ObjectMapper om = new ObjectMapper();
-                writer.write(om.writeValueAsString(providers));
-            }
+        return writer -> {
+            ObjectMapper om = new ObjectMapper();
+            writer.write(om.writeValueAsString(providers));
         };
     }
 }

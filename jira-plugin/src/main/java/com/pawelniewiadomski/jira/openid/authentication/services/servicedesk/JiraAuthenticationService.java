@@ -14,10 +14,7 @@ import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
-import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
-import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
-import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
+import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang.StringUtils.lowerCase;
 import static org.apache.commons.lang.StringUtils.replaceChars;
@@ -46,6 +42,8 @@ public class JiraAuthenticationService implements AuthenticationService {
     @Autowired protected TemplateHelper templateHelper;
 
     @Autowired protected ExternalUserManagementService externalUserManagementService;
+
+    @Autowired protected RedirectionService redirectionService;
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
@@ -94,12 +92,7 @@ public class JiraAuthenticationService implements AuthenticationService {
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
             ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
 
-            final String returnUrl = (String) httpSession.getAttribute(RETURN_URL_SESSION);
-            if (StringUtils.isNotBlank(returnUrl)) {
-                response.sendRedirect(getBaseUrl(request) + returnUrl);
-            } else {
-                response.sendRedirect(getBaseUrl(request) + "/secure/Dashboard.jspa");
-            }
+            redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }

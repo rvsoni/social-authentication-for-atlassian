@@ -7,4 +7,6 @@ public interface PluginKey {
 	String getKey();
 	String configurationContext();
 	String getRestKey();
+	String getCallbackPath();
+	boolean areCustomProvidersDisabled();
 }
