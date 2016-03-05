@@ -1,5 +1,6 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.servicedesk;
 
+import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import org.springframework.stereotype.Component;
 
 @Component

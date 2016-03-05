@@ -61,7 +61,7 @@
         <resource type="download" name="images/" location="assets/images"/>
     </web-resource>
 
-    <web-resource-transformer key="fix-paths" class="com.pawelniewiadomski.jira.openid.authentication.services.servicedesk.PathsTransformer"/>
+    <web-resource-transformer key="fix-paths" class="com.pawelniewiadomski.servicedesk.services.PathsTransformer"/>
 
     <web-resource key="jira-openid-configuration-plugin-resources">
         <transformation extension="less">

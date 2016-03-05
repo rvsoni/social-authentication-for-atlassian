@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
+package com.pawelniewiadomski.servicedesk.services;
 
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;

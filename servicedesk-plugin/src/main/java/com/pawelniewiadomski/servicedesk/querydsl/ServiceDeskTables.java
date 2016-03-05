@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.querydsl;
+package com.pawelniewiadomski.servicedesk.querydsl;
 
 public class ServiceDeskTables {
     public static final String AO_PREFIX = "AO_54307E_";

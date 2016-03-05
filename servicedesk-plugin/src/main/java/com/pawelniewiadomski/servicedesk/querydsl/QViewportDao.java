@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.querydsl;
+package com.pawelniewiadomski.servicedesk.querydsl;
 
 import com.atlassian.pocketknife.spi.querydsl.EnhancedRelationalPathBase;
 import com.querydsl.core.types.dsl.BooleanPath;

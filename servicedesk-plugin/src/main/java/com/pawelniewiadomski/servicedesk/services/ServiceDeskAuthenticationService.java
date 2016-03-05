@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
+package com.pawelniewiadomski.servicedesk.services;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.crowd.embedded.api.Directory;
@@ -19,7 +19,6 @@ import com.atlassian.jira.user.UserDetails;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.pocketknife.api.querydsl.DatabaseAccessor;
-import com.atlassian.pocketknife.api.querydsl.DatabaseConnection;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -38,7 +37,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.google.common.collect.ImmutableList.of;
 

@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.services.servicedesk;
+package com.pawelniewiadomski.servicedesk.services;
 
 import com.pawelniewiadomski.jira.openid.authentication.services.HomePageService;
 import org.springframework.stereotype.Component;

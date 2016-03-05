@@ -1,7 +1,7 @@
 package it.common;
 
 import com.google.common.base.Preconditions;
-import com.pawelniewiadomski.jira.openid.authentication.ServiceDeskPluginKey;
+import com.pawelniewiadomski.servicedesk.ServiceDeskPluginKey;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 

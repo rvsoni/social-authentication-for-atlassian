@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication;
+package com.pawelniewiadomski.servicedesk;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.crowd.embedded.api.CrowdService;
