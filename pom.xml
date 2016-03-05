@@ -4,14 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>social-authentication-parent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <organization>
         <name>Pawel Niewiadomski</name>
         <url>http://pawelniewiadomski.com/</url>
     </organization>
     <scm>
         <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git
+        </developerConnection>
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
@@ -312,6 +313,7 @@
                     <pushReleases>true</pushReleases>
                     <pushHotfixes>true</pushHotfixes>
                     <noDeploy>true</noDeploy>
+                    <useReleaseProfile>true</useReleaseProfile>
                     <allowUntracked>true</allowUntracked>
                     <flowInitContext>
                         <versionTagPrefix>openid-</versionTagPrefix>
@@ -379,6 +381,11 @@
     <profiles>
         <profile>
             <id>releaseProfile</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                </property>
+            </activation>
             <properties>
                 <skipTests>true</skipTests>
             </properties>
@@ -389,6 +396,33 @@
                 <atlassian.dev.mode>false</atlassian.dev.mode>
             </properties>
         </profile>
+        <profile>
+            <id>timestamp-version</id>
+            <activation>
+                <property>
+                    <!-- ATLAS_VERSION is set by atlas-debug, atlas-cli and such - mind atlas-mvn! -->
+                    <name>!env.ATLAS_VERSION</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spartez.maven</groupId>
+                        <artifactId>snapshot-timestamp-maven-plugin</artifactId>
+                        <version>1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <!-- stores version into pluginVersion (customizable by targetProperty),
+                                     adding timestamp to SNAPSHOTs only -->
+                                    <goal>addTimestamp</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-    <dependencies/>
+    <dependencies />
 </project>
