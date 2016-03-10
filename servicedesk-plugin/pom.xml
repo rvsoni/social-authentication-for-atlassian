@@ -8,8 +8,8 @@
         <version>3.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>servicedesk-openid-authentication-plugin</artifactId>
-    <name>Easy sign-ups for ServiceDesk</name>
-    <description>This plugins lets you setup social sign ups for Atlassian ServiceDesk.</description>
+    <name>Easy sign-ups for JIRA ServiceDesk</name>
+    <description>This plugins lets you setup social sign ups for JIRA ServiceDesk.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <pluginKey>easy.social.sign-ups.servicedesk</pluginKey>
