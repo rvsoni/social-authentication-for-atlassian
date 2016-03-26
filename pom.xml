@@ -11,8 +11,7 @@
     </organization>
     <scm>
         <connection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git
-        </developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/pawelniewie/social-authentication-for-atlassian.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
@@ -363,9 +362,8 @@
         <jira.version>7.0.10</jira.version>
         <testkit.version>7.0.70</testkit.version>
         <jira.servicedesk.application.version>3.0.10</jira.servicedesk.application.version>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <amps.version>6.2.2</amps.version>
+        <amps.version>6.2.3</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
         <sal.api.version>2.13.4</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
@@ -424,5 +422,5 @@
             </build>
         </profile>
     </profiles>
-    <dependencies />
+    <dependencies/>
 </project>
