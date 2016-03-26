@@ -29,6 +29,6 @@ public class ServiceDeskPluginKey implements PluginKey {
 
 	@Override
 	public boolean areCustomProvidersDisabled() {
-		return true;
+		return false;
 	}
 }
