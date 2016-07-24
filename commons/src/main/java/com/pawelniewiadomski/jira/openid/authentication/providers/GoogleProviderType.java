@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.collect.ImmutableList;
 import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -23,11 +24,15 @@ import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 public class GoogleProviderType extends AbstractOAuth2ProviderType {
+
+    public static final String SELECT_ACCOUNT_PROMPT = DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT;
 
     final Logger log = Logger.getLogger(this.getClass());
     private final ReturnToHelper returnToHelper;
@@ -68,6 +73,11 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
     }
 
     @Override
+    public List<String> getSupportedPrompts() {
+        return ImmutableList.of("login", SELECT_ACCOUNT_PROMPT);
+    }
+
+    @Override
     public OAuthClientRequest createOAuthRequest(@Nonnull OpenIdProvider provider,
                                                  @Nonnull String state,
                                                  @Nonnull HttpServletRequest request) throws Exception {
@@ -77,7 +87,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
                 .setScope("openid email profile")
-                .setParameter("prompt", "select_account")
+                .setParameter("prompt", defaultString(provider.getPrompt(), SELECT_ACCOUNT_PROMPT))
                 .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }

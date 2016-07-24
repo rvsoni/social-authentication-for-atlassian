@@ -71,6 +71,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
             map.put(OpenIdProvider.PROVIDER_TYPE, getId());
             map.put(OpenIdProvider.CLIENT_ID, providerBean.getClientId());
             map.put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret());
+            map.put(OpenIdProvider.PROMPT, providerBean.getPrompt());
             try {
                 return Either.right(openIdDao.createProvider(map));
             } catch (SQLException e) {
@@ -84,6 +85,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
             provider.setProviderType(getId());
             provider.setClientId(providerBean.getClientId());
             provider.setClientSecret(providerBean.getClientSecret());
+            provider.setPrompt(providerBean.getPrompt());
 
             try {
                 return Either.right(openIdDao.saveProvider(provider));

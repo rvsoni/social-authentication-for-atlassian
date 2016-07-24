@@ -6,7 +6,9 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ProviderType {
 
@@ -21,6 +23,8 @@ public interface ProviderType {
     boolean isSkipCallback();
 
     boolean isSkipUrl();
+
+    List<String> getSupportedPrompts();
 
     @Nullable
     String getCreatedProviderName();

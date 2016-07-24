@@ -16,7 +16,7 @@
             {param forField: 'providerType'/}
             {param content: 'Select provider'/}
         {/call}
-        <select id="providerType" name="providerType" ng-model="providerType"
+        <select class="select" id="providerType" name="providerType" ng-model="providerType"
            ng-required="true" ng-options="pt.name for pt in providerTypes"></select>
     {/param}
 {/call}
@@ -129,6 +129,18 @@
         <div data-field="allowedDomains" class="error" ng-if="errors.allowedDomains">{lb}{lb}errors.allowedDomains{rb}{rb}</div>
     {/param}
 {/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.supportedPrompts !== undefined && providerType.supportedPrompts.length > 0"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'prompt'/}
+            {param content: 'Authentication prompt'/}
+        {/call}
+        <select class="select" id="prompt" name="prompt" ng-model="provider.prompt"
+           ng-options="prompt for prompt in providerType.supportedPrompts"></select>
+    {/param}
+{/call}
+
 {/template}
 
 /**

@@ -3,6 +3,7 @@ package com.pawelniewiadomski.jira.openid.authentication.providers;
 import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.collect.ImmutableList;
 import com.pawelniewiadomski.jira.openid.authentication.ReturnToHelper;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
@@ -26,6 +27,7 @@ import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,6 +36,8 @@ import static org.apache.commons.lang.StringUtils.*;
 public class DiscoverablyOauth2ProviderType extends AbstractProviderType implements OAuth2ProviderType {
     private final OpenIdDiscoveryDocumentProvider discoveryDocumentProvider;
     private final ReturnToHelper returnToHelper;
+
+    public static final String SELECT_ACCOUNT_PROMPT = "select_account";
 
     public DiscoverablyOauth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao,
                                           OpenIdDiscoveryDocumentProvider discoveryDocumentProvider,
@@ -72,6 +76,11 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             }
         }
         return false;
+    }
+
+    @Override
+    public List<String> getSupportedPrompts() {
+        return ImmutableList.of("", "login", SELECT_ACCOUNT_PROMPT, "consent", "none");
     }
 
     @Override
@@ -118,6 +127,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             map.put(OpenIdProvider.CLIENT_SECRET, providerBean.getClientSecret());
             map.put(OpenIdProvider.CALLBACK_ID, providerBean.getCallbackId());
             map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
+            map.put(OpenIdProvider.PROMPT, providerBean.getPrompt());
             try {
                 return Either.right(openIdDao.createProvider(map));
             } catch (SQLException e) {
@@ -132,6 +142,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             provider.setClientSecret(providerBean.getClientSecret());
             provider.setCallbackId(providerBean.getCallbackId());
             provider.setAllowedDomains(providerBean.getAllowedDomains());
+            provider.setPrompt(providerBean.getPrompt());
             provider.save();
             return Either.right(provider);
         }
@@ -145,13 +156,18 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                 discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()),
                 "OpenId Discovery Document must not be null");
 
-        return OAuthClientRequest
+        OAuthClientRequest.AuthenticationRequestBuilder requestBuilder = OAuthClientRequest
                 .authorizationLocation(discoveryDocument.getAuthorizationUrl())
                 .setClientId(provider.getClientId())
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
-                .setScope("openid email profile")
-                .setParameter("prompt", "select_account")
+                .setScope("openid email profile");
+
+        if (isNotBlank(provider.getPrompt())) {
+            requestBuilder = requestBuilder.setParameter("prompt", provider.getPrompt());
+        }
+
+        return requestBuilder
                 .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
