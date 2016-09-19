@@ -13,7 +13,7 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
         tagName: 'span',
         className: 'provider',
         template: function (data) {
-            return _.template('<a id="openid-<%= id %>" data-id="<%= id %>" class="openid aui-button" href="<%= authenticationUrl %>"><%= name %></a>')(data);
+            return _.template('<a id="openid-<%= id %>" data-id="<%= id %>" class="openid aui-button button" href="<%= authenticationUrl %>"><%= name %></a>')(data);
         },
         serializeData: function () {
             return _.extend(this.model.toJSON(), {
