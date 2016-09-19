@@ -1,13 +1,12 @@
 package com.pawelniewiadomski.jira.openid.authentication;
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.BaseUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
-
-import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 
 @Component
 public class ReturnToHelper
@@ -15,8 +14,11 @@ public class ReturnToHelper
     @Autowired
     private PluginKey pluginKey;
 
+    @Autowired
+    private BaseUrlService baseUrlService;
+
     public String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
-        return UriBuilder.fromUri(getBaseUrl(request)).path(pluginKey.getCallbackPath())
+        return UriBuilder.fromUri(baseUrlService.getBaseUrl()).path(pluginKey.getCallbackPath())
                 .path(provider.getCallbackId()).build().toString();
     }
 }

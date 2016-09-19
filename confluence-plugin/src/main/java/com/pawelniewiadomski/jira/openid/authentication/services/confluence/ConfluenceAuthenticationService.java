@@ -24,7 +24,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static com.atlassian.user.security.password.Credential.unencrypted;
-import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang.StringUtils.*;

@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 import static com.pawelniewiadomski.jira.openid.authentication.servlet.HttpCachingUtils.setNoCacheHeaders;
 
 @Service
@@ -32,6 +31,8 @@ public class TemplateHelper
     @Autowired protected LoginUriProvider loginUriProvider;
 
     @Autowired protected PluginKey pluginKey;
+
+    @Autowired protected BaseUrlService baseUrlService;
 
     protected Supplier<String> soyTemplatesResourceKey = Suppliers.memoize(new Supplier<String>() {
         @Override
@@ -52,7 +53,7 @@ public class TemplateHelper
                        String template, Map<String, Object> map) throws ServletException, IOException
     {
         final Map<String, Object> params = Maps.newHashMap(map);
-        params.put("baseUrl", getBaseUrl(request));
+        params.put("baseUrl", baseUrlService.getBaseUrl());
         try {
             params.put("loginUrl", loginUriProvider.getLoginUri(new URI("/")).toString());
         } catch (URISyntaxException e) {
@@ -72,7 +73,7 @@ public class TemplateHelper
                          String template, Map<String, Object> map) throws ServletException, IOException
     {
         final Map<String, Object> params = Maps.newHashMap(map);
-        params.put("baseUrl", getBaseUrl(request));
+        params.put("baseUrl", baseUrlService.getBaseUrl());
 
         try {
             return soyTemplateRenderer.render(soyTemplatesResourceKey.get(), template, params);
