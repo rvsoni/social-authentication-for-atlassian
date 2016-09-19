@@ -422,5 +422,5 @@
             </build>
         </profile>
     </profiles>
-    <dependencies/>
+    <dependencies />
 </project>
