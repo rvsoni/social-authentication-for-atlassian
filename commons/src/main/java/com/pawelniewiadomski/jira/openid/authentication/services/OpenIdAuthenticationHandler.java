@@ -7,7 +7,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.expressme.openid.*;
@@ -23,8 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static com.pawelniewiadomski.jira.openid.authentication.BaseUrlHelper.getBaseUrl;
 
 /**
  * Handling OpenID 1.0 authentications.
@@ -44,6 +41,8 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
     @Autowired protected AuthenticationService authenticationService;
 
     @Autowired protected TemplateHelper templateHelper;
+
+    @Autowired protected BaseUrlService baseUrlService;
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)
@@ -71,7 +70,7 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     @Nonnull
     protected String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
-        return UriBuilder.fromUri(getBaseUrl(request)).path("/plugins/servlet/openid-authentication")
+        return UriBuilder.fromUri(baseUrlService.getBaseUrl()).path("/plugins/servlet/openid-authentication")
                 .queryParam("pid", provider.getID()).build().toString();
     }
 
