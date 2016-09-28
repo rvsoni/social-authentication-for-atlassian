@@ -199,9 +199,8 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                     .buildHeaderMessage();
 
             final OAuthResourceResponse userInfoResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
-            final Map<String, Object> userInfo = JSONUtils.parseJSON(payload);
-
             payload = userInfoResponse.getBody();
+            final Map<String, Object> userInfo = JSONUtils.parseJSON(payload);
 
             // as a last resort try upn from user info (in case of Azure that's email)
             email = defaultIfEmpty(email, (String) userInfo.get("email"));
