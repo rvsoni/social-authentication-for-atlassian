@@ -2,13 +2,13 @@ define('easy-sign-ups/marionette', ['servicedesk/backbone'], function (Backbone)
     return Marionette.noConflict();
 });
 
-define('easy-sign-ups/providersModel', ['servicedesk/backbone', 'ajs', 'servicedesk/util/context-path'], function (Backbone, AJS, contextPath) {
+define('easy-sign-ups/providersModel', ['servicedesk/backbone', 'ajs', 'wrm/context-path'], function (Backbone, AJS, contextPath) {
     return Backbone.Collection.extend({
-        url: contextPath + '/rest/easy-sign-ups/1.0/openIdProviders/login'
+        url: contextPath() + '/rest/easy-sign-ups/1.0/openIdProviders/login'
     });
 });
 
-define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs', 'servicedesk/util/context-path'], function (Marionette, _, AJS, contextPath) {
+define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs', 'wrm/context-path'], function (Marionette, _, AJS, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -34,7 +34,7 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = contextPath + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
+            var authenticationUrl = contextPath() + '/easy-sign-ups/login/' + providerId + '?portalId=' + this.getPortalId();
 
             var returnUrl = this.getParameterByName("destination", window.location.href);
             if (returnUrl) {

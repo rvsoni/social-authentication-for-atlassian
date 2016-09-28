@@ -148,7 +148,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
         return OAuthClientRequest
                 .authorizationLocation(discoveryDocument.getAuthorizationUrl())
                 .setClientId(provider.getClientId())
-                .setResponseType(ResponseType.CODE.toString())
+                .setResponseType(ResponseType.TOKEN.toString())
                 .setState(state)
                 .setScope("openid email profile")
                 .setParameter("prompt", "select_account")
