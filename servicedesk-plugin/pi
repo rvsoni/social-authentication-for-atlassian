@@ -1,0 +1,1 @@
+(cd ../commons && atlas-mvn package install -DskipTests) && atlas-package -DskipTests && atlas-install-plugin --context-path '' -p 8080
