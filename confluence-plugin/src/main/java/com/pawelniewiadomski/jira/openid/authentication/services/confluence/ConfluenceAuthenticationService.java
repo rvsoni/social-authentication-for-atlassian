@@ -10,6 +10,7 @@ import com.atlassian.user.GroupManager;
 import com.atlassian.user.User;
 import com.atlassian.user.impl.DefaultUser;
 import com.atlassian.user.search.SearchResult;
+import com.atlassian.user.search.page.Pager;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.atlassian.user.security.password.Credential.unencrypted;
 import static java.lang.String.format;
@@ -70,9 +73,9 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
         }
 
         ConfluenceUser user = null;
-        final SearchResult usersByEmail = userAccessor.getUsersByEmail(StringUtils.stripToEmpty(email).toLowerCase());
+        final Optional<User> userByEmail = getUserByEmail(email);
 
-        if (usersByEmail.pager().isEmpty()
+        if (!userByEmail.isPresent()
                 && !externalUserManagementService.isExternalUserManagement()
                 && globalSettings.isCreatingUsers()) {
             try {
@@ -88,9 +91,8 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             }
-        } else if (!usersByEmail.pager().isEmpty()) {
-            User crowdUser = (User) usersByEmail.pager().iterator().next();
-            user = userAccessor.getUserByName(crowdUser.getName());
+        } else if (userByEmail.isPresent()) {
+            user = userAccessor.getUserByName(userByEmail.get().getName());
         }
 
         if (user != null) {
@@ -103,5 +105,16 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }
+    }
+
+    private Optional<User> getUserByEmail(String email) {
+        SearchResult results = userAccessor.getUsersByEmail(StringUtils.stripToEmpty(email).toLowerCase());
+        for(String key : (Set<String>) results.repositoryKeyset()) {
+            Pager pager = results.pager(key);
+            if (!pager.isEmpty()) {
+                return Optional.ofNullable((User) pager.iterator().next());
+            }
+        }
+        return Optional.empty();
     }
 }
