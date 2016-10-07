@@ -1,6 +1,7 @@
 package com.pawelniewiadomski.jira.openid.authentication.providers;
 
 import com.atlassian.sal.api.message.I18nResolver;
+import com.google.common.collect.ImmutableList;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderBean;
@@ -8,6 +9,7 @@ import com.pawelniewiadomski.jira.openid.authentication.rest.responses.ProviderB
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
@@ -55,6 +57,11 @@ public abstract class AbstractProviderType implements ProviderType {
     @Override
     public boolean isSkipUrl() {
         return false;
+    }
+
+    @Override
+    public List<String> getSupportedPrompts() {
+        return ImmutableList.of();
     }
 
     @Nullable

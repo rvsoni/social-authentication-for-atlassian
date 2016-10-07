@@ -1,11 +1,14 @@
 package com.pawelniewiadomski.jira.openid.authentication.rest.responses;
 
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
+import com.pawelniewiadomski.jira.openid.authentication.providers.DiscoverablyOauth2ProviderType;
 import lombok.Builder;
 import lombok.Data;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 @SuppressWarnings("unused")
 @JsonAutoDetect
@@ -35,6 +38,8 @@ public class ProviderBean {
 
     final String extensionNamespace;
 
+    final String prompt;
+
     @java.beans.ConstructorProperties({"id", "name", "providerType", "allowedDomains", "ordering", "enabled", "clientId", "clientSecret", "endpointUrl", "callbackId", "extensionNamespace"})
     public ProviderBean(@JsonProperty("id") int id,
                         @JsonProperty("name") String name,
@@ -46,7 +51,8 @@ public class ProviderBean {
                         @JsonProperty("clientSecret") String clientSecret,
                         @JsonProperty("endpointUrl") String endpointUrl,
                         @JsonProperty("callbackId") String callbackId,
-                        @JsonProperty("extensionNamespace") String extensionNamespace) {
+                        @JsonProperty("extensionNamespace") String extensionNamespace,
+                        @JsonProperty("prompt") String prompt) {
         this.id = id;
         this.name = name;
         this.providerType = providerType;
@@ -58,6 +64,7 @@ public class ProviderBean {
         this.endpointUrl = endpointUrl;
         this.callbackId = callbackId;
         this.extensionNamespace = extensionNamespace;
+        this.prompt = prompt;
     }
 
 
@@ -66,6 +73,7 @@ public class ProviderBean {
                 provider.getAllowedDomains(),
                 provider.getOrdering() == null ? 1 : provider.getOrdering(),
                 provider.isEnabled(), provider.getClientId(), provider.getClientSecret(),
-                provider.getEndpointUrl(), provider.getCallbackId(), provider.getExtensionNamespace());
+                provider.getEndpointUrl(), provider.getCallbackId(), provider.getExtensionNamespace(),
+                defaultString(provider.getPrompt(), DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT));
     }
 }
