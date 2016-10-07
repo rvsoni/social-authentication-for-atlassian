@@ -157,6 +157,8 @@
     <!-- Active Objects -->
     <ao key="openid-active-objects">
         <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
+
+        <upgradeTask>com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade.Task001AddPromptToOpenIdProvider</upgradeTask>
     </ao>
 
     <!-- Pretty links -->

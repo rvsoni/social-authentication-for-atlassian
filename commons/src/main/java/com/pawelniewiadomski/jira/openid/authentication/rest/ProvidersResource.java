@@ -20,16 +20,20 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Path("providers")
 @Produces({MediaType.APPLICATION_JSON})
 public class ProvidersResource {
-    @Autowired protected OpenIdDao openIdDao;
+    @Autowired
+    protected OpenIdDao openIdDao;
 
-    @Autowired protected ProviderValidator validator;
+    @Autowired
+    protected ProviderValidator validator;
 
-    @Autowired protected OpenIdResource openIdResource;
+    @Autowired
+    protected OpenIdResource openIdResource;
 
     @POST
     public Response createProvider(final ProviderBean providerBean) {
@@ -177,12 +181,8 @@ public class ProvidersResource {
     protected Response getProvidersResponse() {
         try {
             return Response.ok(Lists.newArrayList(
-                    Iterables.transform(openIdDao.findAllProviders(), new Function<OpenIdProvider, ProviderBean>() {
-                        @Override
-                        public ProviderBean apply(OpenIdProvider provider) {
-                            return ProviderBean.of(provider);
-                        }
-                    }))).cacheControl(openIdResource.never()).build();
+                    openIdDao.findAllProviders().stream().map(ProviderBean::of).collect(Collectors.toList())))
+                    .cacheControl(openIdResource.never()).build();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
