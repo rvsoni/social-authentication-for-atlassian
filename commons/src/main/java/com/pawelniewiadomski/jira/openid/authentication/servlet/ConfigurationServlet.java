@@ -67,7 +67,8 @@ public class ConfigurationServlet extends HttpServlet {
                 .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
                 .requireData("openid.externalUserManagement", externalUserManagementService.isExternalUserManagement())
                 .requireData("openid.baseUrl", applicationProperties.getBaseUrl() + '/' + pluginKey.getRestKey())
-                .requireData("openid.providerTypes", getProviderTypes());
+                .requireData("openid.providerTypes", getProviderTypes())
+                .requireData("openid.sessionTimeout", req.getSession().getMaxInactiveInterval() / 60);
 
         configureAssembler(assembler);
 

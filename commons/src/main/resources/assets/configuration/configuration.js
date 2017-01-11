@@ -19,6 +19,9 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('serviceDesk', function() {
         return WRM.data.claim('openid.servicedesk') === true;
     })
+    .factory('sessionTimeout', function() {
+        return WRM.data.claim('openid.sessionTimeout');
+    })
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
@@ -74,12 +77,15 @@ angular.module("openid.configuration", ['ngRoute'])
     }])
     .controller('ProvidersCtrl', ['$scope', '$http', 'restPath', 'externalUserManagement',
             'publicMode', 'creatingUsers', 'providers', 'serviceDesk', 'contextPath',
-            function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers, serviceDesk, contextPath) {
+            'sessionTimeout',
+            function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers, serviceDesk,
+                contextPath, sessionTimeout) {
         $scope.isPublicMode = publicMode;
         $scope.isExternalUserManagement = externalUserManagement;
         $scope.isCreatingUsers = creatingUsers;
         $scope.serviceDesk = serviceDesk;
         $scope.contextPath = contextPath;
+        $scope.sessionTimeout = sessionTimeout;
 
         var setProviders = function (data) {
             $scope.providers = data;
