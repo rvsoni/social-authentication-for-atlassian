@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -ex
+
+TMP=$(mktemp -d)
+
+pushd $TMP
+
+curl https://jdbc.postgresql.org/download/postgresql-9.4.1212.jre6.jar -o postgresql.jdbc.jar
+
+popd
+
+docker cp $TMP/postgresql.jdbc.jar docker_jira_1:/opt/atlassian/jira/
+docker cp $TMP/postgresql.jdbc.jar docker_confluence_1:/opt/atlassian/confluence/
+
+rm -rf $TMP
