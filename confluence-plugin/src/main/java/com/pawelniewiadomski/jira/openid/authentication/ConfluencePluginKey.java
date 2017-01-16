@@ -31,4 +31,9 @@ public class ConfluencePluginKey implements PluginKey {
 	public boolean areCustomProvidersDisabled() {
 		return false;
 	}
+
+	@Override
+	public String getSslConfigurationTutorial() {
+		return "https://confluence.atlassian.com/doc/running-confluence-over-ssl-or-https-161203.html";
+	}
 }

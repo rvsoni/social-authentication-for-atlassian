@@ -81,6 +81,15 @@
         {call aui.form.fieldDescription}
             {param message}You need to submit it to your authentication provider.{/param}
         {/call}
+        {call aui.message.warning}
+            {param extraAttributes}
+                ng-if="sslMismatch"
+            {/param}
+            {param content}
+                Your base URL specifies HTTP but you accessed this page over HTTPS.
+                Please <a href="{lb}{lb}sslDocumentation{rb}{rb}">refer the documentation</a> on configuring HTTPS access for your application.
+            {/param}
+        {/call}
     {/param}
 {/call}
 {call aui.form.fieldGroup}

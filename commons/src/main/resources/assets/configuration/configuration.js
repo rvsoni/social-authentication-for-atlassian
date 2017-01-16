@@ -22,6 +22,9 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('sessionTimeout', function() {
         return WRM.data.claim('openid.sessionTimeout');
     })
+    .factory('data', function() {
+        return WRM.data.claim('openid.data');
+    })
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
@@ -117,11 +120,13 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'providers', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes',
-        function ($scope, $location, $http, providers, restPath, baseUrl, errorHandler, providerTypes) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'providers', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes', 'data',
+        function ($scope, $location, $http, providers, restPath, baseUrl, errorHandler, providerTypes, data) {
 
         $scope.baseUrl = baseUrl;
         $scope.providerTypes = providerTypes;
+        $scope.sslMismatch = data.sslMismatch;
+        $scope.sslDocumentation = data.sslDocumentation;
 
         $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -154,11 +159,13 @@ angular.module("openid.configuration", ['ngRoute'])
             }).error(errorHandler.handleError);
         }
     }])
-    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler', 'baseUrl', 'providerTypes',
-        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler, baseUrl, providerTypes) {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler', 'baseUrl', 'providerTypes', 'data',
+        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler, baseUrl, providerTypes, data) {
         var providerId = $routeParams.providerId;
 
         $scope.baseUrl = baseUrl;
+        $scope.sslMismatch = data.sslMismatch;
+        $scope.sslDocumentation = data.sslDocumentation;
 
         providers.getProviders().then(function() {
             $scope.provider = providers.getProviderById(providerId);
