@@ -38,11 +38,14 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
 
     final Map<String, OpenIdManager> openIdConnections = Maps.newHashMap();
 
-    @Autowired protected AuthenticationService authenticationService;
+    @Autowired
+    protected AuthenticationService authenticationService;
 
-    @Autowired protected TemplateHelper templateHelper;
+    @Autowired
+    protected TemplateHelper templateHelper;
 
-    @Autowired protected BaseUrlService baseUrlService;
+    @Autowired
+    protected BaseUrlService baseUrlService;
 
     final Cache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(10000)
@@ -69,14 +72,15 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
     }
 
     @Nonnull
-    protected String getReturnTo(OpenIdProvider provider, final HttpServletRequest request) {
-        return UriBuilder.fromUri(baseUrlService.getBaseUrl()).path("/plugins/servlet/openid-authentication")
-                .queryParam("pid", provider.getID()).build().toString();
+    protected String getReturnTo(OpenIdProvider provider) {
+        return UriBuilder.fromUri(baseUrlService.getBaseUrl())
+                .path("/openid/login")
+                .path(Integer.toString(provider.getID())).build().toString();
     }
 
     @Override
     public boolean doAuthenticationDance(OpenIdProvider provider, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        final String returnTo = getReturnTo(provider, request);
+        final String returnTo = getReturnTo(provider);
         final OpenIdManager openIdManager = getOpenIdManager(returnTo);
         final String nonce = request.getParameter("openid.response_nonce");
         if (StringUtils.isNotEmpty(nonce)) {
@@ -109,7 +113,7 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
                 request.getSession().setAttribute(ATTR_ALIAS, endpoint.getAlias());
                 String url = openIdManager.getAuthenticationUrl(endpoint, association);
                 response.sendRedirect(url);
-            } catch(OpenIdException e) {
+            } catch (OpenIdException e) {
                 log.error("OpenID Authentication failed, there was an error connecting " + provider.getEndpointUrl(), e);
                 templateHelper.render(request, response, "OpenId.Templates.error",
                         ImmutableMap.<String, Object>of("sslError", e.getCause() instanceof SSLException));
