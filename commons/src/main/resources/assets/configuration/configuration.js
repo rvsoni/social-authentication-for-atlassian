@@ -19,6 +19,12 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('serviceDesk', function() {
         return WRM.data.claim('openid.servicedesk') === true;
     })
+    .factory('sessionTimeout', function() {
+        return WRM.data.claim('openid.sessionTimeout');
+    })
+    .factory('data', function() {
+        return WRM.data.claim('openid.data');
+    })
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
@@ -74,12 +80,15 @@ angular.module("openid.configuration", ['ngRoute'])
     }])
     .controller('ProvidersCtrl', ['$scope', '$http', 'restPath', 'externalUserManagement',
             'publicMode', 'creatingUsers', 'providers', 'serviceDesk', 'contextPath',
-            function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers, serviceDesk, contextPath) {
+            'sessionTimeout',
+            function ($scope, $http, restPath, externalUserManagement, publicMode, creatingUsers, providers, serviceDesk,
+                contextPath, sessionTimeout) {
         $scope.isPublicMode = publicMode;
         $scope.isExternalUserManagement = externalUserManagement;
         $scope.isCreatingUsers = creatingUsers;
         $scope.serviceDesk = serviceDesk;
         $scope.contextPath = contextPath;
+        $scope.sessionTimeout = sessionTimeout;
 
         var setProviders = function (data) {
             $scope.providers = data;
@@ -111,11 +120,13 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.error = true;
         });
     }])
-    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'providers', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes',
-        function ($scope, $location, $http, providers, restPath, baseUrl, errorHandler, providerTypes) {
+    .controller('CreateProviderCtrl', ['$scope', '$location', '$http', 'providers', 'restPath', 'baseUrl', 'errorHandler', 'providerTypes', 'data',
+        function ($scope, $location, $http, providers, restPath, baseUrl, errorHandler, providerTypes, data) {
 
         $scope.baseUrl = baseUrl;
         $scope.providerTypes = providerTypes;
+        $scope.sslMismatch = data.sslMismatch;
+        $scope.sslDocumentation = data.sslDocumentation;
 
         $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -148,11 +159,13 @@ angular.module("openid.configuration", ['ngRoute'])
             }).error(errorHandler.handleError);
         }
     }])
-    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler', 'baseUrl', 'providerTypes',
-        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler, baseUrl, providerTypes) {
+    .controller('EditProviderCtrl', ['$routeParams', '$scope', '$location', '$http', 'providers', 'restPath', 'errorHandler', 'baseUrl', 'providerTypes', 'data',
+        function($routeParams, $scope, $location, $http, providers, restPath, errorHandler, baseUrl, providerTypes, data) {
         var providerId = $routeParams.providerId;
 
         $scope.baseUrl = baseUrl;
+        $scope.sslMismatch = data.sslMismatch;
+        $scope.sslDocumentation = data.sslDocumentation;
 
         providers.getProviders().then(function() {
             $scope.provider = providers.getProviderById(providerId);

@@ -9,4 +9,5 @@ public interface PluginKey {
 	String getRestKey();
 	String getCallbackPath();
 	boolean areCustomProvidersDisabled();
+	String getSslConfigurationTutorial();
 }

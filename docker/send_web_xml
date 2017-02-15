@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -ex
+
+docker cp tmp/conf-web.xml docker_jira_1:/opt/atlassian/jira/conf/web.xml 
+docker cp tmp/jira-web.xml docker_jira_1:/opt/atlassian/jira/atlassian-jira/WEB-INF/web.xml  

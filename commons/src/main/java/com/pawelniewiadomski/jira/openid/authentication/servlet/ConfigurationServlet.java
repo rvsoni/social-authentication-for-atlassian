@@ -5,10 +5,11 @@ import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.atlassian.webresource.api.assembler.WebResourceAssembler;
+import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.PluginKey;
 import com.pawelniewiadomski.jira.openid.authentication.providers.ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
-import org.codehaus.jackson.map.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
@@ -17,9 +18,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Map;
 
+import static com.pawelniewiadomski.jira.openid.authentication.JsonableUtil.toJsonable;
+import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang.StringUtils.startsWithIgnoreCase;
+
+@Slf4j
 public class ConfigurationServlet extends HttpServlet {
     @Autowired
     protected PageBuilderService pageBuilderService;
@@ -61,17 +68,44 @@ public class ConfigurationServlet extends HttpServlet {
 
         final WebResourceAssembler assembler = pageBuilderService.assembler();
 
+        final Map<String, Object> openIdData = prepareData(req);
+
         assembler.resources().requireContext(pluginKey.configurationContext());
-        assembler.data()
-                .requireData("openid.publicMode", publicModeService.canAnyoneSignUp())
-                .requireData("openid.creatingUsers", globalSettings.isCreatingUsers())
-                .requireData("openid.externalUserManagement", externalUserManagementService.isExternalUserManagement())
-                .requireData("openid.baseUrl", applicationProperties.getBaseUrl() + '/' + pluginKey.getRestKey())
-                .requireData("openid.providerTypes", getProviderTypes());
+
+        openIdData.entrySet().forEach(ev -> assembler.data().requireData("openid." + ev.getKey(),
+                toJsonable(ev.getValue())));
+
+        assembler.data().requireData("openid.data", toJsonable(openIdData));
+
+        StringWriter sw = new StringWriter();
+        toJsonable(openIdData).write(sw);
+        log.warn(sw.toString());
 
         configureAssembler(assembler);
 
         templateHelper.render(req, resp, "OpenId.Templates.Configuration.container");
+    }
+
+    private Map<String, Object> prepareData(HttpServletRequest req) {
+        final String baseUrl = applicationProperties.getBaseUrl();
+
+        ImmutableMap.Builder<String, Object> mapBuilder = ImmutableMap.builder();
+
+        mapBuilder.put("publicMode", publicModeService.canAnyoneSignUp());
+        mapBuilder.put("creatingUsers", globalSettings.isCreatingUsers());
+        mapBuilder.put("externalUserManagement", externalUserManagementService.isExternalUserManagement());
+        mapBuilder.put("baseUrl", baseUrl + '/' + pluginKey.getRestKey());
+        mapBuilder.put("providerTypes", providerTypeFactory.getAllProviderTypes().values());
+        mapBuilder.put("sessionTimeout", req.getSession().getMaxInactiveInterval() / 60);
+        mapBuilder.put("sslMismatch", isBehindHttps(req, baseUrl));
+        mapBuilder.put("sslDocumentation", pluginKey.getSslConfigurationTutorial());
+
+        return mapBuilder.build();
+    }
+
+    private boolean isBehindHttps(HttpServletRequest req, String baseUrl) {
+        return equalsIgnoreCase(req.getHeader("X-Forwarded-Proto"), "https")
+                && startsWithIgnoreCase(baseUrl, "http:");
     }
 
     private boolean shouldNotAccess(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
@@ -82,15 +116,5 @@ public class ConfigurationServlet extends HttpServlet {
             throw new UnsupportedOperationException("you don't have permission");
         }
         return false;
-    }
-
-    @Nonnull
-    public Jsonable getProviderTypes() {
-        final Collection<ProviderType> providers = providerTypeFactory.getAllProviderTypes().values();
-
-        return writer -> {
-            ObjectMapper om = new ObjectMapper();
-            writer.write(om.writeValueAsString(providers));
-        };
     }
 }

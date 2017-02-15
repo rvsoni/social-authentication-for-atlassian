@@ -31,4 +31,9 @@ public class JiraPluginKey implements PluginKey {
 	public boolean areCustomProvidersDisabled() {
 		return false;
 	}
+
+    @Override
+    public String getSslConfigurationTutorial() {
+        return "https://confluence.atlassian.com/adminjiraserver073/running-jira-applications-over-ssl-or-https-861253906.html";
+    }
 }

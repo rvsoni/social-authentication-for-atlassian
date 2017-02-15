@@ -11,6 +11,7 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class OpenIdDiscoveryDocumentProvider
 {
     @JsonAutoDetect
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public class OpenIdDiscoveryDocument
     {
         private final String tokenUrl;
