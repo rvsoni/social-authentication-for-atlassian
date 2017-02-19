@@ -4,7 +4,7 @@ import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserMan
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConfluenceExternalUserManagementService implements ExternalUserManagementService{
+public class ConfluenceExternalUserManagementService implements ExternalUserManagementService {
     @Override
     public boolean isExternalUserManagement() {
         return false;
