@@ -12,6 +12,7 @@ import com.atlassian.jira.security.login.LoginManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
+import com.atlassian.seraph.service.rememberme.RememberMeService;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
@@ -26,9 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.atlassian.jira.component.ComponentAccessor.getComponentOfType;
+import static com.pawelniewiadomski.AllowedDomains.isEmailFromAllowedDomain;
 import static java.util.UUID.randomUUID;
-import static org.apache.commons.lang.StringUtils.lowerCase;
-import static org.apache.commons.lang.StringUtils.replaceChars;
+import static org.apache.commons.lang.StringUtils.*;
 
 @Slf4j
 @Component
@@ -47,22 +49,13 @@ public class JiraAuthenticationService implements AuthenticationService {
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
-        if (StringUtils.isBlank(email)) {
+        if (isBlank(email)) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
         }
 
-        if (StringUtils.isNotBlank(provider.getAllowedDomains())) {
-            final String[] allowedDomains = StringUtils.split(provider.getAllowedDomains(), ',');
-            final String domain = StringUtils.substringAfter(email, "@");
-            boolean matchingDomain = false;
-            for (final String allowedDomain : allowedDomains) {
-                if (StringUtils.equals(StringUtils.trim(allowedDomain), domain)) {
-                    matchingDomain = true;
-                    break;
-                }
-            }
-            if (!matchingDomain) {
+        if (isNotBlank(provider.getAllowedDomains())) {
+            if (!isEmailFromAllowedDomain(provider, email)) {
                 templateHelper.render(request, response, "OpenId.Templates.domainMismatch");
                 return;
             }
@@ -90,7 +83,9 @@ public class JiraAuthenticationService implements AuthenticationService {
             final HttpSession httpSession = request.getSession();
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
-            ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
+            getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
+
+            getComponentOfType(RememberMeService.class).addRememberMeCookie(request, response, appUser.getUsername());
 
             redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {

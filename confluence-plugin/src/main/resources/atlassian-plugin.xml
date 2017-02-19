@@ -127,6 +127,7 @@
     <component-import key="userAccessor" interface="com.atlassian.confluence.user.UserAccessor"/>
     <component-import key="settingsManager" interface="com.atlassian.confluence.setup.settings.SettingsManager"/>
     <component-import key="signupManager" interface="com.atlassian.confluence.user.SignupManager"/>
+    <component-import key="loginManager" interface="com.atlassian.confluence.security.login.LoginManager"/>
 
 
     <component key="tx-processor" name="Transactional Annotation Processor"

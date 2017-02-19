@@ -20,11 +20,12 @@ import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.pocketknife.api.querydsl.DatabaseAccessor;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
+import com.atlassian.seraph.service.rememberme.RememberMeService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.servicedesk.querydsl.ServiceDeskTables;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
+import com.pawelniewiadomski.servicedesk.querydsl.ServiceDeskTables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.atlassian.jira.component.ComponentAccessor.getComponentOfType;
 import static com.google.common.collect.ImmutableList.of;
+import static com.pawelniewiadomski.AllowedDomains.isEmailFromAllowedDomain;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
@@ -86,22 +91,13 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
 
     public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
                                    final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
-        if (StringUtils.isBlank(email)) {
+        if (isBlank(email)) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
         }
 
-        if (StringUtils.isNotBlank(provider.getAllowedDomains())) {
-            final String[] allowedDomains = StringUtils.split(provider.getAllowedDomains(), ',');
-            final String domain = StringUtils.substringAfter(email, "@");
-            boolean matchingDomain = false;
-            for (final String allowedDomain : allowedDomains) {
-                if (StringUtils.equals(StringUtils.trim(allowedDomain), domain)) {
-                    matchingDomain = true;
-                    break;
-                }
-            }
-            if (!matchingDomain) {
+        if (isNotBlank(provider.getAllowedDomains())) {
+            if (!isEmailFromAllowedDomain(provider, email)) {
                 templateHelper.render(request, response, "OpenId.Templates.domainMismatch");
                 return;
             }
@@ -140,7 +136,9 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
             final HttpSession httpSession = request.getSession();
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
-            ComponentAccessor.getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
+            getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
+
+            getComponentOfType(RememberMeService.class).addRememberMeCookie(request, response, appUser.getUsername());
 
             redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {
