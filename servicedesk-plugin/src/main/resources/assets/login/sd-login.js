@@ -1,14 +1,26 @@
-define('easy-sign-ups/marionette', ['servicedesk/backbone'], function (Backbone) {
-    return Marionette.noConflict();
+define('ajs', [], function() {
+    return AJS;
 });
 
-define('easy-sign-ups/providersModel', ['servicedesk/backbone', 'ajs', 'wrm/context-path'], function (Backbone, AJS, contextPath) {
+define('easy-sign-ups/underscore', ['atlassian/libs/underscore-1.8.3'], function(factory) {
+    return factory;
+});
+
+define('easy-sign-ups/backbone', ['jquery', 'easy-sign-ups/underscore', 'atlassian/libs/factories/backbone-1.3.3'], function($, _, factory) {
+    return factory(_, $);
+});
+
+define('easy-sign-ups/marionette', ['easy-sign-ups/backbone', 'easy-sign-ups/underscore', 'atlassian/libs/factories/marionette-2.1.0'], function (Backbone, _, factory) {
+    return factory(_, Backbone);
+});
+
+define('easy-sign-ups/providersModel', ['easy-sign-ups/backbone', 'ajs', 'wrm/context-path'], function (Backbone, AJS, contextPath) {
     return Backbone.Collection.extend({
         url: contextPath() + '/rest/easy-sign-ups/1.0/openIdProviders/login'
     });
 });
 
-define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/underscore', 'ajs', 'wrm/context-path'], function (Marionette, _, AJS, contextPath) {
+define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'easy-sign-ups/underscore', 'ajs', 'wrm/context-path'], function (Marionette, _, AJS, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -21,7 +33,8 @@ define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'servicedesk/u
             })
         },
         getPortalId: function() {
-            return window.location.pathname.match(/servicedesk\/customer\/portal\/([0-9]*)\/user/)[1];
+            var match = window.location.pathname.match(/servicedesk\/customer\/portal\/([0-9]*)\/user/);
+            return match ? match[1] : "";
         },
         getParameterByName: function (name, href) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -55,7 +68,7 @@ define('easy-sign-ups/emptyView', ['easy-sign-ups/marionette'], function (Marion
     });
 });
 
-define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/providersModel', 'easy-sign-ups/providerView', 'easy-sign-ups/emptyView', 'servicedesk/underscore'],
+define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/providersModel', 'easy-sign-ups/providerView', 'easy-sign-ups/emptyView', 'easy-sign-ups/underscore'],
     function (Marionette, ProvidersModel, ProviderView, EmptyView, _) {
         return Marionette.CompositeView.extend({
             el: '#openid-login',
@@ -71,7 +84,7 @@ define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/pr
         });
     });
 
-require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'servicedesk/underscore'],
+require(['ajs', 'jquery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/underscore'],
     function (AJS, $, Marionette, LoginView, ProvidersModel, _) {
         $(document).ready(function () {
             console.log('Easy sign-ups booting up...');
@@ -85,8 +98,8 @@ require(['ajs', 'servicedesk/jQuery', 'easy-sign-ups/marionette', 'easy-sign-ups
                     $loginForm.removeDirtyWarning();
                 }
 
-                var $attachLocation = $loginForm;
-                $attachLocation.append('<div id="openid-login"></div>');
+                $loginForm.append('<div id="openid-login"></div>');
+
                 var providers = new ProvidersModel();
                 var login = new LoginView({collection: providers});
                 providers.fetch({

@@ -45,21 +45,22 @@
 
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
+        <dependency>jira.webresources:almond</dependency>
         <dependency>com.atlassian.servicedesk.core-ui:sd-almond</dependency>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <dependency>com.atlassian.servicedesk:sd-lib</dependency>
         <dependency>com.atlassian.servicedesk:aui-flatpack</dependency>
         <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+        <dependency>com.atlassian.plugin.jslibs:backbone-1.3.3-factory</dependency>
+        <dependency>com.atlassian.plugin.jslibs:underscore-1.8.3</dependency>
+        <dependency>com.atlassian.plugin.jslibs:marionette-2.1.0-factory</dependency>
         <context>customerportal</context>
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
         <resource type="download" name="login.css" location="assets/login/login.less"/>
         <resource type="download" name="sd-login.css" location="assets/login/sd-login.less"/>
-        <resource type="download" name="sd-shims.js" location="assets/login/sd-shims.js"/>
-        <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
-        <resource type="download" name="jira-shims.js" location="assets/login/jira-shims.js"/>
-        <resource type="download" name="login.js" location="assets/login/sd-login.js"/>
+        <resource type="download" name="sd-login.js" location="assets/login/sd-login.js"/>
         <resource type="download" name="images/" location="assets/images"/>
     </web-resource>
 
