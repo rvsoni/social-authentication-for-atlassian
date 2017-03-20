@@ -11,6 +11,6 @@ public class BaseUrlService {
     ApplicationProperties applicationProperties;
 
     public String getBaseUrl() {
-        return applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
+        return applicationProperties.getBaseUrl(UrlMode.CANONICAL);
     }
 }
