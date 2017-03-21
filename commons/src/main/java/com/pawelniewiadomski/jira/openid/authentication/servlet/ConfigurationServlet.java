@@ -44,7 +44,7 @@ public class ConfigurationServlet extends HttpServlet {
     protected ServletUtils servletUtils;
 
     @Autowired
-    protected ApplicationProperties applicationProperties;
+    protected BaseUrlService baseUrlService;
 
     @Autowired
     protected UserManager userManager;
@@ -87,7 +87,7 @@ public class ConfigurationServlet extends HttpServlet {
     }
 
     private Map<String, Object> prepareData(HttpServletRequest req) {
-        final String baseUrl = applicationProperties.getBaseUrl();
+        final String baseUrl = baseUrlService.getBaseUrl();
 
         ImmutableMap.Builder<String, Object> mapBuilder = ImmutableMap.builder();
 

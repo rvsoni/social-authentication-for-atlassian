@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
   confluence:
-    image: cptactionhank/atlassian-confluence:6.0.5
+    image: cptactionhank/atlassian-confluence:6.1.0
     depends_on:
       - db
       - jira

@@ -46,6 +46,7 @@
     <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <context>atl.general</context>
+        <context>mob-general</context>
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
