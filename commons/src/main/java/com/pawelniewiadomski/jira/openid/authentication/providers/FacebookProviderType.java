@@ -11,6 +11,7 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
@@ -63,11 +64,11 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
                                                  @Nonnull String state,
                                                  @Nonnull HttpServletRequest request) throws Exception {
         return OAuthClientRequest
-                .authorizationLocation(OAuthProviderType.FACEBOOK.getAuthzEndpoint())
+                .authorizationLocation("https://www.facebook.com/v2.8/dialog/oauth")
                 .setClientId(provider.getClientId())
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
-                .setScope("public_profile email")
+                .setScope("public_profile,email")
                 .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .buildQueryMessage();
     }
@@ -75,18 +76,17 @@ public class FacebookProviderType extends AbstractOAuth2ProviderType {
     @Override
     public Either<Pair<String, String>, Error> getUsernameAndEmail(@Nonnull String authorizationCode, @Nonnull OpenIdProvider provider, @Nonnull HttpServletRequest request) throws Exception {
         final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-        final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation(OAuthProviderType.FACEBOOK.getTokenEndpoint())
-                .setGrantType(GrantType.AUTHORIZATION_CODE)
+        final OAuthClientRequest oAuthRequest = OAuthClientRequest.tokenLocation("https://graph.facebook.com/v2.8/oauth/access_token")
                 .setClientId(provider.getClientId())
                 .setClientSecret(provider.getClientSecret())
                 .setRedirectURI(returnToHelper.getReturnTo(provider, request))
                 .setCode(authorizationCode)
                 .buildQueryMessage();
 
-        final GitHubTokenResponse token = oAuthClient.accessToken(oAuthRequest, GitHubTokenResponse.class);
+        final OAuthJSONAccessTokenResponse token = oAuthClient.accessToken(oAuthRequest);
         final String accessToken = token.getAccessToken();
 
-        final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me?fields=email,name")
+        final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/v2.8/me?fields=email,name")
                 .setAccessToken(accessToken)
                 .buildQueryMessage();
 
