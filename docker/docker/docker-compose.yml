@@ -6,6 +6,9 @@ services:
       - db
     ports:
       - "8714:8080"
+      - "5714:5005"
+    environment:
+      CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   confluence:
     image: cptactionhank/atlassian-confluence:5.9.9
     depends_on:
