@@ -81,12 +81,21 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
         $(document).ready(function () {
             console.log('OpenID booting up...');
 
+            var user = $('meta[name=ajs-remote-user]').attr('content');
+            if (user !== undefined && user !== "") {
+                console.log('User is already logged in, exiting.');
+                return;
+            }
+
             var isJIRA = Product.name === 'jira';
             if (isJIRA && $('#dashboard').length) {
                 console.log('Dashboard detected, waiting for elements...');
 
+                var retries = 1000;
+
                 var f = function() {
-                    if (!modifyLoginForm()) {
+                    if (!modifyLoginForm() && retries >= 0) {
+                        retries -= 1;
                         setTimeout(f, 100);
                     }
                 };
