@@ -6,6 +6,9 @@ services:
       - db
     ports:
       - "8331:8080"
+      - "5331:5005"
+    environment:
+      CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   confluence:
     image: cptactionhank/atlassian-confluence:6.1.0
     depends_on:
@@ -13,6 +16,9 @@ services:
       - jira
     ports:
       - "8610:8090"
+      - "5610:5005"
+    environment:
+      CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   db:
     image: postgres
     environment:
