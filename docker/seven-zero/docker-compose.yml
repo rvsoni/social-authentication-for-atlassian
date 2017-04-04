@@ -1,0 +1,15 @@
+version: '2'
+services:
+  jira:
+    image: cptactionhank/atlassian-jira-software:7.0.10
+    depends_on:
+      - db
+    ports:
+      - "47011:8080"
+      - "57011:5005"
+    environment:
+      CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+  db:
+    image: postgres:9.3
+    environment:
+      POSTGRES_PASSWORD: password
