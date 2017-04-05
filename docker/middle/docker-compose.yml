@@ -1,25 +1,25 @@
 version: '2'
 services:
   jira:
-    image: cptactionhank/atlassian-jira-service-desk:3.3.1
+    image: cptactionhank/atlassian-jira-software:7.1.4
     depends_on:
       - db
     ports:
-      - "8331:8080"
-      - "5331:5005"
+      - "5080:8080"
+      - "5085:5005"
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   confluence:
-    image: cptactionhank/atlassian-confluence:6.1.0
+    image: cptactionhank/atlassian-confluence:6.0.7
     depends_on:
       - db
       - jira
     ports:
-      - "8610:8090"
-      - "5610:5005"
+      - "5090:8090"
+      - "5095:5005"
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   db:
-    image: postgres
+    image: postgres:9.3
     environment:
       POSTGRES_PASSWORD: password
