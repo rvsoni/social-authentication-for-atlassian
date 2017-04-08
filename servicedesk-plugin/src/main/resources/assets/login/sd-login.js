@@ -1,7 +1,3 @@
-define('ajs', [], function() {
-    return AJS;
-});
-
 define('easy-sign-ups/underscore', ['atlassian/libs/underscore-1.8.3'], function(factory) {
     return factory;
 });
@@ -14,13 +10,13 @@ define('easy-sign-ups/marionette', ['easy-sign-ups/backbone', 'easy-sign-ups/und
     return factory(_, Backbone);
 });
 
-define('easy-sign-ups/providersModel', ['easy-sign-ups/backbone', 'ajs', 'wrm/context-path'], function (Backbone, AJS, contextPath) {
+define('easy-sign-ups/providersModel', ['easy-sign-ups/backbone', 'wrm/context-path'], function (Backbone, contextPath) {
     return Backbone.Collection.extend({
         url: contextPath() + '/rest/easy-sign-ups/1.0/openIdProviders/login'
     });
 });
 
-define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'easy-sign-ups/underscore', 'ajs', 'wrm/context-path'], function (Marionette, _, AJS, contextPath) {
+define('easy-sign-ups/providerView', ['easy-sign-ups/marionette', 'easy-sign-ups/underscore', 'wrm/context-path'], function (Marionette, _, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -84,8 +80,8 @@ define('easy-sign-ups/loginView', ['easy-sign-ups/marionette', 'easy-sign-ups/pr
         });
     });
 
-require(['ajs', 'jquery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/underscore'],
-    function (AJS, $, Marionette, LoginView, ProvidersModel, _) {
+require(['jquery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-sign-ups/providersModel', 'easy-sign-ups/underscore'],
+    function ($, Marionette, LoginView, ProvidersModel, _) {
         $(document).ready(function () {
             console.log('Easy sign-ups booting up...');
 
