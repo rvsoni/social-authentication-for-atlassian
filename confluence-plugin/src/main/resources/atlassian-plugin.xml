@@ -6,7 +6,6 @@
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
 
-        <param name="plugin-icon">assets/images/pluginIcon.png</param>
         <param name="plugin-logo">assets/images/pluginLogo.png</param>
         <param name="plugin-banner">assets/images/banner.png</param>
 
