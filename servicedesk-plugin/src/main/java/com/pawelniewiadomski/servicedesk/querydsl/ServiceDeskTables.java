@@ -9,4 +9,7 @@ public class ServiceDeskTables {
 
     public static final QViewportDao VIEWPORT = new QViewportDao(
             withAoPrefixUpperCase(QViewportDao.CurrentSchema.ViewportDao.TABLE_NAME));
+
+    public static final QServiceDeskDao SERVICEDESK = new QServiceDeskDao(
+            withAoPrefixUpperCase(QServiceDeskDao.CurrentSchema.ServiceDeskDao.TABLE_NAME));
 }

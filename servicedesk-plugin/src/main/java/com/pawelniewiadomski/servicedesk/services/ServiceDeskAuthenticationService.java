@@ -23,6 +23,7 @@ import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.atlassian.seraph.service.rememberme.RememberMeService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.services.*;
 import com.pawelniewiadomski.servicedesk.querydsl.ServiceDeskTables;
@@ -120,18 +121,7 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
         if (user != null) {
             final ApplicationUser appUser = ApplicationUsers.from(user);
 
-            final Long projectId = databaseAccessor
-                    .run(databaseConnection -> databaseConnection.select(ServiceDeskTables.VIEWPORT.PROJECT_ID)
-                            .from(ServiceDeskTables.VIEWPORT)
-                            .where(ServiceDeskTables.VIEWPORT.ID.eq(
-                                    Integer.valueOf((String) request.getSession().getAttribute(PORTAL_ID_SESSION))))
-                            .fetchOne());
-
-            final Project project = projectManager.getProjectObj(projectId);
-            final ProjectRole serviceDeskCustomers = projectRoleManager.getProjectRole("Service Desk Customers");
-            if (serviceDeskCustomers != null && !projectRoleManager.isUserInProjectRole(appUser, serviceDeskCustomers, project)) {
-                addUserToRoleActors(appUser, project, serviceDeskCustomers);
-            }
+            getServiceDeskProjectIds(request).forEach((projectId) -> addToServiceDeskUserRole(appUser, projectId));
 
             final HttpSession httpSession = request.getSession();
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
@@ -143,6 +133,38 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
             redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
+        }
+    }
+
+    private void addToServiceDeskUserRole(final ApplicationUser appUser, final Long projectId) {
+        final Project project = projectManager.getProjectObj(projectId);
+        final ProjectRole serviceDeskCustomers = projectRoleManager.getProjectRole("Service Desk Customers");
+        if (serviceDeskCustomers != null && !projectRoleManager.isUserInProjectRole(appUser, serviceDeskCustomers, project)) {
+            addUserToRoleActors(appUser, project, serviceDeskCustomers);
+        }
+    }
+
+    private List<Long> getServiceDeskProjectIds(final HttpServletRequest request) {
+        try {
+            final Integer portalId = Integer.valueOf((String) request.getSession().getAttribute(PORTAL_ID_SESSION));
+
+            final Long run = databaseAccessor
+                    .run(connection -> connection.select(ServiceDeskTables.VIEWPORT.PROJECT_ID)
+                            .from(ServiceDeskTables.VIEWPORT)
+                            .where(ServiceDeskTables.VIEWPORT.ID.eq(portalId))
+                            .fetchOne());
+
+            return Lists.newArrayList(run);
+        } catch (NumberFormatException e) {
+            final List<Long> run = databaseAccessor
+                    .run(connection -> connection.select(ServiceDeskTables.VIEWPORT.PROJECT_ID)
+                            .from(ServiceDeskTables.VIEWPORT)
+                            .leftJoin(ServiceDeskTables.SERVICEDESK)
+                            .on(ServiceDeskTables.VIEWPORT.PROJECT_ID.eq(ServiceDeskTables.SERVICEDESK.PROJECT_ID))
+                            .where(ServiceDeskTables.SERVICEDESK.PUBLIC_SIGNUP.eq(1))
+                            .fetch());
+
+            return run;
         }
     }
 
