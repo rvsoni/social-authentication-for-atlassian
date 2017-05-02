@@ -8,5 +8,5 @@ atlas-package -DskipTests
 ports=$(docker ps --format "{{.Names}}: {{.Ports}}" | rg '(.*_jira_.*:)([0-9]+)(->.*)' --replace '$2')
 
 for port in $ports ; do
-	atlas-install-plugin --context-path '' -p $port
+	atlas-install-plugin -o --context-path '' -p $port
 done

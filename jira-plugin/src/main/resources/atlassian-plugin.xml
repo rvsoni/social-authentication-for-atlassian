@@ -6,9 +6,8 @@
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
 
-        <param name="plugin-icon">assets/images/pluginIcon.png</param>
         <param name="plugin-logo">assets/images/pluginLogo.png</param>
-        <param name="plugin-banner">assets/images/banner.png</param>
+        <param name="plugin-banner">assets/images/pluginBanner.png</param>
 
         <param name="configure.url">/openid/configuration</param>
 
@@ -44,27 +43,19 @@
 
     <!-- add our web resources -->
     <web-resource key="jira-openid-authentication-plugin-resources" application="jira">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+        <dependency>com.atlassian.plugin.jslibs:backbone-1.0.0-factory</dependency>
+        <dependency>com.atlassian.plugin.jslibs:underscore-1.4.4</dependency>
+        <dependency>com.atlassian.plugin.jslibs:marionette-2.1.0-factory</dependency>
+
         <context>atl.general</context>
         <context>mob-general</context>
-        <transformation extension="less">
-            <transformer key="lessTransformer"/>
-        </transformation>
-        <resource type="download" name="login.css" location="assets/login/login.less"/>
-        <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
-        <resource type="download" name="jira-shims.js" location="assets/login/jira-shims.js"/>
-        <resource type="download" name="login.js" location="assets/login/login.js"/>
-        <resource type="download" name="images/" location="assets/images"/>
-    </web-resource>
 
-    <web-resource key="jira-openid-authentication-plugin-resources" application="confluence">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <context>login</context>
         <transformation extension="less">
             <transformer key="lessTransformer"/>
         </transformation>
+
         <resource type="download" name="login.css" location="assets/login/login.less"/>
-        <resource type="download" name="marionette.js" location="assets/login/marionette.js"/>
         <resource type="download" name="login.js" location="assets/login/login.js"/>
         <resource type="download" name="images/" location="assets/images"/>
     </web-resource>

@@ -1,1 +1,12 @@
-(cd ../commons && atlas-mvn package install -DskipTests $*) && atlas-package -DskipTests $* && atlas-install-plugin --context-path '' -p 8080 $*
+#!/bin/bash
+set -e
+
+(cd ../commons && atlas-mvn package install -DskipTests)
+
+atlas-package -DskipTests
+
+ports=$(docker ps --format "{{.Names}}: {{.Ports}}" | rg '(.*_jira_.*:)([0-9]+)(->.*)' --replace '$2')
+
+for port in $ports ; do
+	atlas-install-plugin -o --context-path '' -p $port
+done

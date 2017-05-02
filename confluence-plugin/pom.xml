@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.pawelniewiadomski.jira</groupId>
         <artifactId>social-authentication-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.1.4</version>
     </parent>
     <artifactId>confluence-openid-authentication-plugin</artifactId>
     <name>OpenID Authentication for Confluence</name>
@@ -231,8 +231,6 @@
                 <configuration>
                     <extractDependencies>true</extractDependencies>
                     <productVersion>${confluence.version}</productVersion>
-                    <contextPath>/</contextPath>
-                    <httpPort>8080</httpPort>
                     <jvmArgs>-Xmx768m</jvmArgs>
                     <systemPropertyVariables>
                         <xvfb.enable>${xvfb.enable}</xvfb.enable>

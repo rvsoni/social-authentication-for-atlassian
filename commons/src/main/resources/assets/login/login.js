@@ -1,23 +1,39 @@
-define('openid/product', ['jquery'], function ($) {
+define('openid/jquery', function () {
+    return $ || jQuery;
+});
+
+define('openid/product', ['openid/jquery'], function ($) {
     var appName = $('meta[name=application-name]').data('name');
     if (appName) {
         return {name: appName};
+    } else if (window.location.pathname.indexOf("/plugins/servlet/mobile") !== -1) {
+        console.log("Seems like JIRA");
+        return {name: 'jira'};
     } else {
+        console.log("No idea, that's probably Confluence then");
         return {name: 'confluence'};
     }
 });
 
-define('openid/marionette', ['backbone'], function (Backbone) {
-    return Marionette.noConflict();
+define('openid/underscore', ['atlassian/libs/underscore-1.4.4'], function (factory) {
+    return factory;
 });
 
-define('openid/providersModel', ['backbone', 'ajs'], function (Backbone, AJS) {
+define('openid/backbone', ['openid/underscore', 'atlassian/libs/factories/backbone-1.0.0', 'openid/jquery'], function (_, factory, $) {
+    return factory(_, $);
+});
+
+define('openid/marionette', ['openid/backbone', 'openid/underscore', 'atlassian/libs/factories/marionette-2.1.0'], function (Backbone, _, factory) {
+    return factory(_, Backbone);
+});
+
+define('openid/providersModel', ['openid/backbone', 'wrm/context-path'], function (Backbone, contextPath) {
     return Backbone.Collection.extend({
-        url: AJS.contextPath() + '/rest/jira-openid-authentication/1.0/openIdProviders/login'
+        url: contextPath() + '/rest/jira-openid-authentication/1.0/openIdProviders/login'
     });
 });
 
-define('openid/providerView', ['openid/marionette', 'underscore', 'ajs'], function (Marionette, _, AJS) {
+define('openid/providerView', ['openid/marionette', 'openid/underscore', 'wrm/context-path'], function (Marionette, _, contextPath) {
     return Marionette.ItemView.extend({
         tagName: 'span',
         className: 'provider',
@@ -34,13 +50,13 @@ define('openid/providerView', ['openid/marionette', 'underscore', 'ajs'], functi
             var regexS = "[\\?&]" + name + "=([^&#]*)";
             var regex = new RegExp(regexS);
             var results = regex.exec(href);
-            if (results == null)
+            if (results === null)
                 return "";
             else
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         },
         getAuthenticationUrl: function (providerId) {
-            var authenticationUrl = AJS.contextPath() + '/openid/login/' + providerId;
+            var authenticationUrl = contextPath() + '/openid/login/' + providerId;
             var returnUrl = this.getParameterByName("os_destination", window.location.href);
             if (returnUrl) {
                 authenticationUrl += "?returnUrl=" + encodeURIComponent(returnUrl);
@@ -60,7 +76,7 @@ define('openid/emptyView', ['openid/marionette'], function (Marionette) {
     });
 });
 
-define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openid/providerView', 'openid/emptyView', 'underscore'],
+define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openid/providerView', 'openid/emptyView', 'openid/underscore'],
     function (Marionette, ProvidersModel, ProviderView, EmptyView, _) {
         return Marionette.CompositeView.extend({
             el: '#openid-login',
@@ -76,8 +92,8 @@ define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openi
         });
     });
 
-require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'underscore'],
-    function (AJS, $, Marionette, LoginView, ProvidersModel, Product, _) {
+require(['openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'openid/underscore', 'openid/jquery'],
+    function (Marionette, LoginView, ProvidersModel, Product, _, $) {
         $(document).ready(function () {
             console.log('OpenID booting up...');
 
@@ -93,7 +109,7 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
 
                 var retries = 1000;
 
-                var f = function() {
+                var f = function () {
                     if (!modifyLoginForm() && retries >= 0) {
                         retries -= 1;
                         setTimeout(f, 100);
@@ -106,9 +122,9 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
             }
 
             function modifyLoginForm() {
-                var loginFormSelector = isJIRA ? "#login-form, #loginform" : "form.login-form-container";
+                var loginFormSelector = isJIRA ? "#login-form, #loginform, #form-crowd-login" : "form.login-form-container";
                 var $loginForm = $(loginFormSelector);
-                if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') != -1) {
+                if (!$loginForm.length || !$loginForm.attr('action') || $loginForm.attr('action').indexOf('WebSudo') !== -1) {
                     console.log('Login form has no action or that is WebSudo');
                     return false;
                 }
@@ -118,7 +134,7 @@ require(['ajs', 'jquery', 'openid/marionette', 'openid/loginView', 'openid/provi
                     $loginForm.removeDirtyWarning();
                 }
 
-                if ($loginForm.attr('id') == 'loginform') {
+                if ($loginForm.attr('id') === 'loginform') {
                     // in case on dashboard resize login gadget
                     $loginForm.parent().parent().css('height', 'auto');
                 }
