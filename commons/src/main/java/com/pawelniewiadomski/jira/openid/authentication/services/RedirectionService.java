@@ -30,7 +30,7 @@ public class RedirectionService {
         if (isNotBlank(returnUrl)) {
             if (startsWith(returnUrl, "http")) {
                 redirectTo = returnUrl;
-            } else if (startsWith(returnUrl, "portal")) {
+            } else if (startsWith(returnUrl, "portal") || startsWith(returnUrl, "user")) {
                 redirectTo = baseUrlService.getBaseUrl() + "/servicedesk/customer/" + returnUrl;
             } else {
                 redirectTo = baseUrlService.getBaseUrl() + returnUrl;
