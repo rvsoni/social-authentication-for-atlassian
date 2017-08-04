@@ -1,7 +1,7 @@
 version: '2'
 services:
   jira:
-    image: cptactionhank/atlassian-jira-software:7.3.6
+    image: cptactionhank/atlassian-jira-software:7.4.2
     depends_on:
       - db
     ports:
@@ -10,10 +10,9 @@ services:
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   confluence:
-    image: cptactionhank/atlassian-confluence:6.2.1
+    image: cptactionhank/atlassian-confluence:6.3.1
     depends_on:
-      - db
-      - jira
+      - mysql
     ports:
       - "6090:8090"
       - "6095:5005"
@@ -23,3 +22,9 @@ services:
     image: postgres
     environment:
       POSTGRES_PASSWORD: password
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./mysql.conf.d:/etc/mysql/conf.d
