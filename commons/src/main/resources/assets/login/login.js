@@ -97,12 +97,6 @@ require(['openid/marionette', 'openid/loginView', 'openid/providersModel', 'open
         $(document).ready(function () {
             console.log('OpenID booting up...');
 
-            var user = $('meta[name=ajs-remote-user]').attr('content');
-            if (user !== undefined && user !== "") {
-                console.log('User is already logged in, exiting.');
-                return;
-            }
-
             var isJIRA = Product.name === 'jira';
             if (isJIRA && $('#dashboard').length) {
                 console.log('Dashboard detected, waiting for elements...');
