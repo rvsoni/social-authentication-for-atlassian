@@ -147,6 +147,7 @@
         <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
 
         <upgradeTask>com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade.Task001AddPromptToOpenIdProvider</upgradeTask>
+        <upgradeTask>com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade.Task002AddScopeToOpenIdProvider</upgradeTask>
     </ao>
 
     <!-- Pretty links -->

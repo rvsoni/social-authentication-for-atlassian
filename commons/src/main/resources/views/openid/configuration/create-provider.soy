@@ -125,6 +125,22 @@
     {/param}
 {/call}
 {call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.scopeRequired"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'scope'/}
+            {param content: 'Scope'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="scope" class="text" type="text" name="scope" ng-model="provider.scope" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Scope to get user details including e-mail{/param}
+        {/call}
+        <div data-field="scope" class="error" ng-if="providerForm.scope.$error.required">Please provide the scope.</div>
+        <div data-field="scope" class="error" ng-if="errors.scope">{lb}{lb}errors.scope{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
     {param extraAttributes}ng-if="providerType.id=='openid1' || providerType.id=='oauth2' || providerType.id=='google'"{/param}
     {param content}
         {call aui.form.label}

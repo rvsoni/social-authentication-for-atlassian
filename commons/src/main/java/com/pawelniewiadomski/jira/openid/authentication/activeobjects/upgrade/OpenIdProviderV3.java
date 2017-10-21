@@ -1,4 +1,4 @@
-package com.pawelniewiadomski.jira.openid.authentication.activeobjects;
+package com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade;
 
 import net.java.ao.Entity;
 import net.java.ao.Preload;
@@ -7,7 +7,7 @@ import net.java.ao.schema.*;
 @SuppressWarnings("UnusedDeclaration")
 @Table("openid_providers")
 @Preload
-public interface OpenIdProvider extends Entity {
+public interface OpenIdProviderV3 extends Entity {
 
     int MAX_LENGTH = 450;
 

@@ -24,6 +24,8 @@ public interface ProviderType {
 
     boolean isSkipUrl();
 
+    boolean isScopeRequired();
+
     List<String> getSupportedPrompts();
 
     @Nullable

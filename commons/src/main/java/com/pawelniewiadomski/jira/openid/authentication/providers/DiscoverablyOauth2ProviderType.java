@@ -38,6 +38,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
     private final ReturnToHelper returnToHelper;
 
     public static final String SELECT_ACCOUNT_PROMPT = "select_account";
+    public static final String DEFAULT_SCOPE = "openid email profile";
 
     public DiscoverablyOauth2ProviderType(I18nResolver i18nResolver, OpenIdDao openIdDao,
                                           OpenIdDiscoveryDocumentProvider discoveryDocumentProvider,
@@ -76,6 +77,11 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isScopeRequired() {
+        return true;
     }
 
     @Override
@@ -128,6 +134,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             map.put(OpenIdProvider.CALLBACK_ID, providerBean.getCallbackId());
             map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
             map.put(OpenIdProvider.PROMPT, providerBean.getPrompt());
+            map.put(OpenIdProvider.SCOPE, providerBean.getScope());
             try {
                 return Either.right(openIdDao.createProvider(map));
             } catch (SQLException e) {
@@ -143,6 +150,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
             provider.setCallbackId(providerBean.getCallbackId());
             provider.setAllowedDomains(providerBean.getAllowedDomains());
             provider.setPrompt(providerBean.getPrompt());
+            provider.setScope(providerBean.getScope());
             provider.save();
             return Either.right(provider);
         }
@@ -161,7 +169,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
                 .setClientId(provider.getClientId())
                 .setResponseType(ResponseType.CODE.toString())
                 .setState(state)
-                .setScope("openid email profile");
+                .setScope(defaultString(provider.getScope(), DEFAULT_SCOPE));
 
         if (isNotBlank(provider.getPrompt())) {
             requestBuilder = requestBuilder.setParameter("prompt", provider.getPrompt());

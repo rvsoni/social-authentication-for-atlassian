@@ -60,6 +60,11 @@ public abstract class AbstractProviderType implements ProviderType {
     }
 
     @Override
+    public boolean isScopeRequired() {
+        return false;
+    }
+
+    @Override
     public List<String> getSupportedPrompts() {
         return ImmutableList.of();
     }
