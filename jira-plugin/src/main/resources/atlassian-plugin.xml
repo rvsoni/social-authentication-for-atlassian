@@ -141,6 +141,9 @@
     <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
+    <component key="setNameUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.SetProviderNamesUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
 
     <!-- Active Objects -->
     <ao key="openid-active-objects">

@@ -71,7 +71,7 @@ public abstract class AbstractProviderType implements ProviderType {
 
     @Nullable
     @Override
-    public String getCreatedProviderName() {
+    public String getDefaultName() {
         return null;
     }
 }

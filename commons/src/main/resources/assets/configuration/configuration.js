@@ -135,6 +135,7 @@ angular.module("openid.configuration", ['ngRoute'])
 
         $scope.$watch("providerType", function(newValue, oldValue) {
             $scope.provider.callbackId = newValue.id != 'oauth2' ? newValue.id : $scope.callbackId;
+            $scope.provider.name = newValue.defaultName;
         });
 
         $scope.providerType = $scope.providerTypes[0];

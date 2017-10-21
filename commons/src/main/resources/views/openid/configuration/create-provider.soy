@@ -27,8 +27,7 @@
             {param isRequired: true/}
             {param content: 'Name'/}
         {/call}
-        <input id="name" class="text" type="text" name="name" ng-if="!providerType.createdProviderName" ng-model="provider.name" required="true">
-        <span>{lb}{lb}providerType.createdProviderName{rb}{rb}</span>
+        <input id="name" class="text" type="text" name="name" ng-model="provider.name" required="true">
         <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
         <div data-field="name" class="error" ng-if="errors.name">{lb}{lb}errors.name{rb}{rb}</div>
     {/param}
