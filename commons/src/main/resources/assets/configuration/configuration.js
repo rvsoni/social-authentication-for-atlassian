@@ -28,7 +28,7 @@ angular.module("openid.configuration", ['ngRoute'])
     .factory('errorHandler', ['$window', function($window) {
         return {
             handleError: function(data, status) {
-                if (status === 401) {
+                if (status == 401) {
                     $window.location.replace(contextPath + '/login.jsp?permissionViolation=true&os_destination=' + encodeURIComponent($window.location.href));
                 }
             }
@@ -42,7 +42,7 @@ angular.module("openid.configuration", ['ngRoute'])
             },
             getProviders: function() {
                 var deferred = $q.defer();
-                if (providers === undefined || !providers.length) {
+                if (providers == undefined || !providers.length) {
                     $http.get(restPath + "/providers").success(function(response) {
                         providers = response;
                         deferred.resolve(response);
@@ -55,7 +55,7 @@ angular.module("openid.configuration", ['ngRoute'])
                 }
                 return deferred.promise;
             },
-            getProviderById: function(providerId) { return _.find(providers, function(p) { return p.id === providerId; } )}
+            getProviderById: function(providerId) { return _.find(providers, function(p) { return p.id == providerId; } )}
         }
     }])
     .config(['$routeProvider', 'restPath', function ($routeProvider, restPath) {
@@ -129,12 +129,12 @@ angular.module("openid.configuration", ['ngRoute'])
         $scope.sslDocumentation = data.sslDocumentation;
 
         $scope.callbackId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
         });
 
         $scope.$watch("providerType", function(newValue, oldValue) {
-            $scope.provider.callbackId = newValue.id !== 'oauth2' ? newValue.id : $scope.callbackId;
+            $scope.provider.callbackId = newValue.id != 'oauth2' ? newValue.id : $scope.callbackId;
             $scope.provider.name = newValue.defaultName;
             $scope.provider.prompt = _.first($scope.providerType.supportedPrompts);
         });
@@ -152,7 +152,7 @@ angular.module("openid.configuration", ['ngRoute'])
 
             var newProvider = angular.extend({}, $scope.provider, {providerType: $scope.providerType.id});
             $http.post(restPath + '/providers', newProvider).success(function(response) {
-                if (response.errorMessages === undefined && response.errors === undefined) {
+                if (response.errorMessages == undefined && response.errors == undefined) {
                     providers.resetProviders();
                     $location.path('/');
                 } else {
@@ -173,10 +173,10 @@ angular.module("openid.configuration", ['ngRoute'])
         providers.getProviders().then(function() {
             $scope.provider = providers.getProviderById(providerId);
 
-            if ($scope.provider === undefined) {
+            if ($scope.provider == undefined) {
                 $location.path('/');
             } else {
-                $scope.providerType = _.find(providerTypes, function(pt) { return pt.id === $scope.provider.providerType; });
+                $scope.providerType = _.find(providerTypes, function(pt) { return pt.id == $scope.provider.providerType; });
             }
         });
 
@@ -186,7 +186,7 @@ angular.module("openid.configuration", ['ngRoute'])
             $scope.errorMessages = [];
 
             $http.put(restPath + '/providers/' + providerId, $scope.provider).success(function(response) {
-                if (response.errorMessages === undefined && response.errors === undefined) {
+                if (response.errorMessages == undefined && response.errors == undefined) {
                     providers.resetProviders();
                     $location.path('/');
                 } else {
@@ -203,7 +203,7 @@ angular.module("openid.configuration", ['ngRoute'])
         providers.getProviders().then(function() {
             $scope.provider = providers.getProviderById(providerId);
 
-            if ($scope.provider === undefined) {
+            if ($scope.provider == undefined) {
                 $location.path('/');
             }
         });
