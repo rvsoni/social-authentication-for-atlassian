@@ -43,7 +43,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
 
     @Nullable
     @Override
-    public String getCreatedProviderName() {
+    public String getDefaultName() {
         return getName();
     }
 
@@ -51,7 +51,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
     public Either<Errors, OpenIdProvider> createOrUpdate(@Nullable OpenIdProvider provider, ProviderBean providerBean) {
         Errors errors = new Errors();
 
-        validateName(provider, getCreatedProviderName(), errors);
+        validateName(provider, providerBean, errors);
 
         if (isEmpty(providerBean.getClientId())) {
             errors.addError("clientId", i18nResolver.getText("configuration.clientId.empty"));
@@ -64,7 +64,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
             return Either.left(errors);
         } else if (provider == null) {
             final Map<String, Object> map = new HashMap<>();
-            map.put(OpenIdProvider.NAME, getCreatedProviderName());
+            map.put(OpenIdProvider.NAME, providerBean.getName());
             map.put(OpenIdProvider.ENDPOINT_URL, getAuthorizationUrl());
             map.put(OpenIdProvider.CALLBACK_ID, getCallbackId()); // changing the id will break all existing urls
             map.put(OpenIdProvider.ALLOWED_DOMAINS, providerBean.getAllowedDomains());
@@ -78,7 +78,7 @@ public abstract class AbstractOAuth2ProviderType extends AbstractProviderType im
                 return Either.left(new Errors().addErrorMessage("Error when saving the provider: " + e.getMessage()));
             }
         } else {
-            provider.setName(getCreatedProviderName());
+            provider.setName(providerBean.getName());
             provider.setEndpointUrl(getAuthorizationUrl());
             provider.setCallbackId(getCallbackId());
             provider.setAllowedDomains(providerBean.getAllowedDomains());

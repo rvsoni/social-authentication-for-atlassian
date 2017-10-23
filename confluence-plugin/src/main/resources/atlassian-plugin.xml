@@ -145,12 +145,16 @@
     <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
+    <component key="providerNamesUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderNamesUpgradeTask" public="true">
+        <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+    </component>
 
     <!-- Active Objects -->
     <ao key="openid-active-objects">
         <entity>com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider</entity>
 
         <upgradeTask>com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade.Task001AddPromptToOpenIdProvider</upgradeTask>
+        <upgradeTask>com.pawelniewiadomski.jira.openid.authentication.activeobjects.upgrade.Task002AddScopeToOpenIdProvider</upgradeTask>
     </ao>
 
     <!-- Pretty links -->

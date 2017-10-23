@@ -24,10 +24,12 @@ public interface ProviderType {
 
     boolean isSkipUrl();
 
+    boolean isScopeRequired();
+
     List<String> getSupportedPrompts();
 
     @Nullable
-    String getCreatedProviderName();
+    String getDefaultName();
 
     @Nonnull
     Either<Errors, OpenIdProvider> createOrUpdate(@Nullable OpenIdProvider provider, @Nonnull ProviderBean providerBean);
