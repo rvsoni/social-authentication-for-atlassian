@@ -27,8 +27,7 @@
             {param isRequired: true/}
             {param content: 'Name'/}
         {/call}
-        <input id="name" class="text" type="text" name="name" ng-if="!providerType.createdProviderName" ng-model="provider.name" required="true">
-        <span>{lb}{lb}providerType.createdProviderName{rb}{rb}</span>
+        <input id="name" class="text" type="text" name="name" ng-model="provider.name" required="true">
         <div data-field="name" class="error" ng-if="providerForm.name.$error.required">Please provide the name.</div>
         <div data-field="name" class="error" ng-if="errors.name">{lb}{lb}errors.name{rb}{rb}</div>
     {/param}
@@ -122,6 +121,22 @@
         {/call}
         <div data-field="clientSecret" class="error" ng-if="providerForm.clientSecret.$error.required">Please provide the client secret.</div>
         <div data-field="clientSecret" class="error" ng-if="errors.clientSecret">{lb}{lb}errors.clientSecret{rb}{rb}</div>
+    {/param}
+{/call}
+{call aui.form.fieldGroup}
+    {param extraAttributes}ng-if="providerType.scopeRequired"{/param}
+    {param content}
+        {call aui.form.label}
+            {param forField: 'scope'/}
+            {param content: 'Scope'/}
+            {param isRequired: true/}
+        {/call}
+        <input id="scope" class="text" type="text" name="scope" ng-model="provider.scope" required="true">
+        {call aui.form.fieldDescription}
+            {param message}Scope to get user details including e-mail{/param}
+        {/call}
+        <div data-field="scope" class="error" ng-if="providerForm.scope.$error.required">Please provide the scope.</div>
+        <div data-field="scope" class="error" ng-if="errors.scope">{lb}{lb}errors.scope{rb}{rb}</div>
     {/param}
 {/call}
 {call aui.form.fieldGroup}

@@ -40,7 +40,10 @@ public class ProviderBean {
 
     final String prompt;
 
-    @java.beans.ConstructorProperties({"id", "name", "providerType", "allowedDomains", "ordering", "enabled", "clientId", "clientSecret", "endpointUrl", "callbackId", "extensionNamespace"})
+    final String scope;
+
+    @java.beans.ConstructorProperties({"id", "name", "providerType", "allowedDomains", "ordering", "enabled",
+            "clientId", "clientSecret", "endpointUrl", "callbackId", "extensionNamespace"})
     public ProviderBean(@JsonProperty("id") int id,
                         @JsonProperty("name") String name,
                         @JsonProperty("providerType") String providerType,
@@ -52,7 +55,8 @@ public class ProviderBean {
                         @JsonProperty("endpointUrl") String endpointUrl,
                         @JsonProperty("callbackId") String callbackId,
                         @JsonProperty("extensionNamespace") String extensionNamespace,
-                        @JsonProperty("prompt") String prompt) {
+                        @JsonProperty("prompt") String prompt,
+                        @JsonProperty("scope") String scope) {
         this.id = id;
         this.name = name;
         this.providerType = providerType;
@@ -65,6 +69,7 @@ public class ProviderBean {
         this.callbackId = callbackId;
         this.extensionNamespace = extensionNamespace;
         this.prompt = prompt;
+        this.scope = scope;
     }
 
 
@@ -74,6 +79,7 @@ public class ProviderBean {
                 provider.getOrdering() == null ? 1 : provider.getOrdering(),
                 provider.isEnabled(), provider.getClientId(), provider.getClientSecret(),
                 provider.getEndpointUrl(), provider.getCallbackId(), provider.getExtensionNamespace(),
-                defaultString(provider.getPrompt(), DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT));
+                defaultString(provider.getPrompt(), DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT),
+                defaultString(provider.getScope(), DiscoverablyOauth2ProviderType.DEFAULT_SCOPE));
     }
 }

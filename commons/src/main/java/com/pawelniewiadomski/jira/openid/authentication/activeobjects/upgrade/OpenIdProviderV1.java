@@ -7,7 +7,7 @@ import net.java.ao.schema.*;
 @SuppressWarnings("UnusedDeclaration")
 @Table("openid_providers")
 @Preload
-public interface OpenIdProviderV2 extends Entity {
+public interface OpenIdProviderV1 extends Entity {
 
     int MAX_LENGTH = 450;
 
@@ -32,7 +32,6 @@ public interface OpenIdProviderV2 extends Entity {
     String CLIENT_ID = "CLIENT_ID";
     String CLIENT_SECRET = "CLIENT_SECRET";
     String PROMPT = "PROMPT";
-    String SCOPE = "SCOPE";
 
     @NotNull
     @Unique
@@ -87,7 +86,4 @@ public interface OpenIdProviderV2 extends Entity {
 
     String getPrompt();
     void setPrompt(String prompt);
-
-    String getScope();
-    void setScope(String scope);
 }

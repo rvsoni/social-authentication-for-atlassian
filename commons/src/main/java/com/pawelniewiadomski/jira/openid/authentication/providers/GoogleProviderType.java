@@ -68,7 +68,7 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
 
     @Nullable
     @Override
-    public String getCreatedProviderName() {
+    public String getDefaultName() {
         return "Google";
     }
 

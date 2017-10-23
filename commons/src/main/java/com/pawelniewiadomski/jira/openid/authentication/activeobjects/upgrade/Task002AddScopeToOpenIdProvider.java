@@ -12,21 +12,23 @@ import javax.annotation.Nonnull;
 
 @RequiredArgsConstructor
 @Slf4j
-public class Task001AddPromptToOpenIdProvider implements ActiveObjectsUpgradeTask {
+public class Task002AddScopeToOpenIdProvider implements ActiveObjectsUpgradeTask {
 
     @Override
     public ModelVersion getModelVersion() {
-        return ModelVersion.valueOf("2");
+        return ModelVersion.valueOf("3");
     }
 
     @Override
     public void upgrade(@Nonnull final ModelVersion modelVersion, @Nonnull final ActiveObjects ao) {
-        ao.migrate(OpenIdProviderV1.class);
+        ao.migrate(OpenIdProviderV2.class);
 
-        final String queryString = OpenIdProviderV1.PROMPT + " IS NULL";
-        for (final OpenIdProviderV1 provider : ao.find(OpenIdProviderV1.class, Query.select().where(queryString))) {
-            if (provider.getPrompt() == null) {
-                provider.setPrompt(DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT);
+        final String queryString = OpenIdProviderV2.SCOPE + " IS NULL AND "
+                + OpenIdProviderV2.PROVIDER_TYPE + "= ?";
+
+        for (final OpenIdProviderV2 provider : ao.find(OpenIdProviderV2.class, Query.select().where(queryString, OpenIdProviderV2.OAUTH2_TYPE))) {
+            if (provider.getScope() == null) {
+                provider.setScope(DiscoverablyOauth2ProviderType.DEFAULT_SCOPE);
                 provider.save();
             }
         }
