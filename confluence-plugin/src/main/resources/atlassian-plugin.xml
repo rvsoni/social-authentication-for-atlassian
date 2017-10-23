@@ -145,7 +145,7 @@
     <component key="providerTypeUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderTypeUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
-    <component key="setNameUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.SetProviderNamesUpgradeTask" public="true">
+    <component key="providerNamesUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.ProviderNamesUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>
 

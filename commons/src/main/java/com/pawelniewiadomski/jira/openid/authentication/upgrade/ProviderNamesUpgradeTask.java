@@ -16,14 +16,13 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Component
-public class SetProviderNamesUpgradeTask implements PluginUpgradeTask {
+public class ProviderNamesUpgradeTask implements PluginUpgradeTask {
 
     private final OpenIdDao openIdDao;
     private final PluginKey pluginKey;
     private final ProviderTypeFactory providerTypeFactory;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    public SetProviderNamesUpgradeTask(OpenIdDao openIdDao, PluginKey pluginKey, ProviderTypeFactory providerTypeFactory) {
+    public ProviderNamesUpgradeTask(OpenIdDao openIdDao, PluginKey pluginKey, ProviderTypeFactory providerTypeFactory) {
         this.openIdDao = openIdDao;
         this.pluginKey = pluginKey;
         this.providerTypeFactory = providerTypeFactory;
