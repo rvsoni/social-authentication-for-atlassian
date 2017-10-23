@@ -21,10 +21,10 @@ public class Task001AddPromptToOpenIdProvider implements ActiveObjectsUpgradeTas
 
     @Override
     public void upgrade(@Nonnull final ModelVersion modelVersion, @Nonnull final ActiveObjects ao) {
-        ao.migrate(OpenIdProviderV2.class);
+        ao.migrate(OpenIdProviderV1.class);
 
-        final String queryString = OpenIdProviderV2.PROMPT + " IS NULL";
-        for (final OpenIdProviderV2 provider : ao.find(OpenIdProviderV2.class, Query.select().where(queryString))) {
+        final String queryString = OpenIdProviderV1.PROMPT + " IS NULL";
+        for (final OpenIdProviderV1 provider : ao.find(OpenIdProviderV1.class, Query.select().where(queryString))) {
             if (provider.getPrompt() == null) {
                 provider.setPrompt(DiscoverablyOauth2ProviderType.SELECT_ACCOUNT_PROMPT);
                 provider.save();
