@@ -122,19 +122,6 @@
         <decription>Processes @Transactional annotations.</decription>
     </component>
 
-    <!-- Confluence -->
-    <component key="confluenceAuthenticationService"
-               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluenceAuthenticationService"
-               application="confluence"/>
-
-    <component key="confluenceExternalUserManagementService"
-               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluenceExternalUserManagementService"
-               application="confluence"/>
-
-    <component key="confluencePublicModeService"
-               class="com.pawelniewiadomski.jira.openid.authentication.services.confluence.ConfluencePublicModeService"
-               application="confluence"/>
-
     <component key="addOrderUpgradeTask" class="com.pawelniewiadomski.jira.openid.authentication.upgrade.AddOrderUpgradeTask" public="true">
         <interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
     </component>

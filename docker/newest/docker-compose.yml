@@ -10,7 +10,7 @@ services:
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
   confluence:
-    image: cptactionhank/atlassian-confluence:6.4.2
+    image: cptactionhank/atlassian-confluence:6.4.0
     depends_on:
       - mysql
     ports:
