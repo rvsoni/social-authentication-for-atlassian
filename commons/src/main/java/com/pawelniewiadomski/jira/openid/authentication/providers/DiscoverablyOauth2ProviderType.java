@@ -185,7 +185,7 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
         return discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()).getTokenUrl();
     }
 
-    @Nonnull
+    @Nullable
     public String getUserInfoUrl(@Nonnull OpenIdProvider provider) throws Exception {
         return discoveryDocumentProvider.getDiscoveryDocument(provider.getEndpointUrl()).getUserinfoUrl();
     }

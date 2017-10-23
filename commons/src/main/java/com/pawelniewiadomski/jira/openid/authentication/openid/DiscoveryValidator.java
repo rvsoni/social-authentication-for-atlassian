@@ -7,6 +7,5 @@ public class DiscoveryValidator extends OAuthClientValidator
     public DiscoveryValidator() {
         requiredParams.put("authorization_endpoint", new String[] {});
         requiredParams.put("token_endpoint", new String[] {});
-        requiredParams.put("userinfo_endpoint", new String[]{});
     }
 }
