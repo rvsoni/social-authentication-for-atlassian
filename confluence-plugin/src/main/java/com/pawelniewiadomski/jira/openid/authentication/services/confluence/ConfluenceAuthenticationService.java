@@ -6,7 +6,6 @@ import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.atlassian.seraph.service.rememberme.RememberMeService;
-import com.atlassian.spring.container.ContainerManager;
 import com.atlassian.user.EntityException;
 import com.atlassian.user.Group;
 import com.atlassian.user.GroupManager;

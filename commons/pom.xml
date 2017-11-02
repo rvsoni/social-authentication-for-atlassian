@@ -226,5 +226,9 @@
             <artifactId>google-analytics-java</artifactId>
             <version>1.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jre8</artifactId>
+        </dependency>
     </dependencies>
 </project>

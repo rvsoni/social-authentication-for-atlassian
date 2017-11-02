@@ -7,7 +7,6 @@ import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
 import com.atlassian.jira.compatibility.bridge.user.UserUtilBridge;
 import com.atlassian.jira.compatibility.factory.user.UserUtilBridgeFactory;
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.login.LoginManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
