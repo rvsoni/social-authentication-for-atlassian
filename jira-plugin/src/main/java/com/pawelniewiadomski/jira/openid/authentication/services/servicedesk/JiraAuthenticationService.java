@@ -63,7 +63,7 @@ public class JiraAuthenticationService implements AuthenticationService {
 
         com.atlassian.crowd.embedded.api.User user = (com.atlassian.crowd.embedded.api.User) Iterables.getFirst(crowdService.search(new UserQuery(
                 com.atlassian.crowd.embedded.api.User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
-                StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
+                stripToEmpty(email).toLowerCase()), 0, 1)), null);
 
         if (user == null && !externalUserManagementService.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
             try {
