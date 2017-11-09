@@ -9,8 +9,10 @@ services:
       - "6085:5005"
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+    volumes:
+      - ./jira-home:/var/atlassian/jira
   confluence:
-    image: cptactionhank/atlassian-confluence:6.4.0
+    image: cptactionhank/atlassian-confluence:6.5.0
     depends_on:
       - mysql
     ports:
@@ -18,6 +20,8 @@ services:
       - "6095:5005"
     environment:
       CATALINA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+    volumes:
+      - ./confluence-home:/var/atlassian/confluence
   db:
     image: postgres
     environment:
