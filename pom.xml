@@ -363,7 +363,7 @@
         <testkit.version>7.0.70</testkit.version>
         <jira.servicedesk.application.version>3.0.10</jira.servicedesk.application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <amps.version>6.2.11</amps.version>
+        <amps.version>6.3.6</amps.version>
         <prettyurls.version>1.11.0</prettyurls.version>
         <sal.api.version>2.13.4</sal.api.version>
         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
