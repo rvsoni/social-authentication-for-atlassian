@@ -11,6 +11,17 @@
     <name>Social Authentication Commons</name>
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>pawelniewie-jopenid-mvn-repo</id>
+            <url>https://raw.github.com/pawelniewie/jopenid/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -19,9 +30,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.expressme</groupId>
-            <artifactId>JOpenId</artifactId>
-            <version>1.10</version>
+            <groupId>com.pawelniewiadomski</groupId>
+            <artifactId>jopenid</artifactId>
+            <version>1.12</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
