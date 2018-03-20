@@ -46,8 +46,8 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.expressme</groupId>
-            <artifactId>JOpenId</artifactId>
+            <groupId>com.pawelniewiadomski</groupId>
+            <artifactId>jopenid</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

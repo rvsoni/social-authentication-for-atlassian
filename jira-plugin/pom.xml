@@ -55,9 +55,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.expressme</groupId>
-            <artifactId>JOpenId</artifactId>
-            <version>1.10</version>
+            <groupId>com.pawelniewiadomski</groupId>
+            <artifactId>jopenid</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -213,12 +212,10 @@
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
             <artifactId>org.apache.oltu.oauth2.jwt</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
