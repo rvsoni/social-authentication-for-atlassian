@@ -5,8 +5,8 @@ set -e
 
 atlas-package -DskipTests
 
-ports=$(docker ps --format "{{.Names}}: {{.Ports}}" | rg '(.*_jira_.*:)([0-9]+)(->.*)' --replace '$2')
+ips=$(docker ps --quiet | xargs --no-run-if-empty docker inspect --format='{{.Name}}|{{range $net, $conf := .NetworkSettings.Networks}}{{$conf.IPAddress}} {{end}}' | rg '(.*_jira_.*\|)(.*)' --replace '$2')
 
-for port in $ports ; do
-	atlas-install-plugin -o --context-path '' -p $port
+for ip in $ips ; do
+	atlas-install-plugin -o --context-path '' -p 8080 --server $ip
 done
