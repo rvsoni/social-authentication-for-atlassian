@@ -233,18 +233,6 @@
             <version>1.11</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-factory</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-api</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

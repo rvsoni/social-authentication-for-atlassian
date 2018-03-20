@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <jira.version>7.0.10</jira.version>
+        <jira.version>7.2.13</jira.version>
         <testkit.version>7.0.70</testkit.version>
         <jira.servicedesk.application.version>3.0.10</jira.servicedesk.application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -318,18 +318,6 @@
                 <artifactId>jersey-multipart</artifactId>
                 <version>1.11</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.jira.compat</groupId>
-                <artifactId>jira-cross-compatibility-lib-bridge-factory</artifactId>
-                <version>0.50</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.jira.compat</groupId>
-                <artifactId>jira-cross-compatibility-lib-bridge-api</artifactId>
-                <version>0.50</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.atlassian.plugin</groupId>
