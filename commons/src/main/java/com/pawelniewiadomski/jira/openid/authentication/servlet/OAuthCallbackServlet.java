@@ -5,11 +5,12 @@ import com.atlassian.fugue.Either;
 import com.atlassian.fugue.Pair;
 import com.google.common.collect.ImmutableMap;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdDao;
-import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import com.pawelniewiadomski.jira.openid.authentication.providers.OAuth2ProviderType;
 import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
 import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.LicenseProvider;
+import com.pawelniewiadomski.jira.openid.authentication.services.ProvidedUserDetails;
 import com.pawelniewiadomski.jira.openid.authentication.services.ProviderTypeFactory;
 import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +77,8 @@ public class OAuthCallbackServlet extends HttpServlet
 
                 if (userOrError.isLeft()) {
                     Pair<String, String> usernameAndEmail = userOrError.left().get();
-                    authenticationService.showAuthentication(request, response, provider, usernameAndEmail.left(), usernameAndEmail.right());
+                    authenticationService.showAuthentication(request, response, provider,
+                            new ProvidedUserDetails(usernameAndEmail.left(), usernameAndEmail.right()));
                 } else {
                     final OAuth2ProviderType.Error error = userOrError.right().get();
                     templateHelper.render(request, response, "OpenId.Templates.oauthErrorWithPayload",

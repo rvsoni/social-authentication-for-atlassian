@@ -1,17 +1,24 @@
 package com.pawelniewiadomski.servicedesk.services;
 
 import com.atlassian.crowd.embedded.api.CrowdService;
-import com.atlassian.crowd.embedded.api.Directory;
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.crowd.exception.InvalidUserException;
+import com.atlassian.crowd.exception.UserAlreadyExistsException;
 import com.atlassian.crowd.manager.directory.DirectoryManager;
 import com.atlassian.crowd.search.query.entity.UserQuery;
 import com.atlassian.crowd.search.query.entity.restriction.MatchMode;
 import com.atlassian.crowd.search.query.entity.restriction.TermRestriction;
 import com.atlassian.crowd.search.query.entity.restriction.constants.UserTermKeys;
-import com.atlassian.jira.compatibility.factory.user.UserUtilBridgeFactory;
+import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.login.LoginManager;
-import com.atlassian.jira.security.roles.*;
+import com.atlassian.jira.security.roles.ProjectRole;
+import com.atlassian.jira.security.roles.ProjectRoleActor;
+import com.atlassian.jira.security.roles.ProjectRoleActors;
+import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.security.roles.RoleActorDoesNotExistException;
+import com.atlassian.jira.security.roles.RoleActorFactory;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.user.UserDetails;
@@ -24,9 +31,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.*;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.ProvidedUserDetails;
+import com.pawelniewiadomski.jira.openid.authentication.services.RedirectionService;
+import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import com.pawelniewiadomski.servicedesk.querydsl.ServiceDeskTables;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,20 +50,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static com.atlassian.jira.component.ComponentAccessor.getComponentOfType;
 import static com.google.common.collect.ImmutableList.of;
 import static com.pawelniewiadomski.AllowedDomains.isEmailFromAllowedDomain;
+import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.lowerCase;
+import static org.apache.commons.lang.StringUtils.replaceChars;
 
 @Slf4j
 @Component
 public class ServiceDeskAuthenticationService implements AuthenticationService {
-    @Autowired
-    protected UserUtilBridgeFactory userUtilBridgeFactory;
-
     @Autowired
     protected CrowdService crowdService;
 
@@ -89,50 +101,67 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
     @Autowired
     protected DirectoryManager directoryManager;
 
-    public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
-                                   final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
-        if (isBlank(email)) {
+    public void showAuthentication(final HttpServletRequest request, final HttpServletResponse response,
+                                   final OpenIdProvider provider, final ProvidedUserDetails userDetails) throws IOException, ServletException {
+        if (isBlank(userDetails.getEmail())) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
         }
 
         if (isNotBlank(provider.getAllowedDomains())) {
-            if (!isEmailFromAllowedDomain(provider, email)) {
+            if (!isEmailFromAllowedDomain(provider, userDetails.getEmail())) {
                 templateHelper.render(request, response, "OpenId.Templates.domainMismatch");
                 return;
             }
         }
 
-        com.atlassian.crowd.embedded.api.User user = (com.atlassian.crowd.embedded.api.User) Iterables.getFirst(crowdService.search(new UserQuery(
-                com.atlassian.crowd.embedded.api.User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
-                StringUtils.stripToEmpty(email).toLowerCase()), 0, 1)), null);
-
+        ApplicationUser user = getUserByEmail(userDetails);
         if (user == null && !externalUserManagementService.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
+            final String userName = lowerCase(replaceChars(userDetails.getIdentity(), " '()", ""));
+
             try {
-                user = createUser(identity, email).getDirectoryUser();
+                for(int i = 0; i < 10 && user == null; ++i) {
+                    try {
+                        val tryUserName = userName + (i == 0 ? "" : i);
+                        user = userManager.createUser(
+                                new UserDetails(tryUserName, userDetails.getIdentity())
+                                        .withPassword(randomUUID().toString())
+                                        .withEmail(userDetails.getEmail())
+                        );
+                    } catch (CreateException e) {
+                        if (!(e.getCause() instanceof UserAlreadyExistsException || e.getCause() instanceof InvalidUserException)) {
+                            throw e;
+                        }
+                    }
+                }
             } catch (Exception e) {
-                log.error(String.format("Cannot create an account for %s %s", identity, email), e);
+                log.error(String.format("Cannot create an account for %s %s", userDetails.getIdentity(), userDetails.getEmail()), e);
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             }
         }
 
         if (user != null) {
-            final ApplicationUser appUser = ApplicationUsers.from(user);
-
-            getServiceDeskProjectIds(request).forEach((projectId) -> addToServiceDeskUserRole(appUser, projectId));
+            ApplicationUser finalUser = user;
+            getServiceDeskProjectIds(request).forEach((projectId) -> addToServiceDeskUserRole(finalUser, projectId));
 
             final HttpSession httpSession = request.getSession();
-            httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, appUser);
+            httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, user);
             httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
-            getComponentOfType(LoginManager.class).onLoginAttempt(request, appUser.getName(), true);
+            getComponentOfType(LoginManager.class).onLoginAttempt(request, user.getName(), true);
 
-            getComponentOfType(RememberMeService.class).addRememberMeCookie(request, response, appUser.getUsername());
+            getComponentOfType(RememberMeService.class).addRememberMeCookie(request, response, user.getUsername());
 
             redirectionService.redirectToReturnUrlOrHome(request, response);
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }
+    }
+
+    private ApplicationUser getUserByEmail(ProvidedUserDetails userDetails) {
+        return ApplicationUsers.from((User) Iterables.getFirst(crowdService.search(new UserQuery(
+                User.class, new TermRestriction(UserTermKeys.EMAIL, MatchMode.EXACTLY_MATCHES,
+                StringUtils.stripToEmpty(userDetails.getEmail()).toLowerCase()), 0, 1)), null));
     }
 
     private void addToServiceDeskUserRole(final ApplicationUser appUser, final Long projectId) {
@@ -165,17 +194,6 @@ public class ServiceDeskAuthenticationService implements AuthenticationService {
 
             return run;
         }
-    }
-
-    private ApplicationUser createUser(String identity, String email) throws Exception {
-        Optional<Directory> directory = userManager.getWritableDirectories()
-                .stream()
-                .filter(dir -> userManager.canDirectoryUpdateUserPassword(dir))
-                .findFirst();
-
-        return userManager.createUser(new UserDetails(email, identity)
-                .withEmail(email)
-                .withDirectory(directory.get().getId()));
     }
 
     private void addUserToRoleActors(ApplicationUser appUser, Project project, ProjectRole serviceDeskCustomers) {
