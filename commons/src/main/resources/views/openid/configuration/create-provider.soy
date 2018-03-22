@@ -45,9 +45,18 @@
         <div data-field="endpointUrl" class="error" ng-if="providerForm.endpointUrl.$error.url">Please provide a valid URL.</div>
         <div data-field="endpointUrl" class="error" ng-if="errors.endpointUrl">{lb}{lb}errors.endpointUrl{rb}{rb}</div>
         {call aui.message.info}
-            {param extraClasses: 'hint hidden'/}
+            {param extraClasses: 'hint'/}
+            {param extraAttributes}ng-if="providerType.id!='openid1' && providerForm.endpointUrl.$valid"{/param}
             {param content}
-                <span class="hint-text"></span>
+                <span class="hint-text">
+                    Add on will access
+                    {sp}
+                    <a href="{lb}{lb}provider.endpointUrl{rb}{rb}/.well-known/openid-configuration" target="_blank">
+                        {lb}{lb}provider.endpointUrl{rb}{rb}/.well-known/openid-configuration
+                    </a>
+                    {sp}
+                    to discover provider's configuration.
+                </span>
             {/param}
         {/call}
     {/param}
