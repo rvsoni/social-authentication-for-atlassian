@@ -21,23 +21,22 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.jwt.JWT;
 import org.apache.oltu.oauth2.jwt.io.JWTReader;
 
+import java.util.Optional;
+
 /**
  *
  *
  */
 public class OpenIdConnectResponse extends OAuthJSONAccessTokenResponse {
 
-    private JWT idToken;
-
     @Override
     protected void init(String body, String contentType, int responseCode)
             throws OAuthProblemException {
         super.init(body, contentType, responseCode);
-        idToken = new JWTReader().read(getParam("id_token"));
     }
 
-    public final JWT getIdToken() {
-        return idToken;
+    public final Optional<JWT> getIdToken() {
+        return Optional.ofNullable(getParam("id_token")).map((idToken) -> new JWTReader().read(idToken));
     }
 
     /**
@@ -49,12 +48,14 @@ public class OpenIdConnectResponse extends OAuthJSONAccessTokenResponse {
      * @return
      */
     public boolean checkId(String issuer, String audience) {
-        if (idToken.getClaimsSet().getIssuer().equals(issuer)
-                && idToken.getClaimsSet().getAudience().equals(audience)
-                && idToken.getClaimsSet().getExpirationTime() < System
-                .currentTimeMillis()) {
-            return true;
-        }
-        return false;
+        return getIdToken().map((idToken) -> {
+            if (idToken.getClaimsSet().getIssuer().equals(issuer)
+                    && idToken.getClaimsSet().getAudience().equals(audience)
+                    && idToken.getClaimsSet().getExpirationTime() < System
+                    .currentTimeMillis()) {
+                return true;
+            }
+            return false;
+        }).orElse(false);
     }
 }

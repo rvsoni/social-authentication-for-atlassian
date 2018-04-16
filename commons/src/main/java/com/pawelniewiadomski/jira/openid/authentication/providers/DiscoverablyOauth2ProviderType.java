@@ -20,6 +20,7 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.apache.oltu.oauth2.jwt.ClaimsSet;
+import org.apache.oltu.oauth2.jwt.JWT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +30,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang.StringUtils.*;
@@ -203,17 +205,21 @@ public class DiscoverablyOauth2ProviderType extends AbstractProviderType impleme
 
         final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
         final String accessToken = token.getAccessToken();
-        final ClaimsSet claimsSet = token.getIdToken().getClaimsSet();
+        final Optional<JWT> idToken = token.getIdToken();
 
         String payload = token.getBody();
 
-        String email, username;
-        try {
-            email = claimsSet.getCustomField("email", String.class);
-            email = defaultIfEmpty(email, claimsSet.getCustomField("upn", String.class));
-            username = defaultIfEmpty(claimsSet.getCustomField("name", String.class), email);
-        } catch (ClassCastException e) {
-            return Either.right(Error.builder().payload(payload).errorMessage(e.getMessage()).build());
+        String email = null, username = null;
+
+        if (idToken.isPresent()) {
+            try {
+                final ClaimsSet claimsSet = token.getIdToken().get().getClaimsSet();
+                email = claimsSet.getCustomField("email", String.class);
+                email = defaultIfEmpty(email, claimsSet.getCustomField("upn", String.class));
+                username = defaultIfEmpty(claimsSet.getCustomField("name", String.class), email);
+            } catch (ClassCastException e) {
+                return Either.right(Error.builder().payload(payload).errorMessage(e.getMessage()).build());
+            }
         }
 
         final String userInfoUrl = getUserInfoUrl(provider);
