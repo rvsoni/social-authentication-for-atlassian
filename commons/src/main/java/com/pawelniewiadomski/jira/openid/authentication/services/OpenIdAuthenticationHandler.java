@@ -9,7 +9,11 @@ import com.google.common.collect.Maps;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.expressme.openid.*;
+import org.expressme.openid.Association;
+import org.expressme.openid.Authentication;
+import org.expressme.openid.Endpoint;
+import org.expressme.openid.OpenIdException;
+import org.expressme.openid.OpenIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,7 +98,7 @@ public class OpenIdAuthenticationHandler implements AuthenticationHandler {
                 String fullName = authentication.getFullname();
                 String email = authentication.getEmail();
 
-                authenticationService.showAuthentication(request, response, provider, fullName, email);
+                authenticationService.showAuthentication(request, response, provider, new ProvidedUserDetails(fullName, email));
                 return true;
             } catch (OpenIdException e) {
                 log.error("OpenID verification failed", e);

@@ -105,7 +105,8 @@ public class GoogleProviderType extends AbstractOAuth2ProviderType {
 
         final OpenIdConnectResponse token = oAuthClient.accessToken(oAuthRequest, OpenIdConnectResponse.class);
         final String accessToken = token.getAccessToken();
-        final String email = token.getIdToken().getClaimsSet().getCustomField("email", String.class);
+        //noinspection ConstantConditions
+        final String email = token.getIdToken().get().getClaimsSet().getCustomField("email", String.class);
 
         final OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/plus/v1/people/me/openIdConnect")
                 .setAccessToken(accessToken)

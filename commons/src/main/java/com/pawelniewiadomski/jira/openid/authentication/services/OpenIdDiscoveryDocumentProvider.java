@@ -28,12 +28,16 @@ public class OpenIdDiscoveryDocumentProvider
         private final String tokenUrl;
         private final String authorizationUrl;
         private final String userinfoUrl;
+        private final String checkSessionIframe;
+        private final String endSessionEndpoint;
 
-        public OpenIdDiscoveryDocument(String tokenUrl, String authorizationUrl, String userinfoUrl)
+        public OpenIdDiscoveryDocument(String tokenUrl, String authorizationUrl, String userinfoUrl, String checkSessionIframe, String endSessionEndpoint)
         {
             this.tokenUrl = tokenUrl;
             this.authorizationUrl = authorizationUrl;
             this.userinfoUrl = userinfoUrl;
+            this.checkSessionIframe = checkSessionIframe;
+            this.endSessionEndpoint = endSessionEndpoint;
         }
 
         public String getTokenUrl()
@@ -50,6 +54,14 @@ public class OpenIdDiscoveryDocumentProvider
         {
             return userinfoUrl;
         }
+
+        public String getCheckSessionIframe() {
+            return checkSessionIframe;
+        }
+
+        public String getEndSessionEndpoint() {
+            return endSessionEndpoint;
+        }
     }
 
     private final LoadingCache<String, OpenIdDiscoveryDocument> cache = CacheBuilder.newBuilder()
@@ -64,8 +76,12 @@ public class OpenIdDiscoveryDocumentProvider
                             .buildQueryMessage();
 
                     OpenIdDiscoveryResponse response = oAuthClient.resource(oAuthRequest, OAuth.HttpMethod.GET, OpenIdDiscoveryResponse.class);
-                    return new OpenIdDiscoveryDocument(response.getParam("token_endpoint"), response.getParam("authorization_endpoint"),
-                            response.getParam("userinfo_endpoint"));
+                    return new OpenIdDiscoveryDocument(
+                            response.getParam("token_endpoint"),
+                            response.getParam("authorization_endpoint"),
+                            response.getParam("userinfo_endpoint"),
+                            response.getParam("check_session_iframe"),
+                            response.getParam("end_session_endpoint"));
                 }
             });
 

@@ -5,8 +5,8 @@ set -e
 
 atlas-package -DskipTests
 
-ports=$(docker ps --format "{{.Names}}: {{.Ports}}" | rg '(.*_confluence_.*:)([0-9]+)(->.*)' --replace '$2')
+ips=$(docker ps --quiet | xargs --no-run-if-empty docker inspect --format='{{.Name}}|{{range $net, $conf := .NetworkSettings.Networks}}{{$conf.IPAddress}} {{end}}' | rg '(.*_confluence_.*\|)(.*)' --replace '$2')
 
-for port in $ports ; do
-	atlas-install-plugin -o --context-path '' -p $port
+for ip in $ips ; do
+	atlas-install-plugin -o --context-path '' -p 8090 --server $ip
 done

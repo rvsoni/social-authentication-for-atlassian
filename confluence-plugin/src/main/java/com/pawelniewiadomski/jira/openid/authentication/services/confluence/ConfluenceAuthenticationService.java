@@ -4,20 +4,28 @@ import com.atlassian.confluence.security.login.LoginManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
+import com.atlassian.core.exception.InfrastructureException;
+import com.atlassian.crowd.exception.InvalidUserException;
+import com.atlassian.crowd.exception.UserAlreadyExistsException;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.atlassian.seraph.service.rememberme.RememberMeService;
-import com.atlassian.spring.container.ContainerManager;
 import com.atlassian.user.EntityException;
 import com.atlassian.user.Group;
 import com.atlassian.user.GroupManager;
 import com.atlassian.user.User;
 import com.atlassian.user.impl.DefaultUser;
+import com.atlassian.user.impl.DuplicateEntityException;
 import com.atlassian.user.search.SearchResult;
 import com.pawelniewiadomski.jira.openid.authentication.activeobjects.OpenIdProvider;
-import com.pawelniewiadomski.jira.openid.authentication.services.*;
+import com.pawelniewiadomski.jira.openid.authentication.services.AuthenticationService;
+import com.pawelniewiadomski.jira.openid.authentication.services.ExternalUserManagementService;
+import com.pawelniewiadomski.jira.openid.authentication.services.GlobalSettings;
+import com.pawelniewiadomski.jira.openid.authentication.services.ProvidedUserDetails;
+import com.pawelniewiadomski.jira.openid.authentication.services.RedirectionService;
+import com.pawelniewiadomski.jira.openid.authentication.services.TemplateHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import lombok.val;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -31,7 +39,11 @@ import static com.atlassian.user.security.password.Credential.unencrypted;
 import static com.pawelniewiadomski.AllowedDomains.isEmailFromAllowedDomain;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.lowerCase;
+import static org.apache.commons.lang.StringUtils.replaceChars;
+import static org.apache.commons.lang.StringUtils.stripToEmpty;
 
 @Slf4j
 @Component
@@ -53,42 +65,51 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
 
     final LoginManager loginManager;
 
-    public void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
-                                   final OpenIdProvider provider, String identity, String email) throws IOException, ServletException {
-        if (isBlank(email)) {
+    public void showAuthentication(final HttpServletRequest request, final HttpServletResponse response,
+                                   final OpenIdProvider provider, final ProvidedUserDetails userDetails) throws IOException, ServletException {
+        if (isBlank(userDetails.getEmail())) {
             templateHelper.render(request, response, "OpenId.Templates.emptyEmail");
             return;
         }
 
         if (isNotBlank(provider.getAllowedDomains())) {
-            if (!isEmailFromAllowedDomain(provider, email)) {
+            if (!isEmailFromAllowedDomain(provider, userDetails.getEmail())) {
                 templateHelper.render(request, response, "OpenId.Templates.domainMismatch");
                 return;
             }
         }
 
-        ConfluenceUser user = null;
-        final SearchResult usersByEmail = userAccessor.getUsersByEmail(StringUtils.stripToEmpty(email).toLowerCase());
-
-        if (usersByEmail.pager().isEmpty()
-                && !externalUserManagementService.isExternalUserManagement()
-                && globalSettings.isCreatingUsers()) {
+        ConfluenceUser user = getUserByEmail(userDetails);
+        if (user == null && !externalUserManagementService.isExternalUserManagement() && globalSettings.isCreatingUsers()) {
             try {
-                user = userAccessor.createUser(
-                        new DefaultUser(lowerCase(replaceChars(identity, " '()", "")), identity, email),
-                        unencrypted(randomUUID().toString()));
+                final String userName = lowerCase(replaceChars(userDetails.getIdentity(), " '()", ""));
 
-                final Group defaultGroup = groupManager
-                        .getGroup(settingsManager.getGlobalSettings().getDefaultUsersGroup());
-                groupManager.addMembership(defaultGroup, user);
+                for(int i = 0; i < 10 && user == null; ++i) {
+                    try {
+                        val tryUserName = userName + (i == 0 ? "" : i);
+                        user = userAccessor.createUser(
+                                new DefaultUser(
+                                        tryUserName,
+                                        userDetails.getIdentity(),
+                                        userDetails.getEmail()),
+                                        unencrypted(randomUUID().toString())
+                        );
+                    } catch (InfrastructureException e) {
+                        if (!(e.getCause() instanceof UserAlreadyExistsException || e.getCause() instanceof InvalidUserException || e.getCause() instanceof DuplicateEntityException)) {
+                            throw e;
+                        }
+                    }
+                }
+
+                if (user != null) {
+                    final Group defaultGroup = groupManager.getGroup(settingsManager.getGlobalSettings().getDefaultUsersGroup());
+                    groupManager.addMembership(defaultGroup, user);
+                }
             } catch (UnsupportedOperationException | IllegalArgumentException | EntityException e) {
-                log.error(format("Cannot create an account for %s %s", identity, email), e);
+                log.error(format("Cannot create an account for %s %s", userDetails.getIdentity(), userDetails.getEmail()), e);
                 templateHelper.render(request, response, "OpenId.Templates.error");
                 return;
             }
-        } else if (!usersByEmail.pager().isEmpty()) {
-            User crowdUser = (User) usersByEmail.pager().iterator().next();
-            user = userAccessor.getUserByName(crowdUser.getName());
         }
 
         if (user != null) {
@@ -103,5 +124,14 @@ public class ConfluenceAuthenticationService implements AuthenticationService {
         } else {
             templateHelper.render(request, response, "OpenId.Templates.noUserMatched");
         }
+    }
+
+    private ConfluenceUser getUserByEmail(ProvidedUserDetails userDetails) {
+        final SearchResult usersByEmail = userAccessor.getUsersByEmail(stripToEmpty(userDetails.getEmail()).toLowerCase());
+        if (!usersByEmail.pager().isEmpty()) {
+            User crowdUser = (User) usersByEmail.pager().iterator().next();
+            return userAccessor.getUserByName(crowdUser.getName());
+        }
+        return null;
     }
 }

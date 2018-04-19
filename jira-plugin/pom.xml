@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.pawelniewiadomski.jira</groupId>
         <artifactId>social-authentication-parent</artifactId>
-        <version>3.1.8-SNAPSHOT</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
     <artifactId>jira-openid-authentication-plugin</artifactId>
     <name>OpenID Authentication for JIRA</name>
@@ -55,9 +55,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.expressme</groupId>
-            <artifactId>JOpenId</artifactId>
-            <version>1.10</version>
+            <groupId>com.pawelniewiadomski</groupId>
+            <artifactId>jopenid</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -211,14 +210,16 @@
             <version>4.2.0</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.johnzon</groupId>
+            <artifactId>johnzon-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
             <artifactId>org.apache.oltu.oauth2.jwt</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -231,18 +232,6 @@
             <artifactId>jersey-multipart</artifactId>
             <version>1.11</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-factory</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira.compat</groupId>
-            <artifactId>jira-cross-compatibility-lib-bridge-api</artifactId>
-            <version>0.50</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

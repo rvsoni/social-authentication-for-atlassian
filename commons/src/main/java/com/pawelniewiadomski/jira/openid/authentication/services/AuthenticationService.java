@@ -14,7 +14,7 @@ public interface AuthenticationService {
     String RETURN_URL_PARAM = "returnUrl";
     String PORTAL_ID_PARAM = "portalId";
 
-    void showAuthentication(final HttpServletRequest request, HttpServletResponse response,
-                            final OpenIdProvider provider, String identity, String email) throws IOException, ServletException;
+    void showAuthentication(HttpServletRequest request, HttpServletResponse response,
+                            OpenIdProvider provider, ProvidedUserDetails userDetails) throws IOException, ServletException;
 
 }

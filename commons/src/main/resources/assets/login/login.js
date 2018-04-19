@@ -1,8 +1,4 @@
-define('openid/jquery', function () {
-    return $ || jQuery;
-});
-
-define('openid/product', ['openid/jquery'], function ($) {
+define('openid/product', ['jquery'], function ($) {
     var appName = $('meta[name=application-name]').data('name');
     if (appName) {
         return {name: appName};
@@ -19,7 +15,7 @@ define('openid/underscore', ['atlassian/libs/underscore-1.4.4'], function (facto
     return factory;
 });
 
-define('openid/backbone', ['openid/underscore', 'atlassian/libs/factories/backbone-1.0.0', 'openid/jquery'], function (_, factory, $) {
+define('openid/backbone', ['openid/underscore', 'atlassian/libs/factories/backbone-1.0.0', 'jquery'], function (_, factory, $) {
     return factory(_, $);
 });
 
@@ -92,13 +88,26 @@ define('openid/loginView', ['openid/marionette', 'openid/providersModel', 'openi
         });
     });
 
-require(['openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'openid/underscore', 'openid/jquery'],
-    function (Marionette, LoginView, ProvidersModel, Product, _, $) {
+require(['openid/marionette', 'openid/loginView', 'openid/providersModel', 'openid/product', 'openid/underscore', 'jquery', 'wrm/context-path'],
+    function (Marionette, LoginView, ProvidersModel, Product, _, $, contextPath) {
         $(document).ready(function () {
             console.log('OpenID booting up...');
 
             var isJIRA = Product.name === 'jira';
             if (isJIRA && $('#dashboard').length) {
+                waitForDashboardAndModifyLoginForm();
+
+                // handle login form errors
+                $(document).ajaxComplete(function(event, xhr, settings) {
+                    if (settings.url === contextPath() + '/rest/gadget/1.0/login') {
+                        waitForDashboardAndModifyLoginForm();
+                    }
+                })
+            } else {
+                modifyLoginForm();
+            }
+
+            function waitForDashboardAndModifyLoginForm() {
                 console.log('Dashboard detected, waiting for elements...');
 
                 var retries = 1000;
@@ -110,9 +119,7 @@ require(['openid/marionette', 'openid/loginView', 'openid/providersModel', 'open
                     }
                 };
 
-                setTimeout(f, 100);
-            } else {
-                modifyLoginForm();
+                setTimeout(f, 50);
             }
 
             function modifyLoginForm() {
