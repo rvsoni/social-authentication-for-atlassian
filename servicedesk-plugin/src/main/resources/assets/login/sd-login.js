@@ -85,10 +85,42 @@ require(['jquery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-
         $(document).ready(function () {
             console.log('Easy sign-ups booting up...');
 
-            var loginFormSelector = ".cv-login .cv-main-group .cv-col-secondary";
-            var $loginForm = $(loginFormSelector);
+            if ($('meta[name=loggedInUser]').length) {
+                console.log('User is already logged in');
+                return;
+            }
 
-            if ($loginForm.length) {
+            waitForLoginForm();
+
+            $(window).on('popstate', waitForLoginForm);
+
+            function waitForLoginForm() {
+                var retries = 100;
+
+                var f = function () {
+                    if (!modifyLoginForm() && retries >= 0) {
+                        retries -= 1;
+                        setTimeout(f, 100);
+                    }
+                };
+
+                setTimeout(f, 50);
+            }
+
+            function modifyLoginForm() {
+                var loginFormSelector = ".cv-login .cv-main-group .cv-col-secondary";
+                var $loginForm = $(loginFormSelector);
+
+                if ($('#user-signup-form').length) {
+                    console.log('Sign up page detected');
+                    return true;
+                }
+
+                if (!$loginForm.length) {
+                    console.log('Login form not found');
+                    return false;
+                }
+
                 if (_.isFunction($loginForm.removeDirtyWarning)) {
                     console.log('Disabling dirty warning');
                     $loginForm.removeDirtyWarning();
@@ -101,6 +133,7 @@ require(['jquery', 'easy-sign-ups/marionette', 'easy-sign-ups/loginView', 'easy-
                 providers.fetch({
                     success: login.render
                 });
+                return true;
             }
         });
     });
