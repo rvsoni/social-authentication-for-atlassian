@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pawelniewiadomski.jira</groupId>
     <artifactId>social-authentication-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.2.3-SNAPSHOT</version>
     <organization>
         <name>Pawel Niewiadomski</name>
         <url>http://pawelniewiadomski.com/</url>
@@ -288,12 +288,12 @@
             <dependency>
                 <groupId>org.apache.oltu.oauth2</groupId>
                 <artifactId>org.apache.oltu.oauth2.client</artifactId>
-                <version>1.0.3-pawelniewie</version>
+                <version>1.0.3-pawelniewie-2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.oltu.oauth2</groupId>
                 <artifactId>org.apache.oltu.oauth2.jwt</artifactId>
-                <version>1.0.4-pawelniewie</version>
+                <version>1.0.4-pawelniewie-2</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
